@@ -133,7 +133,7 @@ public class ColheitaMaldita extends Event {
         // Material.WHITER_ROSE troquei pq o viaversion so roda items da 1.8, mas a wither fica perfeita nos client 1.17.x
         Random r = new Random();
         int n = r.nextInt(99);
-        if (n <= 50){
+        if (n <= 49){
             ItemStack is = ItemBuilder.create("&dFlor Obsidiana", Material.ALLIUM, Arrays.asList("&5Uma flor misteriosa que nasce em raizes obsidianas", "&5Diz a lenda que começaram a crescer na grama ", "&5que a caixa de pandora estava em cima.", "&bQuando aberta ocorrera um evento aleatório com o personagem."));
             is.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
             p.getInventory().addItem(is);

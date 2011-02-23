@@ -14,7 +14,7 @@ import br.pryzat.rpg.bukkit.main.RpgMain;
 import br.pryzat.rpg.bukkit.utils.PryColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -57,11 +57,14 @@ public class PlayerEvent implements Listener {
         Player p = e.getPlayer();
         Character ch = cm.getCharacter(p.getUniqueId());
         if (e.isSneaking()) {
-            if (ch.getSkills().get("stomper") == null) return;
+           // if (ch.getSkills().get("stomper") == null) return;
             //  ch.getSkills().get(SkillType.STOMPER).preExecute();
+            if (ch.getSkills().get("puxao") != null){
+                ch.getSkills().get("puxao").preExecute();
+            }
         } else {
             if (ch.getSkills().get("perseguir") != null) {
-                ch.getSkills().get("perseguir").preExecute();
+              //  ch.getSkills().get("perseguir").preExecute();
                 return;
             }
         }
@@ -76,16 +79,15 @@ public class PlayerEvent implements Listener {
         Character ch = cm.getCharacter(p.getUniqueId());
         net.minecraft.world.item.ItemStack nis = CraftItemStack.asNMSCopy(is);
         if (e.getView().getTitle().equals(PryColor.color("&bSelecione sua classe..."))) {
-            if (!nis.hasTag()) return;
-            assert nis.getTag() != null;
-            if (!nis.getTag().hasKey("rpg.representative.item")) return;
+            /*
             for (String key : main.getConfigManager().getYml().getSection("classes")) {
 				String tempkey = "clazz." + key.toLowerCase();
-                if (nis.getTag().getString("rpg.representative.item").equals(tempkey)) {
                     ch.setClazz(new Clazz(main, ClazzType.valueOf(key)));
                     p.closeInventory();
                 }
             }
+            */
+           ch.setClazz(new Clazz(main, ClazzType.SWORDSMAN));
             e.setCancelled(true);
         }
 /*
