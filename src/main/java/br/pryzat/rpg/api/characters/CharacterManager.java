@@ -37,11 +37,13 @@ public class CharacterManager {
             for (UUID uuid : characters.keySet()) {
                 Character ch = characters.get(uuid);
                 charactersyml.set(uuid.toString() + ".dateOfBirth", ch.getDateOfBirth());
-                for (Skill skill : ch.getSkills().toList()) {
+				if (ch.getSkills().toList() != null) {
+                 for (Skill skill : ch.getSkills().toList()) {
                     if (skill != null) {
                         charactersyml.set(uuid.toString() + ".skills." + skill.getUniqueId(), skill.getLevel());
                     }
-                }
+                 }
+				}
                 charactersyml.set(uuid.toString() + ".class", ch.getClazz().getClassType().toString());
                 charactersyml.set(uuid.toString() + ".stats.strength", ch.getStats().getStrength());
                 charactersyml.set(uuid.toString() + ".stats.resistance", ch.getStats().getResistance());

@@ -393,7 +393,7 @@ public class RpgCommand implements CommandExecutor {
             }
             if (RPG.verifyEUID(args[1])) {
                 Event event = RPG.getEvent(args[1]);
-				if (!event.isEnabled()){
+				if (event == null || !event.isEnabled()){
 					p.sendMessage(PryColor.color("&eSistema &f> &cEsse evento está desativado&f"));
 					return true;
 				}
