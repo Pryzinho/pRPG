@@ -1,0 +1,17 @@
+name: pRPG
+version: '${project.version}'
+main: br.pryzat.rpg.main.RpgMain
+api-version: 1.17
+authors: [ PryzDev ]
+description: Acrescenta um RPG dentro do jogo
+website: github.com/Pryzinho
+commands:
+  rpg:
+   description: Gerenciador do RPG
+   aliases: sistema
+  #Players area
+  skills:
+    description: Gerencia suas skills
+    aliases: habilidades
+
+
