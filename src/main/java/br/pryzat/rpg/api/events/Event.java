@@ -47,7 +47,7 @@ public abstract class Event {
         this.finished = finished;
     }
 
-    public void setEnabled(boolean enabled){ this.enabled = enabled}
+    public void setEnabled(boolean enabled){ this.enabled = enabled;}
 
     public boolean isEnabled(){
         return this.enabled;
