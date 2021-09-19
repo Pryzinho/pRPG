@@ -48,7 +48,7 @@ public class EventManager {
     public void checkProgramedEvents() {
         SimpleDateFormat sdf = new SimpleDateFormat("hh");
         sdf.setCalendar(new GregorianCalendar());
-        new BukkitRunnable() {
+     /*   new BukkitRunnable() {
             String date = sdf.format(new Date(System.currentTimeMillis()));
 
             @Override
@@ -67,7 +67,8 @@ public class EventManager {
                 }
             }
         }.runTaskTimerAsynchronously(plugin, 20, 20);
-    }
+    */
+	}
 
     public ColheitaMaldita getColheitaMaldita() {
         return ecm;
