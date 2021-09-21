@@ -378,6 +378,8 @@ public class RpgCommand implements CommandExecutor {
             // /rpg event colheitamaldita locations set flower 1
             // /rpg event <EUID> locations set <spawn/flower> <Number>
             if (args.length > 7|| args.length < 2) {
+				Character ch = cm.getCharacter(p.getUniqueId());
+				ch.selectClazz();
                 p.sendMessage(" ");
                 p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event"));
                 p.sendMessage(PryColor.color("&8/rpg event &bhelp &f: &aAjuda na utilização do(s) comando(s)."));
