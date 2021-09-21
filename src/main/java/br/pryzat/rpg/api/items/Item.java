@@ -7,6 +7,7 @@ import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import br.pryzat.rpg.utils.PryColor;
 
 import java.util.List;
 
@@ -26,7 +27,19 @@ public class Item {
     public ItemStack toItem() {
         ItemStack bis = new ItemStack(material);
         ItemMeta bim = bis.getItemMeta();
-        bim.setDisplayName(displayName);
+        bim.setDisplayName(PryColor.color(displayName));
+		if (getStats().getStrength() !=0){
+		this.lore.add(PryColor.color("&cForça&f: " + getStats().getStrength()));	
+		}
+		if (getStats().getInteligency() !=0){
+		this.lore.add(PryColor.color("&bInteligência&f: " + getStats().getInteligency()));		
+		}
+		if (getStats().getVelocity() !=0){
+			this.lore.add(PryColor.color("&8Velocidade&f: " + getStats().getVelocity()));	
+		}
+		if (getStats().getResistance() !=0){
+			this.lore.add(PryColor.color("&8Resistência&f: " + getStats().getResistance()));	
+		}
         bim.setLore(lore);
         bim.setUnbreakable(true);
         bim.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ENCHANTS);
