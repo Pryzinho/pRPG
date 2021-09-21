@@ -15,12 +15,14 @@ public class Branch {
     private Material material;
     private int location;
     private List<SUID> suids;
+    private Skills skills;
 
-    public Branch(String displayName, Material material, int loc, List<SUID> suids){
+    public Branch(String displayName, Material material, int loc, List<SUID> suids, Skills skills){
         this.displayName = displayName;
         this.material = material;
         this.location = loc;
         this.suids = suids;
+        this.skills = skills;
     }
 
     /**
@@ -45,22 +47,17 @@ public class Branch {
         return location;
     }
 
-    /**
-     *
-     * @return Retorna a lista de skill (em suid) de uma ramificação
-     */
-    public List<SUID> getSUIDS(){
-        return suids;
-    }
-
     public void openBranch(Player p){
         Inventory inv = Bukkit.createInventory(null, 9 * 3, PryColor.color(displayName));
         for (int i = 0; i < suids.size(); i++){
             SUID suid = suids.get(i);
             ItemStack item = suid.getItem();
-            item.getItemMeta().getLore().add(PryColor.color("&eLevel&f: "));
+            if (skills.has(suid.getSuid())) {
+                item.getItemMeta().getLore().add(PryColor.color("&eLevel&f: " + skills.get(suid.getSuid())));
+            } else {
+                item.getItemMeta().getLore().add(PryColor.color("&cVocê ainda não aprendeu está habilidade!"));
+            }
             item.getItemMeta().getLore().add(PryColor.color("&bClique com botão esquerdo para adicionar um nivel."));
-            item.getItemMeta().getLore().add(PryColor.color("&cClique com o botão direito para remover um nivel"));
             inv.setItem(i, item);
         }
         p.openInventory(inv);

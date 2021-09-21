@@ -1,16 +1,10 @@
 package br.pryzat.rpg.api.characters.classes;
 
-import br.pryzat.rpg.api.characters.skills.Skill;
-import br.pryzat.rpg.api.characters.skills.SkillType;
-import br.pryzat.rpg.api.characters.skills.Skills;
-import br.pryzat.rpg.api.characters.stats.Stats;
-import br.pryzat.rpg.main.RpgMain;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.HashMap;
-
 public enum ClazzType {
-        SWORDSMAN,
-        MAGE,
-        SUPPORT
+        SWORDSMAN, //Cavaleiro -> Hp+, Ataque Fisico, Defesa++
+        MAGE, //Mago -> Hp, Mana++, Ataque Magico+, Defesa
+        ROGUE, //Ladino -> Hp-, Mana--, Ataque fisico, Esquiva+++ Precisão e critico +++
+        RANGER, //Guarda/Arqueiro -> Hp, Mana+, Ataque magico, Acerto+++, precisao++
+        TAMER, //Domador -> Hp, Mana+, Ataque magico, Defesa
+        SUPPORT //Sacerzin -> Hp+++, Mana++, Ataque magico+, Defesa
 }

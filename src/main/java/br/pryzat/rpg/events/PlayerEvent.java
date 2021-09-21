@@ -49,10 +49,7 @@ public class PlayerEvent implements Listener {
         if (ch == null) {
             cm.createCharacter(uuid);
             ch = cm.getCharacter(uuid);
-            ch.selectClazz();
-            return;
         }
-        ch.updateGraphics();
     }
 
     @EventHandler

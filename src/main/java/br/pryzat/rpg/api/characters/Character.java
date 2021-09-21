@@ -51,6 +51,7 @@ public class Character {
         setMana(20);
         skills = clazz.getSkills();
         stats = clazz.getStats();
+        this.clazz.giveInitialItens(getPlayer());
     }
 
     public void selectClazz() {

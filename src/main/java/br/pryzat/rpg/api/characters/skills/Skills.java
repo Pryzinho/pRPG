@@ -1,6 +1,7 @@
 package br.pryzat.rpg.api.characters.skills;
 
-import br.pryzat.rpg.builds.skills.*;
+import br.pryzat.rpg.builds.skills.Perseguir;
+import br.pryzat.rpg.builds.skills.Stomper;
 import br.pryzat.rpg.main.RpgMain;
 
 import java.util.ArrayList;
@@ -25,8 +26,8 @@ public class Skills {
                 skills.add(skill);
                 break;
             case "perseguir":
-skill = new Perseguir(main, uuid, level);
-skills.add(skill);
+                skill = new Perseguir(main, uuid, level);
+                skills.add(skill);
                 break;
         }
 
@@ -41,15 +42,19 @@ skills.add(skill);
         }
         return null;
     }
-    public boolean has(String skilluid){
-        for (Skill skill : skills) {
-            if (skill.getUniqueId().equals(skilluid)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
+    public boolean has(String skilluid) {
+        if (skills.size() != 0) {
+            for (Skill skill : skills) {
+                if (skill.getUniqueId().equals(skilluid)) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return false;
+        }
+    }
 
 
     public List<Skill> toList() {

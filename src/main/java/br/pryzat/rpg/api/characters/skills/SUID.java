@@ -10,9 +10,9 @@ import java.util.List;
  * Skill Unique Identifier
  */
 public class SUID {
-    private String suid;
-    private String displayName;
-    private Material material;
+    private String suid; // stomper
+    private String displayName; // &aStomper
+    private Material material; // Slime block de stomper ha
     private List<String> lore;
 
     public SUID(String suid, String displayName, Material material, List<String> lore) {

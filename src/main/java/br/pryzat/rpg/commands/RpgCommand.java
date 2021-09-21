@@ -77,6 +77,7 @@ public class RpgCommand implements CommandExecutor {
                 sender.sendMessage(PryColor.color("&8/rpg character " + target.getName() + "&b info &f: &aObtem informações sobre o personagem do jogador.. "));
                 sender.sendMessage(PryColor.color("&8/rpg character " + target.getName() + "&b skills &f: &aGerenciador de habilidades do jogador. "));
                 sender.sendMessage(PryColor.color("&8/rpg character " + target.getName() + "&b stats &f: &aGerenciador de atributos do jogador. "));
+                sender.sendMessage(PryColor.color("&8/rpg character " + target.getName() + "&b class &f: &aGerenciador de classe do jogador. "));
                 sender.sendMessage(" ");
                 return true;
             }
@@ -86,6 +87,7 @@ public class RpgCommand implements CommandExecutor {
                 sender.sendMessage(PryColor.color("&8/rpg character " + target.getName() + "&b info &f: &aObtem informações sobre o personagem do jogador.. "));
                 sender.sendMessage(PryColor.color("&8/rpg character " + target.getName() + "&b skills &f: &aGerenciador de habilidades do jogador. "));
                 sender.sendMessage(PryColor.color("&8/rpg character " + target.getName() + "&b stats &f: &aGerenciador de atributos do jogador. "));
+                sender.sendMessage(PryColor.color("&8/rpg character " + target.getName() + "&b class &f: &aGerenciador de classe do jogador. "));
                 sender.sendMessage(" ");
                 return true;
             }

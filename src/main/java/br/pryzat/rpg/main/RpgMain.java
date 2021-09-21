@@ -28,12 +28,12 @@ public class RpgMain extends JavaPlugin {
         lm = new LocationsManager(this);
         lm.getYml().saveDefaultConfig();
         RPG.registerAllSkills();
-        RPG.registerAllClassesSkillsBranches();
         cm = new CharacterManager(this);
         cm.getCharactersYml().saveDefaultConfig();
         cm.loadCharacters();
         em = new EventManager(this);
         em.loadAllEvents();
+        RPG.registerAllItems();
 
         Logger.logInfo(ccs, "Carregando jogadores...");
         getCommand("rpg").setExecutor(new RpgCommand(this));
