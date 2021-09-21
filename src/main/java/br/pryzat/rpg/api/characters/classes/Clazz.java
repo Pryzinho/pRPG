@@ -102,6 +102,9 @@ public class Clazz {
                 break;
         }
     }
+    public List<Branch> getBranches(){
+        return this.branches;
+    }
 
     public Stats getStats() {
         return stats;

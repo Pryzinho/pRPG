@@ -76,13 +76,13 @@ public class PlayerEvent implements Listener {
             if (e.getCurrentItem() == null) return;
             switch (e.getCurrentItem().getType()) {
                 case IRON_SWORD:
-                    ch.setClazz(new Clazz(main, ClazzType.SWORDSMAN, new Stats(50, 20)));
+                    ch.setClazz(new Clazz(main, ClazzType.SWORDSMAN, new Stats(50, 0, 10,60)));
                     break;
                 case STICK:
-                    ch.setClazz(new Clazz(main, ClazzType.MAGE, new Stats(20, 20)));
+                    ch.setClazz(new Clazz(main, ClazzType.MAGE, new Stats(10, 60, 0, 55)));
                     break;
                 case APPLE:
-                    ch.setClazz(new Clazz(main, ClazzType.SUPPORT, new Stats(10, 100)));
+                    ch.setClazz(new Clazz(main, ClazzType.SUPPORT, new Stats(10, 30, 0,100)));
                     break;
             }
             e.setCancelled(true);
@@ -94,7 +94,7 @@ public class PlayerEvent implements Listener {
                 e.setCancelled(true);
                 return;
             }
-            for (Branch branch : RPG.getBranches(ch.getClazz().getClassType()).toList()) {
+            for (Branch branch : ch.getClazz().getBranches()) {
                 if (e.getCurrentItem().getType().equals(branch.getMaterial())) branch.openBranch(p);
             }
             e.setCancelled(true);
@@ -107,7 +107,7 @@ public class PlayerEvent implements Listener {
     public void onClickSkill(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         Character ch = cm.getCharacter(p.getUniqueId());
-        for (Branch branch : RPG.getBranches(ch.getClazz().getClassType()).toList()) {
+        for (Branch branch : ch.getClazz().getBranches()) {
             if (p.getOpenInventory().getTitle().equals(branch.getDisplayName())) {
                 if (e.getAction() != Action.LEFT_CLICK_BLOCK && e.getAction() != Action.RIGHT_CLICK_BLOCK) {
                     return;

@@ -6,7 +6,6 @@ import br.pryzat.rpg.api.characters.classes.ClazzType;
 import br.pryzat.rpg.api.characters.skills.Skill;
 import br.pryzat.rpg.api.characters.stats.Stats;
 import br.pryzat.rpg.main.RpgMain;
-import br.pryzat.rpg.utils.Logger;
 import br.pryzat.rpg.utils.PryConfig;
 import org.bukkit.Bukkit;
 
@@ -37,15 +36,17 @@ public class CharacterManager {
             for (UUID uuid : characters.keySet()) {
                 Character ch = characters.get(uuid);
                 charactersyml.set(uuid.toString() + ".dateOfBirth", ch.getDateOfBirth());
-				if (ch.getSkills().toList() != null) {
-                 for (Skill skill : ch.getSkills().toList()) {
-                    if (skill != null) {
-                        charactersyml.set(uuid.toString() + ".skills." + skill.getUniqueId(), skill.getLevel());
+                if (ch.getSkills().toList() != null) {
+                    for (Skill skill : ch.getSkills().toList()) {
+                        if (skill != null) {
+                            charactersyml.set(uuid.toString() + ".skills." + skill.getUniqueId(), skill.getLevel());
+                        }
                     }
-                 }
-				}
+                }
                 charactersyml.set(uuid.toString() + ".class", ch.getClazz().getClassType().toString());
                 charactersyml.set(uuid.toString() + ".stats.strength", ch.getStats().getStrength());
+                charactersyml.set(uuid.toString() + ".stats.inteligency", ch.getStats().getInteligency());
+                charactersyml.set(uuid.toString() + ".stats.velocity", ch.getStats().getVelocity());
                 charactersyml.set(uuid.toString() + ".stats.resistance", ch.getStats().getResistance());
                 charactersyml.set(uuid.toString() + ".level", ch.getLevel());
                 charactersyml.set(uuid.toString() + ".experience", ch.getLevelManager().getExp());
@@ -62,7 +63,7 @@ public class CharacterManager {
                 ch.setPlayer(Bukkit.getPlayer(uuid));
                 ch.setDateOfBirth(charactersyml.getString(key + ".dateOfBirth"));
                 ClazzType classtype = ClazzType.valueOf(charactersyml.getString(uuid.toString() + ".class"));
-                Stats stats = new Stats(charactersyml.getInt(uuid.toString() + "stats.strength"), charactersyml.getInt(uuid.toString() + "stats.resistance"));
+                Stats stats = new Stats(charactersyml.getInt(uuid.toString() + "stats.strength"), charactersyml.getInt(uuid.toString() + "stats.inteligency"), charactersyml.getInt(uuid.toString() + "stats.velocity"), charactersyml.getInt(uuid.toString() + "stats.resistance"));
                 ch.setClazz(new Clazz(plugin, classtype, stats));
                 ch.getLevelManager().set(charactersyml.getInt(uuid.toString() + ".level"));
                 ch.getLevelManager().setExp(charactersyml.getLong(uuid.toString() + ".experience"));
