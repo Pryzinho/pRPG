@@ -78,12 +78,12 @@ public class Clazz {
 
     public void giveInitialItens(Player p) {
         if (!p.isOnline()) return;
-        Item h = new Item("&9Capacete Inicial", Material.LEATHER_HELMET, new Stats(0, 0, 0, 0));
-        Item c = new Item("&9Peitoral Inicial", Material.LEATHER_CHESTPLATE, new Stats(0, 0, 0, 0));
-        Item l = new Item("&9Calças Inicial", Material.LEATHER_LEGGINGS, new Stats(0, 0, 0, 0));
-        Item b = new Item("&9Botas Inicial", Material.LEATHER_BOOTS, new Stats(0, 0, 0, 0));
-        Item sw = new Item("&9Espada Inicial", Material.WOODEN_SWORD, new Stats(0, 0, 0, 0));
-        Item sd = new Item("&9Escudo Inicial", Material.SHIELD, new Stats(0, 0, 0, 0));
+        Item h = new Item("&9Capacete Inicial", Material.LEATHER_HELMET, new Stats(0, 0, 0, 5));
+        Item c = new Item("&9Peitoral Inicial", Material.LEATHER_CHESTPLATE, new Stats(0, 0, 0, 10));
+        Item l = new Item("&9Calças Inicial", Material.LEATHER_LEGGINGS, new Stats(0, 0, 0, 5));
+        Item b = new Item("&9Botas Inicial", Material.LEATHER_BOOTS, new Stats(0, 0, 10, 5));
+        Item sw = new Item("&9Espada Inicial", Material.WOODEN_SWORD, new Stats(10, 0, 10, 0));
+        Item sd = new Item("&9Escudo Inicial", Material.SHIELD, new Stats(0, 0, 0, 30));
         switch (classtype) {
             case SWORDSMAN:
                 h.setIUID("initial.swordsman.helmet");
