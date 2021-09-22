@@ -77,6 +77,7 @@ public class Clazz {
     }
 
     public void giveInitialItens(Player p) {
+		if (p == null)return;
         if (!p.isOnline()) return;
         Item h = new Item("&9Capacete Inicial", Material.LEATHER_HELMET, new Stats(0, 0, 0, 5));
         Item c = new Item("&9Peitoral Inicial", Material.LEATHER_CHESTPLATE, new Stats(0, 0, 0, 10));
