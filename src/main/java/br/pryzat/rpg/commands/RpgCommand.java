@@ -368,6 +368,38 @@ public class RpgCommand implements CommandExecutor {
             sender.sendMessage(" ");
             return true;
         }
+		if (args[0].equalsIgnoreCase("selectclass"){
+			if (!(sender instanceof Player)) {
+				if (args.length !=2) {
+					sender.sendMessage(PryColor.color("&cUse: &8/rpg selectclass &ePlayer"));
+				return true;
+				}
+				Player t = null;
+				try {
+					t = Bukkit.getPlayerExact(args[1]);
+				} catch (Exception e) {
+					sender.sendMessage(PryColor.color("&cJogador não encontrado."));
+					return true;
+				}
+				if (t != null) {
+				if (!t.isOnline()){
+				sender.sendMessage(PryColor.color("&cO Jogador não está online."));
+					return true;
+				}
+				Character ch = cm.getCharacter(t.getUniqueId());	
+				ch.selectClazz();
+				}
+                return true;
+            } else {
+			Player p = (Player) sender;
+			if (args.length != 1){
+				  p.sendMessage("args erradinha");
+			}
+			ch.selectClazz();
+			
+			}
+			return true;
+		}
 		
         if (args[0].equalsIgnoreCase("event")) {
             if (!(sender instanceof Player)) {
@@ -379,7 +411,6 @@ public class RpgCommand implements CommandExecutor {
             // /rpg event <EUID> locations set <spawn/flower> <Number>
             if (args.length > 7|| args.length < 2) {
 				Character ch = cm.getCharacter(p.getUniqueId());
-				ch.selectClazz();
                 p.sendMessage(" ");
                 p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event"));
                 p.sendMessage(PryColor.color("&8/rpg event &bhelp &f: &aAjuda na utilização do(s) comando(s)."));

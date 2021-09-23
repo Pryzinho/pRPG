@@ -83,7 +83,7 @@ public class Clazz {
         Item c = new Item("&9Peitoral Inicial", Material.LEATHER_CHESTPLATE, new Stats(0, 0, 0, 10));
         Item l = new Item("&9Calças Inicial", Material.LEATHER_LEGGINGS, new Stats(0, 0, 0, 5));
         Item b = new Item("&9Botas Inicial", Material.LEATHER_BOOTS, new Stats(0, 0, 10, 5));
-        Item sw = new Item("&9Espada Inicial", Material.WOODEN_SWORD, new Stats(10, 0, 10, 0));
+        Item sw = new Item("&9Espada Inicial", Material.WOODEN_SWORD, new Stats(10, 0, 5, 0));
         Item sd = new Item("&9Escudo Inicial", Material.SHIELD, new Stats(0, 0, 0, 30));
         switch (classtype) {
             case SWORDSMAN:
@@ -101,7 +101,25 @@ public class Clazz {
                 p.getInventory().addItem(sd.toItem());
                 p.updateInventory();
                 break;
-        }
+        case ROGUE:
+		        h.setIUID("initial.rogue.helmet");
+                c.setIUID("initial.rogue.chestplate");
+                l.setIUID("initial.rogue.leggins");
+                b.setIUID("initial.rogue.boots");
+                sw.setIUID("initial.rogue.sword");
+                sd.setIUID("initial.rogue.shield");
+				h.setStats(new Stats(0, 0, 0, 5);
+				c.setStats(new Stats(0, 0, 0, 5);
+				l.setStats(new Stats(0, 0, 10, 3);
+				b.setStats(new Stats(0, 0, 15, 2);
+                p.getEquipment().setHelmet(h.toItem());
+                p.getEquipment().setChestplate(c.toItem());
+                p.getEquipment().setLeggings(l.toItem());
+                p.getEquipment().setBoots(b.toItem());
+                p.getInventory().addItem(sw.toItem());
+                p.updateInventory();
+		break;
+		}
     }
     public List<Branch> getBranches(){
         return this.branches;

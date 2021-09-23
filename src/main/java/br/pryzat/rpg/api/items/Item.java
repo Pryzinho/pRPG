@@ -29,16 +29,16 @@ public class Item {
         ItemMeta bim = bis.getItemMeta();
         bim.setDisplayName(PryColor.color(displayName));
 		if (getStats().getStrength() !=0){
-		this.lore.add(PryColor.color("&cForça&f: " + getStats().getStrength()));	
+		lore.add(PryColor.color("&cForça&f: " + getStats().getStrength()));	
 		}
 		if (getStats().getInteligency() !=0){
-		this.lore.add(PryColor.color("&bInteligência&f: " + getStats().getInteligency()));		
+		lore.add(PryColor.color("&bInteligência&f: " + getStats().getInteligency()));		
 		}
 		if (getStats().getVelocity() !=0){
-			this.lore.add(PryColor.color("&8Velocidade&f: " + getStats().getVelocity()));	
+			lore.add(PryColor.color("&8Velocidade&f: " + getStats().getVelocity()));	
 		}
 		if (getStats().getResistance() !=0){
-			this.lore.add(PryColor.color("&8Resistência&f: " + getStats().getResistance()));	
+		lore.add(PryColor.color("&8&lResistência&f: " + getStats().getResistance()));	
 		}
         bim.setLore(lore);
         bim.setUnbreakable(true);
