@@ -395,6 +395,7 @@ public class RpgCommand implements CommandExecutor {
 			if (args.length != 1){
 				  p.sendMessage("args erradinha");
 			}
+			Character ch = cm.getCharacterManager().getCharacter(p.getUniqueId());
 			ch.selectClazz();
 			
 			}
