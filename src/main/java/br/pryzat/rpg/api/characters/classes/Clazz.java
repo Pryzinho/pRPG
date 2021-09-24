@@ -108,10 +108,10 @@ public class Clazz {
                 b.setIUID("initial.rogue.boots");
                 sw.setIUID("initial.rogue.sword");
                 sd.setIUID("initial.rogue.shield");
-				h.setStats(new Stats(0, 0, 0, 5);
-				c.setStats(new Stats(0, 0, 0, 5);
-				l.setStats(new Stats(0, 0, 10, 3);
-				b.setStats(new Stats(0, 0, 15, 2);
+				h.setStats(new Stats(0, 0, 0, 5));
+				c.setStats(new Stats(0, 0, 0, 5));
+				l.setStats(new Stats(0, 0, 10, 3));
+				b.setStats(new Stats(0, 0, 15, 2));
                 p.getEquipment().setHelmet(h.toItem());
                 p.getEquipment().setChestplate(c.toItem());
                 p.getEquipment().setLeggings(l.toItem());

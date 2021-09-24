@@ -368,7 +368,7 @@ public class RpgCommand implements CommandExecutor {
             sender.sendMessage(" ");
             return true;
         }
-		if (args[0].equalsIgnoreCase("selectclass"){
+		if (args[0].equalsIgnoreCase("selectclass")){
 			if (!(sender instanceof Player)) {
 				if (args.length !=2) {
 					sender.sendMessage(PryColor.color("&cUse: &8/rpg selectclass &ePlayer"));
