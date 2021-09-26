@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import br.pryzat.rpg.utils.PryColor;
 
 import java.util.List;
+import java.util.ArrayList;
 
 public class Item {
     private String iuid;
