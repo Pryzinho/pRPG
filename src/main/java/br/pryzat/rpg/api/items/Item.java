@@ -22,6 +22,7 @@ public class Item {
         this.displayName = displayName;
         this.material = material;
         this.stats = stats;
+		this.lore = new ArrayList<String>();
     }
 
     public ItemStack toItem() {
