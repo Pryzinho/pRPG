@@ -54,8 +54,24 @@ public class Character {
         this.clazz.giveInitialItens(getPlayer());
     }
 
+/*
+YML Class Info
+SWORDSMAN: <- ClassType
+  displayname: "&f&lCavaleiro"
+  description:
+    - Lore 1
+	- Lore 2
+	- Lore 3
+
+
+*/
     public void selectClazz() {
         Inventory inv = Bukkit.createInventory(null, 9 * 3, PryColor.color("&bSelecione sua classe..."));
+		String[] clazzes = {"cavaleiro", "mago", "ladino"};
+		for (String key : clazzes) {
+			
+			
+		}
         List<String> slore = new ArrayList<>();
         slore.add("&fClasse focada em ataque, defesa, hp e absorção de dano.");
         slore.add("Atributos iniciais: Força: 00, Resistência: 00");
