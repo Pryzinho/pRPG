@@ -64,7 +64,8 @@ public class CharacterManager {
                 ch.setDateOfBirth(charactersyml.getString(key + ".dateOfBirth"));
                 ClazzType classtype = ClazzType.valueOf(charactersyml.getString(uuid.toString() + ".class"));
                 Stats stats = new Stats(charactersyml.getInt(uuid.toString() + "stats.strength"), charactersyml.getInt(uuid.toString() + "stats.inteligency"), charactersyml.getInt(uuid.toString() + "stats.velocity"), charactersyml.getInt(uuid.toString() + "stats.resistance"));
-                ch.setClazz(new Clazz(plugin, classtype, stats));
+                ch.setClazz(new Clazz(plugin, classtype));
+                ch.getClazz().setStats(stats);
                 ch.getLevelManager().set(charactersyml.getInt(uuid.toString() + ".level"));
                 ch.getLevelManager().setExp(charactersyml.getLong(uuid.toString() + ".experience"));
                 for (String skill : charactersyml.getSection(key + ".skills")) {

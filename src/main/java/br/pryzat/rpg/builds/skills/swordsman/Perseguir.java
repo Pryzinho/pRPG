@@ -1,4 +1,4 @@
-package br.pryzat.rpg.builds.skills;
+package br.pryzat.rpg.builds.skills.swordsman;
 
 import br.pryzat.rpg.api.characters.skills.Skill;
 import br.pryzat.rpg.main.RpgMain;
@@ -41,7 +41,7 @@ public class Perseguir extends Skill {
         // Vector ls = p.getEyeLocation().toVector().add(lsd);
          //lsd.multiply(-1);
 		// Location v1 = p.getEyeLocation().toVector().add(p.getEyeLocation().getDirection().multiply(5)).toLocation(p.getWorld());
-        RayTraceResult rtr = p.getWorld().rayTraceEntities(p.getEyeLocation(), p.getEyeLocation().getDirection(), 5);
+        RayTraceResult rtr = p.getWorld().rayTraceEntities(p.getEyeLocation(), p.getEyeLocation().getDirection().multiply(5), 5);
         if (rtr == null){
             p.sendMessage("RayTraceResult null");
             return;

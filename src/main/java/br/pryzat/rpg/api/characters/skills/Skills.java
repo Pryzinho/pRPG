@@ -1,7 +1,7 @@
 package br.pryzat.rpg.api.characters.skills;
 
-import br.pryzat.rpg.builds.skills.Perseguir;
-import br.pryzat.rpg.builds.skills.Stomper;
+import br.pryzat.rpg.builds.skills.swordsman.Perseguir;
+import br.pryzat.rpg.builds.skills.swordsman.Stomper;
 import br.pryzat.rpg.main.RpgMain;
 
 import java.util.ArrayList;

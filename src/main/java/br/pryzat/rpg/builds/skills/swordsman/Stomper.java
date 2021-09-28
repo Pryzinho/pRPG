@@ -1,4 +1,4 @@
-package br.pryzat.rpg.builds.skills;
+package br.pryzat.rpg.builds.skills.swordsman;
 
 import br.pryzat.rpg.api.characters.skills.Skill;
 import br.pryzat.rpg.main.RpgMain;

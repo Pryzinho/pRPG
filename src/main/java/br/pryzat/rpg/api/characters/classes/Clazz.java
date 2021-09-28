@@ -23,7 +23,6 @@ public class Clazz {
     private ClazzType classtype;
     private Skills skills;
     private List<Branch> branches;
-    private ItemStack[] initialitems;
 
     public Clazz(RpgMain main, ClazzType classtype) {
         this.classtype = classtype;
@@ -36,12 +35,20 @@ public class Clazz {
         Branch a = null, b = null;
         switch (classtype) {
             case SWORDSMAN:
-                List<SUID> suids = new ArrayList<>();
-                suids.add(RPG.getSUID("perseguir"));
-                a = new Branch("&cAtaque", Material.IRON_SWORD, 11, suids, skills);
-                b = new Branch("&bDefesa", Material.SHIELD, 15, suids, skills);
+                List<SUID> swasuids = new ArrayList<>();
+                swasuids.add(RPG.getSUID("perseguir"));
+                List<SUID> swdsuids = new ArrayList<>();
+                swdsuids.add(RPG.getSUID("stomper"));
+                a = new Branch("&cAtaque", Material.IRON_SWORD, 11, swasuids, skills);
+                b = new Branch("&bDefesa", Material.SHIELD, 15, swdsuids, skills);
                 break;
             case MAGE:
+                List<SUID> mgosuids = new ArrayList<>();
+                mgosuids.add(RPG.getSUID("fireball"));
+                List<SUID> mgdsuids = new ArrayList<>();
+                mgdsuids.add(RPG.getSUID("stomper"));
+                a = new Branch("&bOffensive", Material.FIRE_CHARGE, 11, mgosuids, skills);
+                b = new Branch("&eDefensive", Material.SNOWBALL, 15, mgdsuids, skills);
                 break;
             case ROGUE:
                 break;
@@ -61,7 +68,9 @@ public class Clazz {
         }
         return inv;
     }
-
+    public void setStats(Stats stats){
+        this.stats = stats;
+    }
     public void giveInitialItens(Player p) {
 		if (p == null)return;
         if (!p.isOnline()) return;

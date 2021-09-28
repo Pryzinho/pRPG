@@ -2,8 +2,9 @@ package br.pryzat.rpg.api;
 
 import br.pryzat.rpg.api.characters.skills.SUID;
 import br.pryzat.rpg.api.events.Event;
-import br.pryzat.rpg.builds.skills.Perseguir;
-import br.pryzat.rpg.builds.skills.Stomper;
+import br.pryzat.rpg.builds.skills.mage.Fireball;
+import br.pryzat.rpg.builds.skills.swordsman.Perseguir;
+import br.pryzat.rpg.builds.skills.swordsman.Stomper;
 import br.pryzat.rpg.main.RpgMain;
 import org.bukkit.Material;
 
@@ -21,7 +22,7 @@ public class RPG {
     private static List<String> iuids = new ArrayList<>();
 
 
-    public static void registerAllItems(){
+    public static void registerAllItems() {
         // Swordsman
         iuids.add("initial.swordsman.helmet");
         iuids.add("initial.swordsman.chestplate");
@@ -38,6 +39,7 @@ public class RPG {
     public static void registerAllSkills() {
         registerSUID(new SUID("stomper", "&aSalto Esmagador", Material.SLIME_BALL, Arrays.asList("&bPula em determinada altura e cai causando dano aos inimigos proximos")), Stomper.class);
         registerSUID(new SUID("perseguir", "&aPerseguição Imparavel", Material.BLAZE_ROD, Arrays.asList("&cELE PULA E PEI PA PEGOU")), Perseguir.class);
+        registerSUID(new SUID("fireball", "&cSou eu bola de fogo", Material.FIRE_CHARGE, Arrays.asList("&cMeu nao enxe")), Fireball.class);
     }
 
     /**
