@@ -25,9 +25,9 @@ public class Clazz {
     private List<Branch> branches;
     private ItemStack[] initialitems;
 
-    public Clazz(RpgMain main, ClazzType classtype, Stats stats) {
+    public Clazz(RpgMain main, ClazzType classtype) {
         this.classtype = classtype;
-        this.stats = stats;
+        this.stats = classtype.getStats();
         this.main = main;
         skills = new Skills(main);
     }
@@ -40,31 +40,17 @@ public class Clazz {
                 suids.add(RPG.getSUID("perseguir"));
                 a = new Branch("&cAtaque", Material.IRON_SWORD, 11, suids, skills);
                 b = new Branch("&bDefesa", Material.SHIELD, 15, suids, skills);
-                /*
-          b =15
-          0, 0, 0, 0, 0, 0, 0, 0, 0, X
-          0, 0, a, 0, 0, 0, b, 0, 0,
-          0, 0, 0, 0, 0, 0, 0, 0, 0, X
-           /skills
-           verifica a classe do player
-           e abre as ramificações
-           Abre um iventario de ramificações
-           se for um cavaleiro vai aparecer as branch de cavaleiro que no caso é
-           espada de ferro e escudo e o nome dos item customizados
-           verificar a ramificação selecionada
-           se for "a" abrir a ramificação
-           Abre um inventario
-           mostrando nesse invetario todas a habilidades disponiveis para aquisaição do
-           player, alem disso todas as habilidades que ele tem e seu respectivel level
-           Branch -> DisplayName do item, materia, locs, todas as habilidades adquiriveis e
-           todas as habilidades que o player ja tem e seus respectivos niveis
-           */
-
+                break;
             case MAGE:
+                break;
             case ROGUE:
-            case TAMER:
+                break;
+            case ARCHER:
+                break;
             case RANGER:
-            case SUPPORT:
+                break;
+            case PRIEST:
+                break;
         }
         branches.add(a);
         branches.add(b);

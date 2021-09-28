@@ -15,6 +15,7 @@ import br.pryzat.rpg.main.RpgMain;
 import br.pryzat.rpg.utils.PryColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -71,24 +72,27 @@ public class PlayerEvent implements Listener {
     private void onSelectClazz(InventoryClickEvent e) {
         if (!(e.getWhoClicked() instanceof Player)) return;
         Player p = (Player) e.getWhoClicked();
+        if (e.getCurrentItem() == null) return;
+        ItemStack is = e.getCurrentItem();
         Character ch = cm.getCharacter(p.getUniqueId());
+        net.minecraft.world.item.ItemStack nis = CraftItemStack.asNMSCopy(is);
         if (e.getView().getTitle().equals(PryColor.color("&bSelecione sua classe..."))) {
-            if (e.getCurrentItem() == null) return;
-            switch (e.getCurrentItem().getType()) {
-                case IRON_SWORD:
-                    ch.setClazz(new Clazz(main, ClazzType.SWORDSMAN, new Stats(50, 0, 10,60)));
-                    break;
-                case STICK:
-                    ch.setClazz(new Clazz(main, ClazzType.MAGE, new Stats(10, 60, 0, 55)));
-                    break;
-                case APPLE:
-                    ch.setClazz(new Clazz(main, ClazzType.SUPPORT, new Stats(10, 30, 0,100)));
-                    break;
+            if (!nis.hasTag()) return;
+            assert nis.getTag() != null;
+            if (!nis.getTag().hasKey("rpg.representative.item")) return;
+            for (String key : main.getConfigManager().getYml().getSection("classes")) {
+                if (nis.getTag().getString("rpg.representative.item") == "clazz." + key.toLowerCase()) {
+                    ch.setClazz(new Clazz(main, ClazzType.valueOf(key)));
+                    p.closeInventory();
+                }
             }
             e.setCancelled(true);
-            p.closeInventory();
-            return;
         }
+/*
+                    ch.setClazz(new Clazz(main, ClazzType.SWORDSMAN, new Stats(50, 0, 10, 60)));
+                    ch.setClazz(new Clazz(main, ClazzType.MAGE, new Stats(10, 60, 0, 55)));
+                    ch.setClazz(new Clazz(main, ClazzType.PRIEST, new Stats(10, 30, 0, 100)));
+*/
         if (e.getView().getTitle().equals(PryColor.color("&eRamificações de Habilidades"))) {
             if (e.getCurrentItem() == null) {
                 e.setCancelled(true);
@@ -174,16 +178,16 @@ public class PlayerEvent implements Listener {
         Character ch = cm.getCharacter(p.getUniqueId());
         if (e.getCause() == EntityDamageEvent.DamageCause.POISON) {
             ch.remHealth((int) (ch.getMaxHealth() * 0.01));
-            if (ch.getHealth() <= 0){
+            if (ch.getHealth() <= 0) {
                 ch.setHealth(0);
                 e.setDamage(20);
                 return;
             }
             e.setDamage(0);
-        return;
+            return;
         }
-        if (e.getCause() == EntityDamageEvent.DamageCause.FALL){
-            if (ch.getSkills().has("stomper")){
+        if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
+            if (ch.getSkills().has("stomper")) {
                 Skill skill = ch.getSkills().get("stomper");
                 if (skill.isInUse()) {
                     skill.setInUse(false);
@@ -196,7 +200,7 @@ public class PlayerEvent implements Listener {
                         ch.setHealth(tempLife);
                     }
                 } else {
-                    int tempLife = ch.getHealth() - (int)e.getDamage();
+                    int tempLife = ch.getHealth() - (int) e.getDamage();
                     if (tempLife <= 0) {
                         e.setDamage(20);
                         return;
