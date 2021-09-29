@@ -83,9 +83,11 @@ public class PlayerEvent implements Listener {
             if (!nis.getTag().hasKey("rpg.representative.item")) return;
 				p.sendMessage("NMIS have tag rpg.representative.item");
             for (String key : main.getConfigManager().getYml().getSection("classes")) {
-				p.sendMessage(key);
+				p.sendMessage("Key: " +key);
+				p.sendMessage("Em lower: " +key.toLowerCase());
+				String tempkey = "clazz." + key.toLowerCase();
 				p.sendMessage(nis.getTag().getString("rpg.representative.item"));
-                if (nis.getTag().getString("rpg.representative.item") == "clazz." + key.toLowerCase()) {
+                if (nis.getTag().getString("rpg.representative.item").equals(tempkey)) {
 					p.sendMessage("nbt verificado com sexo");
                     ch.setClazz(new Clazz(main, ClazzType.valueOf(key)));
                     p.closeInventory();
