@@ -54,7 +54,7 @@ public class Clazz {
                 break;
             case ARCHER:
                 break;
-            case RANGER:
+            case TAMER:
                 break;
             case PRIEST:
                 break;

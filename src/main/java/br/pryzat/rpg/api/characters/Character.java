@@ -76,7 +76,8 @@ public class Character {
         PryConfig config = plugin.getConfigManager().getYml();
         Set<String> clazzes = config.getSection("classes");
         for (int i = 0; i < clazzes.size(); i++) {
-            String key = (String) clazzes.toArray()[i];
+          //  String key = (String) clazzes.toArray()[i];
+            String key = "SWORDSMAN";
             ItemStack is = new ItemStack(Material.valueOf(config.getString("classes." + key + ".material")));
             ItemMeta im = is.getItemMeta();
             im.setDisplayName(config.getString("classes." + key + ".displayName"));
