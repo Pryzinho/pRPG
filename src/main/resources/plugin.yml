@@ -13,5 +13,8 @@ commands:
   skills:
     description: Gerencia suas skills
     aliases: habilidades
+  class:
+    description: Define sua classe
+    aliases: classe
 
 

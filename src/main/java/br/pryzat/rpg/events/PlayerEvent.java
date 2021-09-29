@@ -156,6 +156,7 @@ public class PlayerEvent implements Listener {
         Player p = e.getPlayer();
         Character ch = cm.getCharacter(p.getUniqueId());
         if (ch.getClazz() == null) {
+            p.sendMessage(PryColor.color("&eSistema &f> &cVocê ainda não selecionou sua classe, digite: &8/&bclasse"));
             e.setCancelled(true);
         }
     }
@@ -165,6 +166,7 @@ public class PlayerEvent implements Listener {
         Player p = e.getPlayer();
         Character ch = cm.getCharacter(p.getUniqueId());
         if (ch.getClazz() == null) {
+            p.sendMessage(PryColor.color("&eSistema &f> &cVocê ainda não selecionou sua classe, digite: &8/&bclasse"));
             e.setCancelled(true);
         }
     }

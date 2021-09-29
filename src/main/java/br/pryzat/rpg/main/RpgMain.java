@@ -10,7 +10,9 @@ import br.pryzat.rpg.utils.ConfigManager;
 import br.pryzat.rpg.utils.LocationsManager;
 import br.pryzat.rpg.utils.Logger;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -38,6 +40,7 @@ public class RpgMain extends JavaPlugin {
         Logger.logInfo(ccs, "Carregando jogadores...");
         getCommand("rpg").setExecutor(new RpgCommand(this));
         getCommand("skills").setExecutor(new SkillsCommand(this));
+        getCommand("class").setExecutor(new SkillsCommand(this));
         getServer().getPluginManager().registerEvents(new PlayerEvent(this), this);
         em.checkProgramedEvents();
     }
