@@ -80,7 +80,7 @@ public class Character {
             String key = "SWORDSMAN";
             ItemStack is = new ItemStack(Material.valueOf(config.getString("classes." + key + ".material")));
             ItemMeta im = is.getItemMeta();
-            im.setDisplayName(config.getString("classes." + key + ".displayName"));
+            im.setDisplayName(PryColor.color(config.getString("classes." + key + ".displayName")));
             im.setLore((List<String>) config.getList("classes." + key + ".description"));
             im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
