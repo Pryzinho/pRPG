@@ -80,6 +80,7 @@ public class PlayerEvent implements Listener {
             if (!nis.hasTag()) return;
             assert nis.getTag() != null;
             if (!nis.getTag().hasKey("rpg.representative.item")) return;
+			String tempkey = "clazz." + key.toLowerCase();
             for (String key : main.getConfigManager().getYml().getSection("classes")) {
 				p.sendMessage(nis.getTag().getString("rpg.representative.item"));
                 if (nis.getTag().getString("rpg.representative.item").equals(tempkey)) {
