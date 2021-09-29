@@ -78,10 +78,14 @@ public class PlayerEvent implements Listener {
         net.minecraft.world.item.ItemStack nis = CraftItemStack.asNMSCopy(is);
         if (e.getView().getTitle().equals(PryColor.color("&bSelecione sua classe..."))) {
             if (!nis.hasTag()) return;
+			p.sendMessage("NMIS have a tag");
             assert nis.getTag() != null;
             if (!nis.getTag().hasKey("rpg.representative.item")) return;
+				p.sendMessage("NMIS have tag rpg.representative.item");
             for (String key : main.getConfigManager().getYml().getSection("classes")) {
+				p.sendMessage(key);
                 if (nis.getTag().getString("rpg.representative.item") == "clazz." + key.toLowerCase()) {
+					p.sendMessage("nbt verificado com sexo");
                     ch.setClazz(new Clazz(main, ClazzType.valueOf(key)));
                     p.closeInventory();
                 }
