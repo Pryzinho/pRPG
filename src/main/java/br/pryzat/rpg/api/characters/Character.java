@@ -58,7 +58,7 @@ public class Character {
                 } catch (InterruptedException | ExecutionException e) {
                     user = null;
                 }
-			 if (!player.hasPermission("group.iniciante") && user != null) {
+			 if (user != null) {
                 assert user != null;
                 InheritanceNode node = InheritanceNode.builder("iniciante").value(true).build();
                 user.data().add(node);
