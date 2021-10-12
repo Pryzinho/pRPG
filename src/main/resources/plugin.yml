@@ -2,6 +2,8 @@ name: pRPG
 version: '${project.version}'
 main: br.pryzat.rpg.main.RpgMain
 api-version: 1.17
+depend: LuckPerms
+softdepend: LevelledMobs
 authors: [ PryzDev ]
 description: Acrescenta um RPG dentro do jogo
 website: github.com/Pryzinho

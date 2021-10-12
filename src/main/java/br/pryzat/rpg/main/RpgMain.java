@@ -9,11 +9,13 @@ import br.pryzat.rpg.events.PlayerEvent;
 import br.pryzat.rpg.utils.ConfigManager;
 import br.pryzat.rpg.utils.LocationsManager;
 import br.pryzat.rpg.utils.Logger;
+import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class RpgMain extends JavaPlugin {
@@ -21,10 +23,20 @@ public class RpgMain extends JavaPlugin {
     private LocationsManager lm;
     private CharacterManager cm;
     private EventManager em;
+    // Depends
+    private LuckPerms lp;
 
     @Override
     public void onEnable() {
         ConsoleCommandSender ccs = Bukkit.getConsoleSender();
+        RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+        if (provider == null) {
+            Logger.logError(ccs, "Dependência &eLuckPerms&c não foi encontrada.");
+            getServer().getPluginManager().disablePlugin(this);
+        } else {
+            lp = provider.getProvider();
+            Logger.logInfo(ccs, "Dependência &eLuckPerms&a encontrada.");
+        }
         conm = new ConfigManager(this);
         conm.getYml().saveDefaultConfig();
         lm = new LocationsManager(this);
@@ -52,6 +64,9 @@ public class RpgMain extends JavaPlugin {
         HandlerList.unregisterAll();
     }
 
+    public LuckPerms getLuckPerms(){
+        return lp;
+    }
     public ConfigManager getConfigManager(){
         return conm;
     }

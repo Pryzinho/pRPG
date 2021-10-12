@@ -81,5 +81,6 @@ public class Level {
                 setExp(experience - reqExp);
             }
         }
+
     }
 }

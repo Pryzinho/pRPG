@@ -7,8 +7,10 @@ import br.pryzat.rpg.main.RpgMain;
 import br.pryzat.rpg.utils.ActionBar;
 import br.pryzat.rpg.utils.PryColor;
 import br.pryzat.rpg.utils.PryConfig;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.types.InheritanceNode;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
@@ -20,9 +22,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class Character {
     private RpgMain plugin;
+    private LuckPerms lp;
     private UUID uuid;
     private Player player;
     private String dateOfBirth; // (dd/MM/yyyy) > 01/01/2000
@@ -37,10 +42,30 @@ public class Character {
         this.plugin = plugin;
         this.uuid = uuid;
         this.player = Bukkit.getPlayer(uuid);
+        this.lp = plugin.getLuckPerms();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         sdf.setCalendar(new GregorianCalendar());
         this.dateOfBirth = sdf.format(new Date(System.currentTimeMillis()));
         level = new Level(uuid);
+        if (level.get() <= 20) {
+            User user;
+            if (player.isOnline()) {
+                user = lp.getUserManager().getUser(uuid);
+            } else {
+                CompletableFuture<User> userFuture = lp.getUserManager().loadUser(uuid);
+                try {
+                    user = userFuture.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    user = null;
+                }
+            }
+            if (!player.hasPermission("group.iniciante") && user != null) {
+                assert user != null;
+                InheritanceNode node = InheritanceNode.builder("iniciante").value(true).build();
+                user.data().add(node);
+                lp.getUserManager().saveUser(user);
+            }
+        }
         level.set(21);
     }
 
