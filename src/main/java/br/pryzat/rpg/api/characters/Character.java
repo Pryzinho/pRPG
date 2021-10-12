@@ -15,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -49,6 +50,21 @@ public class Character {
         level = new Level(uuid);
         if (level.get() <= 20) {
             User user;
+			if (player == null) {
+				OfflinePlayer offp = Bukkit.getOfflinePlayer(uuid);
+				 CompletableFuture<User> userFuture = lp.getUserManager().loadUser(uuid);
+                try {
+                    user = userFuture.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    user = null;
+                }
+			 if (!player.hasPermission("group.iniciante") && user != null) {
+                assert user != null;
+                InheritanceNode node = InheritanceNode.builder("iniciante").value(true).build();
+                user.data().add(node);
+                lp.getUserManager().saveUser(user);
+            }
+			}else {
             if (player.isOnline()) {
                 user = lp.getUserManager().getUser(uuid);
             } else {
@@ -65,6 +81,7 @@ public class Character {
                 user.data().add(node);
                 lp.getUserManager().saveUser(user);
             }
+			}
         }
         level.set(21);
     }
