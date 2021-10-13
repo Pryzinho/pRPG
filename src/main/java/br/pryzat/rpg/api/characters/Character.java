@@ -9,6 +9,8 @@ import br.pryzat.rpg.utils.PryColor;
 import br.pryzat.rpg.utils.PryConfig;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.Node;
+import net.luckperms.api.node.NodeBuilder;
 import net.luckperms.api.node.types.InheritanceNode;
 import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.Bukkit;
@@ -82,6 +84,40 @@ public class Character {
                 lp.getUserManager().saveUser(user);
             }
 			}
+        } else {
+            User user;
+            if (player == null) {
+                OfflinePlayer offp = Bukkit.getOfflinePlayer(uuid);
+                CompletableFuture<User> userFuture = lp.getUserManager().loadUser(uuid);
+                try {
+                    user = userFuture.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    user = null;
+                }
+                if (user != null) {
+                    assert user != null;
+                    InheritanceNode node = InheritanceNode.builder("iniciante").value(true).build();
+                    user.data().remove(node);
+                    lp.getUserManager().saveUser(user);
+                }
+            }else {
+                if (player.isOnline()) {
+                    user = lp.getUserManager().getUser(uuid);
+                } else {
+                    CompletableFuture<User> userFuture = lp.getUserManager().loadUser(uuid);
+                    try {
+                        user = userFuture.get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        user = null;
+                    }
+                }
+                if (player.hasPermission("group.iniciante") && user != null) {
+                    assert user != null;
+                    InheritanceNode node = InheritanceNode.builder("iniciante").value(true).build();
+                    user.data().remove(node);
+                    lp.getUserManager().saveUser(user);
+                }
+            }
         }
         level.set(21);
     }
