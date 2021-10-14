@@ -11,6 +11,7 @@ import br.pryzat.rpg.utils.LocationsManager;
 import br.pryzat.rpg.utils.Logger;
 import com.comphenix.packetwrapper.WrapperPlayServerPlayerInfo;
 import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
@@ -39,6 +40,7 @@ public class RpgMain extends JavaPlugin {
     private EventManager em;
     // Depends
     private LuckPerms lp;
+	private ProtocolManager protocolmanager;
 
     @Override
     public void onEnable() {
@@ -51,6 +53,7 @@ public class RpgMain extends JavaPlugin {
             lp = provider.getProvider();
             Logger.logInfo(ccs, "Dependência &eLuckPerms&a encontrada.");
         }
+		protocolmanager = ProtocolLibrary.getProtocolManager();
         conm = new ConfigManager(this);
         conm.getYml().saveDefaultConfig();
         lm = new LocationsManager(this);
@@ -97,7 +100,7 @@ public class RpgMain extends JavaPlugin {
     }
 
     public void changePlayerNameAboveHead(Player player, String name) {
-        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, PacketType.Play.Server.PLAYER_INFO) {
+        protocolmanager.addPacketListener(new PacketAdapter(this, PacketType.Play.Server.PLAYER_INFO) {
             @Override
             public void onPacketSending(PacketEvent event) {
                 WrapperPlayServerPlayerInfo wrapper = new WrapperPlayServerPlayerInfo(event.getPacket());
