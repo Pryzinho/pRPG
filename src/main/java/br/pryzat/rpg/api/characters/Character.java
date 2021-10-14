@@ -49,11 +49,10 @@ public class Character {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         sdf.setCalendar(new GregorianCalendar());
         this.dateOfBirth = sdf.format(new Date(System.currentTimeMillis()));
-        level = new Level(uuid);
+        level = new Level(plugin, uuid);
         if (level.get() <= 20) {
             User user;
 			if (player == null) {
-				OfflinePlayer offp = Bukkit.getOfflinePlayer(uuid);
 				 CompletableFuture<User> userFuture = lp.getUserManager().loadUser(uuid);
                 try {
                     user = userFuture.get();

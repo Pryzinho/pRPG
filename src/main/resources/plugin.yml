@@ -2,7 +2,7 @@ name: pRPG
 version: '${project.version}'
 main: br.pryzat.rpg.main.RpgMain
 api-version: 1.17
-depend: [LuckPerms]
+depend: [LuckPerms, PacketWrapper]
 authors: [ PryzDev ]
 description: Acrescenta um RPG dentro do jogo
 website: github.com/Pryzinho

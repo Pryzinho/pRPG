@@ -30,7 +30,12 @@ public class SkillsCommand implements CommandExecutor {
             ch.selectClazz();
             return true;
         }
-        p.openInventory(ch.getClazz().getTrees());
+        if (args.length != 0){
+            p.sendMessage("args length errdinha");
+            return true;
+        }
+       // p.openInventory(ch.getClazz().getTrees());
+        main.changePlayerNameAboveHead(p, "Teste de nome");
         return true;
     }
 }
