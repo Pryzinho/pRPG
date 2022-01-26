@@ -1,3 +1,7 @@
+discord_bot:
+  token: "NzcwNzQ0MDIxNzczMDU4MDk4.X5iBTg.3ce_SFp90sMlRSW3JQHv0cm0hTs"
+  prefix: "&"
+  status: "jogar.pryzat.com"
 events:
   colheitamaldita: false
 
