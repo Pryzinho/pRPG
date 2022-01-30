@@ -1,6 +1,5 @@
 package br.pryzat.rpg.bukkit.main;
 
-import br.pryzat.rpg.bot.BotMain;
 import br.pryzat.rpg.bukkit.api.RPG;
 import br.pryzat.rpg.bukkit.api.characters.CharacterManager;
 import br.pryzat.rpg.bukkit.api.events.EventManager;
@@ -45,8 +44,7 @@ public class RpgMain extends JavaPlugin {
     private ProtocolManager protocolmanager;
 
     //    CitizensAPI.getNPCRegistry();
-    // Discord Integration
-    //private BotMain bm;
+
 
     @Override
     public void onEnable() {
@@ -73,7 +71,6 @@ public class RpgMain extends JavaPlugin {
 
         conm = new ConfigManager(this);
         conm.getYml().saveDefaultConfig();
-     //   bm = new BotMain(this);
         lm = new LocationsManager(this);
         lm.getYml().saveDefaultConfig();
         RPG.registerAllSkills();
@@ -119,16 +116,7 @@ public class RpgMain extends JavaPlugin {
     public EventManager getEventManager() {
         return em;
     }
-/*
-    public JDA getBot() {
-        return bm.getJDA();
-    }
-*/
- /*
- public BotMain getBotMain() {
-     return bm;
-    }
-	*/
+
 	public void changePlayerNameAboveHead(Player player, String name) {
 	// do nothing	
 	}
@@ -176,5 +164,5 @@ public class RpgMain extends JavaPlugin {
             p.showPlayer(this, player);
         }
     }
-	*/
+*/
 }
