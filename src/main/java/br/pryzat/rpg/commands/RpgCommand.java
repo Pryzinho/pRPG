@@ -28,7 +28,8 @@ public class RpgCommand implements CommandExecutor {
     public RpgCommand(RpgMain main) {
         this.main = main;
     }
-//o
+
+    //o
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("pryzat.rpg.admin")) {
@@ -41,7 +42,7 @@ public class RpgCommand implements CommandExecutor {
             sender.sendMessage(" ");
             sender.sendMessage(PryColor.color("&e Ajuda comando &erpg"));
             sender.sendMessage(PryColor.color("&8/rpg &bcharacter &f: &aGerenciador de jogador. "));
-			            sender.sendMessage(PryColor.color("&8/rpg &bevent &f: &aGerenciador de evento. "));
+            sender.sendMessage(PryColor.color("&8/rpg &bevent &f: &aGerenciador de evento. "));
             sender.sendMessage(" ");
             return true;
         }
@@ -49,7 +50,7 @@ public class RpgCommand implements CommandExecutor {
             sender.sendMessage(" ");
             sender.sendMessage(PryColor.color("&e Ajuda comando &erpg"));
             sender.sendMessage(PryColor.color("&8/rpg &bcharacter &f: &aGerenciador de jogador. "));
-						            sender.sendMessage(PryColor.color("&8/rpg &bevent &f: &aGerenciador de evento. "));
+            sender.sendMessage(PryColor.color("&8/rpg &bevent &f: &aGerenciador de evento. "));
             sender.sendMessage(" ");
             return true;
         }
@@ -91,13 +92,13 @@ public class RpgCommand implements CommandExecutor {
                 return true;
             }
             if (args[2].equalsIgnoreCase("class")) {
-				if (args.length < 4) {
-					sender.sendMessage(" ");
+                if (args.length < 4) {
+                    sender.sendMessage(" ");
                     sender.sendMessage(PryColor.color("&e Ajuda subcomando &erpg character class"));
                     sender.sendMessage(PryColor.color("&8/rpg character " + target.getName() + " class &ereset &f: &aReseta a classe do jogador. "));
                     sender.sendMessage(" ");
-					return true;
-				}
+                    return true;
+                }
                 if (args[3].equalsIgnoreCase("help")) {
                     sender.sendMessage(" ");
                     sender.sendMessage(PryColor.color("&e Ajuda subcomando &erpg character class"));
@@ -106,9 +107,9 @@ public class RpgCommand implements CommandExecutor {
                     return true;
                 }
                 if (args[3].equalsIgnoreCase("reset")) {
-					if (args.length != 4){
-						sender.sendMessage(PryColor.color("&eSistema &f> &cSintaxe incorreta&f,&c mas o comando foi &abem &cexecutado."));
-					}
+                    if (args.length != 4) {
+                        sender.sendMessage(PryColor.color("&eSistema &f> &cSintaxe incorreta&f,&c mas o comando foi &abem &cexecutado."));
+                    }
                     ch.selectClazz();
                     return true;
                 }
@@ -209,7 +210,7 @@ public class RpgCommand implements CommandExecutor {
                     } else {
                         ch.getSkills().add(suid, target.getUniqueId(), level);
                         ch.getSkills().get(suid).setUniqueId(suid);
-						 skill = ch.getSkills().get(suid);
+                        skill = ch.getSkills().get(suid);
                         sender.sendMessage(PryColor.color("&aVocê definiu &e" + level + "&a Level's na habilidade &b" + skill.getUniqueId() + "&a de &e" + target.getName() + "&a !"));
                         target.sendMessage(PryColor.color("&dUma força misteriosa interviu em seu personagem, agora você possui à habilidade &b" + skill.getUniqueId() + "&d !"));
                         target.sendMessage(PryColor.color("&aSua afinidade com &b" + skill.getUniqueId() + "&a aumentou, sua habilidade está no Level &e" + level + "&a !"));
@@ -334,9 +335,11 @@ public class RpgCommand implements CommandExecutor {
                     statslore.add("&8Resistência &f: " + attributes.getResistance() + " Ponto(s)");
                     ItemStack istats = ItemBuilder.create("&1Atributos", Material.NETHER_STAR, statslore); // Name: &1Atributos, Lore: stats:points
                     List<String> skillslore = new ArrayList<>();
-                    for (Skill skill : ch.getSkills().toList()) {
-                        if (skill != null) {
-                            skillslore.add(skill.getDisplayName() + "&f, &eLevel&f: " + skill.getLevel());
+                    if (ch.getSkills() != null) {
+                        for (Skill skill : ch.getSkills().toList()) {
+                            if (skill != null) {
+                                skillslore.add(skill.getDisplayName() + "&f, &eLevel&f: " + skill.getLevel());
+                            }
                         }
                     }
                     ItemStack iskills = ItemBuilder.create("&2Habilidades", Material.IRON_SWORD, skillslore); // Name: &2Skills, Lore: for skill in skills : add skill:level
@@ -357,11 +360,11 @@ public class RpgCommand implements CommandExecutor {
                     sender.sendMessage(PryColor.color("&f- &dVelocidade &f: " + attributes.getVelocity() + " Ponto(s)"));
                     sender.sendMessage(PryColor.color("&f- &8Resistência &f: " + attributes.getResistance() + " Ponto(s)"));
                     sender.sendMessage(PryColor.color("&2Habilidades&f:"));
-                   if (ch.getSkills() != null) {
-                       for (Skill skill : ch.getSkills().toList()) {
-                           sender.sendMessage(PryColor.color("&f- " + skill.getDisplayName() + "&f, Level " + skill.getLevel()));
-                       }
-                   }
+                    if (ch.getSkills() != null) {
+                        for (Skill skill : ch.getSkills().toList()) {
+                            sender.sendMessage(PryColor.color("&f- " + skill.getDisplayName() + "&f, Level " + skill.getLevel()));
+                        }
+                    }
                     sender.sendMessage(PryColor.color("&aData de criação&f: " + ch.getDateOfBirth()));
                     sender.sendMessage(" ");
                     return true;
@@ -375,40 +378,40 @@ public class RpgCommand implements CommandExecutor {
             sender.sendMessage(" ");
             return true;
         }
-		if (args[0].equalsIgnoreCase("selectclass")){
-			if (!(sender instanceof Player)) {
-				if (args.length !=2) {
-					sender.sendMessage(PryColor.color("&cUse: &8/rpg selectclass &ePlayer"));
-				return true;
-				}
-				Player t = null;
-				try {
-					t = Bukkit.getPlayerExact(args[1]);
-				} catch (Exception e) {
-					sender.sendMessage(PryColor.color("&cJogador não encontrado."));
-					return true;
-				}
-				if (t != null) {
-				if (!t.isOnline()){
-				sender.sendMessage(PryColor.color("&cO Jogador não está online."));
-					return true;
-				}
-				Character ch = cm.getCharacter(t.getUniqueId());	
-				ch.selectClazz();
-				}
+        if (args[0].equalsIgnoreCase("selectclass")) {
+            if (!(sender instanceof Player)) {
+                if (args.length != 2) {
+                    sender.sendMessage(PryColor.color("&cUse: &8/rpg selectclass &ePlayer"));
+                    return true;
+                }
+                Player t = null;
+                try {
+                    t = Bukkit.getPlayerExact(args[1]);
+                } catch (Exception e) {
+                    sender.sendMessage(PryColor.color("&cJogador não encontrado."));
+                    return true;
+                }
+                if (t != null) {
+                    if (!t.isOnline()) {
+                        sender.sendMessage(PryColor.color("&cO Jogador não está online."));
+                        return true;
+                    }
+                    Character ch = cm.getCharacter(t.getUniqueId());
+                    ch.selectClazz();
+                }
                 return true;
             } else {
-			Player p = (Player) sender;
-			if (args.length != 1){
-				  p.sendMessage("args erradinha");
-			}
-			Character ch = cm.getCharacter(p.getUniqueId());
-			ch.selectClazz();
-			
-			}
-			return true;
-		}
-		
+                Player p = (Player) sender;
+                if (args.length != 1) {
+                    p.sendMessage("args erradinha");
+                }
+                Character ch = cm.getCharacter(p.getUniqueId());
+                ch.selectClazz();
+
+            }
+            return true;
+        }
+
         if (args[0].equalsIgnoreCase("event")) {
             if (!(sender instanceof Player)) {
                 sender.sendMessage(PryColor.color("&cApenas jogadores podem utilizar este comando."));
@@ -417,8 +420,8 @@ public class RpgCommand implements CommandExecutor {
             Player p = (Player) sender;
             // /rpg event colheitamaldita locations set flower 1
             // /rpg event <EUID> locations set <spawn/flower> <Number>
-            if (args.length > 7|| args.length < 2) {
-				Character ch = cm.getCharacter(p.getUniqueId());
+            if (args.length > 7 || args.length < 2) {
+                Character ch = cm.getCharacter(p.getUniqueId());
                 p.sendMessage(" ");
                 p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event"));
                 p.sendMessage(PryColor.color("&8/rpg event &bhelp &f: &aAjuda na utilização do(s) comando(s)."));
@@ -436,13 +439,13 @@ public class RpgCommand implements CommandExecutor {
             }
             if (RPG.verifyEUID(args[1])) {
                 Event event = RPG.getEvent(args[1]);
-				if (!event.isEnabled()){
+                if (!event.isEnabled()) {
                     if (args.length == 2) {
                         p.sendMessage(PryColor.color("&eSistema &f> &cEsse evento está desativado&f"));
                         return true;
                     }
                     if (args[2].equalsIgnoreCase("help")) {
-                        if(args.length != 3){
+                        if (args.length != 3) {
                             p.sendMessage(PryColor.color("&eSistema &f> &cSintaxe incorreta verifique o manual, o comando será executado mesmo com esse erro."));
                         }
                         p.sendMessage(" ");
@@ -452,7 +455,7 @@ public class RpgCommand implements CommandExecutor {
                         p.sendMessage(" ");
                         return true;
                     }
-                    if (args.length != 3){
+                    if (args.length != 3) {
                         p.sendMessage(" ");
                         p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event " + args[1]));
                         p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " &aenable &f: &aAtiva o evento&f."));
@@ -460,12 +463,12 @@ public class RpgCommand implements CommandExecutor {
                         p.sendMessage(" ");
                         return true;
                     }
-                    if (args[2].equalsIgnoreCase("enable")){
-                    event.setEnabled(true);
-                    p.sendMessage(PryColor.color("&eSistema &f> &aEvento &8" + event.getEuid() + " &a&lativado&a com sucesso&f."));
+                    if (args[2].equalsIgnoreCase("enable")) {
+                        event.setEnabled(true);
+                        p.sendMessage(PryColor.color("&eSistema &f> &aEvento &8" + event.getEuid() + " &a&lativado&a com sucesso&f."));
                         return true;
                     }
-                    if (args[2].equalsIgnoreCase("disable")){
+                    if (args[2].equalsIgnoreCase("disable")) {
                         event.setEnabled(false);
                         p.sendMessage(PryColor.color("&eSistema &f> &aEvento &8" + event.getEuid() + " &c&ldesativado&a com sucesso&f."));
 
@@ -477,7 +480,7 @@ public class RpgCommand implements CommandExecutor {
                     p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " &cdisable &f: &aDesativa o evento&f."));
                     p.sendMessage(" ");
                     return true;
-				} else {
+                } else {
                     if (args.length < 3) {
                         p.sendMessage(" ");
                         p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event " + args[1]));
@@ -591,9 +594,9 @@ public class RpgCommand implements CommandExecutor {
                     return true;
                 }
             } else {
-				p.sendMessage(PryColor.color("&cEsse evento não existe."));
-				return true;
-			}
+                p.sendMessage(PryColor.color("&cEsse evento não existe."));
+                return true;
+            }
 			/*
             p.sendMessage(" ");
             p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event"));
