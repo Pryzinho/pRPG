@@ -319,7 +319,7 @@ public class RpgCommand implements CommandExecutor {
                     sender.sendMessage(PryColor.color("&cUse: &8/rpg character" + target.getName() + "&b info"));
                     return true;
                 }
-                Attributes attributes = ch.getClazz().getAttributes();
+                Attributes attributes = ch.getAttributes();
                 if (sender instanceof Player) {
                     Inventory inv = Bukkit.createInventory(null, 9 * 3, PryColor.color("&eInformações sobre " + target.getName()));
                     // 11, 13, 14
@@ -357,9 +357,11 @@ public class RpgCommand implements CommandExecutor {
                     sender.sendMessage(PryColor.color("&f- &dVelocidade &f: " + attributes.getVelocity() + " Ponto(s)"));
                     sender.sendMessage(PryColor.color("&f- &8Resistência &f: " + attributes.getResistance() + " Ponto(s)"));
                     sender.sendMessage(PryColor.color("&2Habilidades&f:"));
-                    for (Skill skill : ch.getSkills().toList()) {
-                        sender.sendMessage(PryColor.color("&f- " + skill.getDisplayName() + "&f, Level " + skill.getLevel()));
-                    }
+                   if (ch.getSkills() != null) {
+                       for (Skill skill : ch.getSkills().toList()) {
+                           sender.sendMessage(PryColor.color("&f- " + skill.getDisplayName() + "&f, Level " + skill.getLevel()));
+                       }
+                   }
                     sender.sendMessage(PryColor.color("&aData de criação&f: " + ch.getDateOfBirth()));
                     sender.sendMessage(" ");
                     return true;
