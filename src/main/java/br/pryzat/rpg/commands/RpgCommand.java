@@ -28,7 +28,7 @@ public class RpgCommand implements CommandExecutor {
     public RpgCommand(RpgMain main) {
         this.main = main;
     }
-
+//o
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("pryzat.rpg.admin")) {
