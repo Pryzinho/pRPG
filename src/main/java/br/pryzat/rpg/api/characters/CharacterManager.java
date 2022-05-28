@@ -48,7 +48,7 @@ public class CharacterManager implements Listener {
             for (UUID uuid : characters.keySet()) {
                 Character ch = characters.get(uuid);
                 charactersyml.set(uuid.toString() + ".dateOfBirth", ch.getDateOfBirth());
-                if (ch.getSkills().toList() != null) {
+                if (ch.getSkills() != null) {
                     for (Skill skill : ch.getSkills().toList()) {
                         if (skill != null) {
                             charactersyml.set(uuid.toString() + ".skills." + skill.getUniqueId(), skill.getLevel());
