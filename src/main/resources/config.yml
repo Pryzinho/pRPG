@@ -3,7 +3,8 @@ discord_bot:
   prefix: "&"
   status: "jogar.pryzat.com"
 events:
-  colheitamaldita: false
+  colheitamaldita:
+    enabled: false
 
 classes:
   SWORDSMAN:
