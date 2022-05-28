@@ -91,7 +91,7 @@ public class RpgCommand implements CommandExecutor {
                 return true;
             }
             if (args[2].equalsIgnoreCase("class")) {
-				if (args.length <= 4) {
+				if (args.length < 4) {
 					sender.sendMessage(" ");
                     sender.sendMessage(PryColor.color("&e Ajuda subcomando &erpg character class"));
                     sender.sendMessage(PryColor.color("&8/rpg character " + target.getName() + " class &ereset &f: &aReseta a classe do jogador. "));
@@ -106,7 +106,7 @@ public class RpgCommand implements CommandExecutor {
                     return true;
                 }
                 if (args[3].equalsIgnoreCase("reset")) {
-					if (args.length !=5){
+					if (args.length != 4){
 						sender.sendMessage(PryColor.color("&eSistema &f> &cSintaxe incorreta&f,&c mas o comando foi &abem &cexecutado."));
 					}
                     ch.selectClazz();
