@@ -1,2 +1,3 @@
 # pRPG
-Plugin de rpg construido com base no jogo Asa de Cristal
+Plugin de RPG para Minecraft, feito com base no jogo Asa de Cristal.
+
