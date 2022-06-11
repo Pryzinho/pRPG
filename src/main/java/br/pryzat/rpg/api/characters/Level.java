@@ -59,7 +59,7 @@ public class Level {
 
     public void set(int level) {
         CharacterLevelChangeEvent clce = new CharacterLevelChangeEvent(owner, CharacterLevelChangeEvent.Cause.SET, level);
-        Bukkit.getServer().getPluginManager().callEvent(clce);
+        Bukkit.getPluginManager().callEvent(clce);
         if (clce.isCancelled()) {
             return;
         }
@@ -74,7 +74,7 @@ public class Level {
 
     public void add(int level) {
         CharacterLevelChangeEvent clce = new CharacterLevelChangeEvent(owner, CharacterLevelChangeEvent.Cause.ADD, get() + 1);
-        Bukkit.getServer().getPluginManager().callEvent(clce);
+        Bukkit.getPluginManager().callEvent(clce);
         if (clce.isCancelled()) {
             return;
         }
@@ -92,7 +92,7 @@ public class Level {
 
     public void rem(int level) {
         CharacterLevelChangeEvent clce = new CharacterLevelChangeEvent(owner, CharacterLevelChangeEvent.Cause.REMOVE, get() - 1);
-        Bukkit.getServer().getPluginManager().callEvent(clce);
+        Bukkit.getPluginManager().callEvent(clce);
         if (clce.isCancelled()) {
             return;
         }
