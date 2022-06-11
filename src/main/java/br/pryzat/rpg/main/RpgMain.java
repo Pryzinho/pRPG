@@ -55,20 +55,19 @@ public class RpgMain extends JavaPlugin {
             lp = lp_provider.getProvider();
             protocolmanager = ProtocolLibrary.getProtocolManager();
         }
-       // CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TestTrait.class).withName("teleportador"));
+        // CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TestTrait.class).withName("teleportador"));
 
         conm = new ConfigManager(this);
         conm.getYml().saveDefaultConfig();
         lm = new LocationsManager(this);
         lm.getYml().saveDefaultConfig();
-        RPG.registerAllSkills();
         cm = new CharacterManager(this);
         cm.getCharactersYml().saveDefaultConfig();
         cm.loadCharacters();
         em = new EventManager(this);
         em.loadAllEvents();
-        RPG.registerAllItems();
 
+        RPG.loadStaticAcces();
         Logger.logInfo(ccs, "Carregando jogadores...");
         getCommand("rpg").setExecutor(new RpgCommand(this));
         getCommand("skills").setExecutor(new SkillsCommand(this));
@@ -105,9 +104,9 @@ public class RpgMain extends JavaPlugin {
         return em;
     }
 
-	public void changePlayerNameAboveHead(Player player, String name) {
-	// do nothing	
-	}
+    public void changePlayerNameAboveHead(Player player, String name) {
+        // do nothing
+    }
 /*
     public void changePlayerNameAboveHead(Player player, String name) {
         protocolmanager.addPacketListener(new PacketAdapter(this, PacketType.Play.Server.PLAYER_INFO) {

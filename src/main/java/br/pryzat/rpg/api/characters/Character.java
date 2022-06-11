@@ -1,8 +1,8 @@
 package br.pryzat.rpg.api.characters;
 
-import br.pryzat.rpg.api.characters.classes.Clazz;
+import br.pryzat.rpg.api.RPG;
 import br.pryzat.rpg.api.characters.classes.ClazzType;
-import br.pryzat.rpg.api.characters.skills.Skills;
+import br.pryzat.rpg.api.characters.skills.Skill;
 import br.pryzat.rpg.api.characters.stats.Immunities;
 import br.pryzat.rpg.api.characters.stats.Attributes;
 import br.pryzat.rpg.api.items.CustomItem;
@@ -19,11 +19,9 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import javax.annotation.Nullable;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -40,12 +38,14 @@ public class Character {
     private ClazzType clazz;
     private Attributes attributes;
     private final Level level;
-    private Skills skills;
+    private HashMap<String, Skill> skills;
+    private int skillPoints;
     private final Immunities immunities;
 
     public Character(UUID uuid, RpgMain plugin) {
         this.plugin = plugin;
         this.uuid = uuid;
+        this.skillPoints = 0;
         this.player = Bukkit.getPlayer(uuid);
         this.lp = plugin.getLuckPerms();
         this.immunities = new Immunities();
@@ -122,6 +122,7 @@ public class Character {
             }
         }
         level.set(21);
+        this.skills = new HashMap<>();
     }
 
     public ClazzType getClazz() {
@@ -245,9 +246,103 @@ public class Character {
         updateGraphics();
     }
 
-    public Skills getSkills() {
+    // Skill Development
+    public HashMap<String, Skill> getSkills() {
         return skills;
     }
+
+    /**
+     * @param suid Skill Unique Identifier
+     * @return Retorna a skill desejada, ou, retorna null se o jogador não tiver a skill.
+     */
+    @Nullable
+    public Skill getSkill(String suid) {
+        return skills.get(suid);
+    }
+
+    public boolean hasSkill(String suid) {
+        for (String id : skills.keySet()) {
+            if (suid.equals(id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param trigger Pessoal que executou a ação, null em caso de nao ter sido alguem.
+     * @param suid    Skill Unique Identifier
+     * @param silent  Se true não avisa ao jogador que a habilidade dele foi removida, se false, avisa ao jogador sobre sua perda.
+     */
+    public void removeSkill(@Nullable Player trigger, String suid, boolean silent) {
+        if (hasSkill(suid)) {
+            Player t = Bukkit.getPlayer(getUuid());
+            if (t != null && t.isOnline()) {
+                if (!silent) {
+                    t.sendMessage(PryColor.color("&eSistema &f> &cSua habilidade " + getSkill(suid).getDisplayName() + "&c foi removida de sua conta&f."));
+                }
+
+            }
+            skills.remove(suid);
+            if (trigger != null && trigger.isOnline()) {
+                trigger.sendMessage(PryColor.color("&eSistema &f> &aVocê removeu a habildiade " + getSkill(suid).getDisplayName() + " &ado jogador " + Bukkit.getOfflinePlayer(getUuid()).getName() + "&f."));
+            }
+        }
+    }
+
+    public void addSkill(Player trigger, String skilluid, int level, boolean silent) {
+        if (hasSkill(skilluid)) {
+            if (trigger != null && trigger.isOnline()) {
+                trigger.sendMessage(PryColor.color("&eSistema &f> &aO Jogador já possui está habilidade&f, &amas o novo nivel dela foi atualizado&f."));
+            }
+            Player t = Bukkit.getPlayer(getUuid());
+            if (t != null && t.isOnline()) {
+                if (!silent) {
+                    t.sendMessage(PryColor.color("&eSistema &f> &cSua habilidade " + getSkill(skilluid).getDisplayName() + "&c foi atualizada para nivel " + level + "&f."));
+                }
+            }
+            Skill temp = getSkill(skilluid);
+            temp.setLevel(level);
+            skills.replace(skilluid, temp);
+        } else {
+            if (trigger != null && trigger.isOnline()) {
+                trigger.sendMessage(PryColor.color("&eSistema &f> &aA habilidade " + getLearnableSkill(skilluid).getDisplayName() + " &ade nivel " + level + "&f, &afoi adicionado ao jogador " + Bukkit.getOfflinePlayer(getUuid()).getName() + "&f."));
+            }
+            Player t = Bukkit.getPlayer(getUuid());
+            if (t != null && t.isOnline()) {
+                if (!silent) {
+                    t.sendMessage(PryColor.color("&eSistema &f> &cVocê adquiriu " + getSkill(skilluid).getDisplayName() + "&c de nivel " + level + "&f."));
+                }
+            }
+            Skill temp = getLearnableSkill(skilluid);
+            temp.setOwner(this);
+            temp.setLevel(level);
+            skills.put(skilluid, temp);
+        }
+    }
+
+    public Skill getLearnableSkill(String suid) {
+        return RPG.getLearnablesSkills().get(suid);
+    }
+
+
+    public int getSkillPoints() {
+        return this.skillPoints;
+    }
+
+    public void addSkillPoints(int points) {
+        this.skillPoints += points;
+    }
+
+    public void remSkillPoints(int points) {
+        this.skillPoints -= points;
+    }
+
+    public void setSkillPoints(int points) {
+        this.skillPoints = points;
+    }
+    // Skill Development
+
 
     public Attributes getAttributes() {
         return attributes;
@@ -261,9 +356,6 @@ public class Character {
         return level;
     }
 
-    public void addSkill(String skilluid, int level) {
-        getSkills().add(skilluid, uuid, level);
-    }
 
     /**
      * @return Retorna uma classe de gerenciamento de imunidades do jogador, leia a classe para mais informações.
@@ -281,6 +373,6 @@ public class Character {
     }
 
     public void setAttributes(Attributes attributes) {
-    this.attributes = attributes;
+        this.attributes = attributes;
     }
 }

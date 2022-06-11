@@ -1,5 +1,6 @@
 package br.pryzat.rpg.api.characters;
 
+import br.pryzat.rpg.api.events.bukkit.CharacterLevelChangeEvent;
 import br.pryzat.rpg.main.RpgMain;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -42,6 +43,7 @@ public class Level {
             rcontinuos = 0;
         }
     };
+
     public Level(RpgMain plugin, UUID uuid) {
         this.plugin = plugin;
         owner = uuid;
@@ -56,6 +58,11 @@ public class Level {
     }
 
     public void set(int level) {
+        CharacterLevelChangeEvent clce = new CharacterLevelChangeEvent(owner, CharacterLevelChangeEvent.Cause.SET, level);
+        Bukkit.getServer().getPluginManager().callEvent(clce);
+        if (clce.isCancelled()) {
+            return;
+        }
         this.level = level;
         Player p = Bukkit.getPlayer(owner);
         if (p != null && p.isOnline()) {
@@ -66,6 +73,11 @@ public class Level {
     }
 
     public void add(int level) {
+        CharacterLevelChangeEvent clce = new CharacterLevelChangeEvent(owner, CharacterLevelChangeEvent.Cause.ADD, get() + 1);
+        Bukkit.getServer().getPluginManager().callEvent(clce);
+        if (clce.isCancelled()) {
+            return;
+        }
         this.level += level;
         acontinuos++;
         Player p = Bukkit.getPlayer(owner);
@@ -79,7 +91,13 @@ public class Level {
     }
 
     public void rem(int level) {
+        CharacterLevelChangeEvent clce = new CharacterLevelChangeEvent(owner, CharacterLevelChangeEvent.Cause.REMOVE, get() - 1);
+        Bukkit.getServer().getPluginManager().callEvent(clce);
+        if (clce.isCancelled()) {
+            return;
+        }
         this.level -= level;
+
         rcontinuos++;
         Player p = Bukkit.getPlayer(owner);
         if (p != null && p.isOnline()) {

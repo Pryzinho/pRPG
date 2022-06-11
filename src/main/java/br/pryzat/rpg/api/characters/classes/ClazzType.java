@@ -16,6 +16,35 @@ public enum ClazzType {
                     ch.setClazz(new Clazz(main, ClazzType.MAGE, new Stats(10, 60, 0, 55)));
                     ch.setClazz(new Clazz(main, ClazzType.PRIEST, new Stats(10, 30, 0, 100)));
 */
+    /*
+    void a(){
+        Item h = new Item("&9Capacete Inicial", Material.LEATHER_HELMET, new Attributes(0, 0, 0, 5));
+        Item c = new Item("&9Peitoral Inicial", Material.LEATHER_CHESTPLATE, new Attributes(0, 0, 0, 10));
+        Item l = new Item("&9Calças Inicial", Material.LEATHER_LEGGINGS, new Attributes(0, 0, 0, 5));
+        Item b = new Item("&9Botas Inicial", Material.LEATHER_BOOTS, new Attributes(0, 0, 10, 5));
+        Item sw = new Item("&9Espada Inicial", Material.WOODEN_SWORD, new Attributes(10, 0, 5, 0));
+        Item sd = new Item("&9Escudo Inicial", Material.SHIELD, new Attributes(0, 0, 0, 30));
+            case SWORDSMAN:
+                h.setIUID("initial.swordsman.helmet");
+                c.setIUID("initial.swordsman.chestplate");
+                l.setIUID("initial.swordsman.leggins");
+                b.setIUID("initial.swordsman.boots");
+                sw.setIUID("initial.swordsman.sword");
+                sd.setIUID("initial.swordsman.shield");
+            case ROGUE:
+                h.setIUID("initial.rogue.helmet");
+                c.setIUID("initial.rogue.chestplate");
+                l.setIUID("initial.rogue.leggins");
+                b.setIUID("initial.rogue.boots");
+                sw.setIUID("initial.rogue.sword");
+                sd.setIUID("initial.rogue.shield");
+                h.setStats(new Attributes(0, 0, 0, 5));
+                c.setStats(new Attributes(0, 0, 0, 5));
+                l.setStats(new Attributes(0, 0, 10, 3));
+                b.setStats(new Attributes(0, 0, 15, 2));
+    }
+    */
+
     SWORDSMAN(
             (List<ItemStack>) Arrays.asList(new Item("&9Capacete Inicial", Material.LEATHER_HELMET, new Attributes(0, 0, 0, 5)).toItem(),
                     new Item("&9Peitoral Inicial", Material.LEATHER_CHESTPLATE, new Attributes(0, 0, 0, 10)).toItem(),

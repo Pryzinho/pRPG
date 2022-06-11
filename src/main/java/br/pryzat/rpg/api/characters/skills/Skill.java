@@ -1,8 +1,9 @@
 package br.pryzat.rpg.api.characters.skills;
 
+import br.pryzat.rpg.api.characters.Character;
 import br.pryzat.rpg.utils.PryColor;
-import br.pryzat.rpg.main.RpgMain;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -10,12 +11,19 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class Skill {
-    private RpgMain main;
-    private UUID owner;
-    private String suid;
+
     private String displayName;
+    private String description;
+
+    private String suid;
+    private Material representative_item;
+
     private int level;
-    private long cooldown;
+    private int maxLevel;
+    private Character owner;
+
+    //private RpgMain main;
+    private long cooldown; // tempo em ms que devem ser esperados para executar a skill novamente
     private HashMap<UUID, Long> incooldowns = new HashMap<UUID, Long>();
     private boolean needMana;
     private boolean needLife;
@@ -23,9 +31,12 @@ public class Skill {
     private int lifeCoust;
     private boolean inuse;
 
-    public Skill(RpgMain main, UUID uuid, int level) {
-        this.main = main;
-        this.owner = uuid;
+    public Skill(Character owner, int level) {
+       // this.main = main;
+        this.owner = owner;
+
+    }
+    public Skill(UUID uuid){
 
     }
 
@@ -34,12 +45,12 @@ public class Skill {
     }
 
     public void preExecute() {
-        Player p = Bukkit.getPlayer(owner);
-        if (incooldowns.containsKey(owner)) {
-            if (incooldowns.get(owner) <= System.currentTimeMillis()) {
+        Player p = Bukkit.getPlayer(owner.getUuid());
+        if (incooldowns.containsKey(owner.getUuid())) {
+            if (incooldowns.get(owner.getUuid()) <= System.currentTimeMillis()) {
                 incooldowns.remove(p.getUniqueId());
                 execute();
-                incooldowns.put(owner, getCooldown() + System.currentTimeMillis());
+                incooldowns.put(owner.getUuid(), getCooldown() + System.currentTimeMillis());
             } else {
                 p.sendMessage(PryColor.color("&cEssa habilidade está recarregando!"));
                 p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 50f, 50f);
@@ -47,7 +58,7 @@ public class Skill {
             }
         } else {
             execute();
-            incooldowns.put(owner, getCooldown() + System.currentTimeMillis());
+            incooldowns.put(owner.getUuid(), getCooldown() + System.currentTimeMillis());
         }
 
 
@@ -61,10 +72,13 @@ public class Skill {
         this.inuse = inuse;
     }
 
-    public void setUniqueId(String suid){
+    public void setUniqueId(String suid) {
         this.suid = suid;
     }
-    public String getUniqueId(){ return suid;}
+
+    public String getUniqueId() {
+        return suid;
+    }
 
     public String getDisplayName() {
         return displayName;
@@ -76,15 +90,16 @@ public class Skill {
 
     public void addLevel(int level) {
         this.level += level;
-        if (this.level > 10) {
-            this.level = 10;
+        if (this.level > this.maxLevel) {
+            this.level = this.maxLevel;
         }
     }
 
-    public void decLevel(int level) {
+    public void remLevel(int level) {
         this.level -= level;
         if (this.level <= 0) {
             this.level = 1;
+            owner.removeSkill(null, getUniqueId(), false);
         }
     }
 
@@ -96,8 +111,9 @@ public class Skill {
         this.level = level;
         if (this.level <= 0) {
             this.level = 1;
-        } else if (this.level > 10) {
-            this.level = 10;
+            owner.removeSkill(null, getUniqueId(), false);
+        } else if (this.level > this.maxLevel) {
+            this.level = this.maxLevel;
         }
     }
 
@@ -141,11 +157,17 @@ public class Skill {
         this.lifeCoust = lifeCoust;
     }
 
-    public UUID getOwner(){
+    public Character getOwner() {
         return owner;
     }
+    public void setOwner(Character ch){
+        this.owner = ch;
+    }
 
-    public RpgMain getPlugin(){
+    /*
+    public RpgMain getPlugin() {
         return main;
     }
+    */
+
 }

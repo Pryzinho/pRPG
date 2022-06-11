@@ -180,7 +180,7 @@ public class RpgCommand implements CommandExecutor {
                     }
                     Skill skill = ch.getSkills().get(suid);
                     if (skill != null) {
-                        skill.decLevel(level);
+                        skill.remLevel(level);
                         sender.sendMessage(PryColor.color("&aVocê &cremoveu &e" + level + "&a Level's na habilidade &b" + suid + "&a de &e" + target.getName() + "&a !"));
                         target.sendMessage(PryColor.color("&aSua afinidade com &b" + suid + "&c diminuiu&a, sua habilidade &cregrediu&a em &e" + level + " &aLevel's !"));
                     } else {
