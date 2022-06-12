@@ -2,7 +2,6 @@ package br.pryzat.rpg.commands;
 
 import br.pryzat.rpg.api.characters.Character;
 import br.pryzat.rpg.api.characters.CharacterManager;
-import br.pryzat.rpg.api.characters.classes.Clazz;
 import br.pryzat.rpg.api.characters.classes.ClazzType;
 import br.pryzat.rpg.utils.PryColor;
 import br.pryzat.rpg.main.RpgMain;
