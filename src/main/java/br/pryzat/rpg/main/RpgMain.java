@@ -37,7 +37,7 @@ public class RpgMain extends JavaPlugin {
     @Override
     public void onEnable() {
         ConsoleCommandSender ccs = Bukkit.getConsoleSender();
-        Logger.logInfo(ccs, "&aInciaindo &epRPG...");
+        Logger.logInfo(ccs, "&aIniciando &epRPG&f.");
         String[] dependencies = {"ProtocolLib", "LuckPerms", "Citizens"};
         int d = 0;
         for (Plugin pl : getServer().getPluginManager().getPlugins()) {
