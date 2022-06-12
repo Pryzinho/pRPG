@@ -21,7 +21,7 @@ public class CharacterLevelChangeEvent extends Event implements Cancellable {
     }
 
 
-    public HandlerList getHandlerlist() {
+    public static HandlerList getHandlerlist() {
         return handlerlist;
     }
 
