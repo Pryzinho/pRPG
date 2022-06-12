@@ -38,7 +38,7 @@ public class RPG {
         registerSUID(new SUID("fireball", "&cSou eu bola de fogo", Material.FIRE_CHARGE, Arrays.asList("&cMeu nao enxe")), Fireball.class);
         registerSUID(new SUID("puxao", "&bVa pa onde?", Material.IRON_SHOVEL, Arrays.asList("Se correr o bixo pega, se ficar o bixo come")), Puxao.class);
   */
-        learnableskills.put("stomper", new Stomper(null, 0));
+        learnableskills.put("stomper", new Stomper(null, 1));
     }
 
     /**
