@@ -2,12 +2,9 @@ package br.pryzat.rpg.builds.skills.swordsman;
 
 import br.pryzat.rpg.api.characters.Character;
 import br.pryzat.rpg.api.characters.skills.Skill;
-import br.pryzat.rpg.main.RpgMain;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-
-import java.util.UUID;
 
 public class Stomper extends Skill {
     public Stomper(Character owner, int level) {
@@ -32,10 +29,11 @@ public class Stomper extends Skill {
 
     @Override
     public void execute() {
-        Player p = Bukkit.getPlayer(getOwner().getUuid());
+        Player p = Bukkit.getPlayer(getOwner().getUUID());
         Vector v = new Vector();
         v.setY(p.getLocation().getY() + 15 + getLevel());
         p.setVelocity(v);
         super.execute();
     }
+
 }

@@ -1,22 +1,13 @@
 package br.pryzat.rpg.api;
 
-import br.pryzat.rpg.api.characters.Level;
-import br.pryzat.rpg.api.characters.skills.SUID;
 import br.pryzat.rpg.api.characters.skills.Skill;
 import br.pryzat.rpg.api.events.Event;
-import br.pryzat.rpg.builds.skills.mage.Fireball;
-import br.pryzat.rpg.builds.skills.swordsman.Perseguir;
-import br.pryzat.rpg.builds.skills.swordsman.Puxao;
 import br.pryzat.rpg.builds.skills.swordsman.Stomper;
-import br.pryzat.rpg.main.RpgMain;
-import org.bukkit.Material;
 
-import java.lang.reflect.Constructor;
 import java.util.*;
 
 public class RPG {
     // Skill Area
-    private static HashMap<SUID, Class> registredskills = new HashMap<>();
     private static HashMap<String, Skill> learnableskills = new HashMap<>();
     // Clazz Skills Branches
     // Events Area
@@ -48,45 +39,6 @@ public class RPG {
         registerSUID(new SUID("puxao", "&bVa pa onde?", Material.IRON_SHOVEL, Arrays.asList("Se correr o bixo pega, se ficar o bixo come")), Puxao.class);
   */
         learnableskills.put("stomper", new Stomper(null, 0));
-    }
-
-    /**
-     * Permite você registrar um Skill Unique Identifier.
-     *
-     * @param suid
-     * @param clazz
-     */
-    private static void registerSUID(SUID suid, Class clazz) {
-        registredskills.put(suid, clazz);
-    }
-
-    public static SUID getSUID(String suid) {
-        for (SUID s : registredskills.keySet()) {
-            if (s.toString().equalsIgnoreCase(suid)) return s;
-        }
-        return null;
-    }
-
-    /**
-     * @param suid
-     * @return Um Constructor da skill, retorna null caso o suid nao esteja registrado.
-     */
-    public static Constructor getRegistredSkill(String suid) {
-        for (SUID s : registredskills.keySet()) {
-            if (s.toString().equals(suid)) {
-                try {
-                    return registredskills.get(s).getConstructor(RpgMain.class, UUID.class, int.class);
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-        }
-        return null;
-    }
-
-    public static Set<SUID> getAllSUIDS() {
-        return registredskills.keySet();
     }
 
     /**

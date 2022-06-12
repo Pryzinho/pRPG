@@ -33,7 +33,7 @@ public class RpgMain extends JavaPlugin {
 
     //    CitizensAPI.getNPCRegistry();
 
-// comecei a fazer isso aproximadamente no dia 19/09/2021
+    // comecei a fazer isso aproximadamente no dia 19/09/2021
     @Override
     public void onEnable() {
         ConsoleCommandSender ccs = Bukkit.getConsoleSender();
@@ -152,4 +152,5 @@ public class RpgMain extends JavaPlugin {
         }
     }
 */
+
 }

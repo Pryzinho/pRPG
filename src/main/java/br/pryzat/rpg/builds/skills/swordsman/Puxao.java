@@ -2,6 +2,7 @@ package br.pryzat.rpg.builds.skills.swordsman;
 
 import br.pryzat.rpg.api.characters.Character;
 import br.pryzat.rpg.api.characters.skills.Skill;
+import br.pryzat.rpg.api.events.bukkit.CharacterTargettedBySkillEvent;
 import br.pryzat.rpg.main.RpgMain;
 import br.pryzat.rpg.utils.PryColor;
 import org.bukkit.Bukkit;
@@ -15,10 +16,10 @@ import java.util.UUID;
 
 public class Puxao extends Skill {
 
-    public Puxao(RpgMain main, UUID uuid, int level) {
-        super(main, uuid, level);
+    public Puxao(Character owner, int level) {
+        super(owner, level);
         setUniqueId("puxao");
-        setDisplayName("&aPuxão !");
+        setDisplayName("&aPuxão");
         setNeedMana(false);
         setNeedLife(false);
         if (level > 10) setLevel(10);
@@ -38,24 +39,19 @@ public class Puxao extends Skill {
 
     @Override
     public void execute() {
-        Player p = Bukkit.getPlayer(getOwner());
+        Player p = Bukkit.getPlayer(getOwner().getUUID());
         Location loc = p.getLocation();
-        if (p.getNearbyEntities(5, 2, 5) != null) {
-            double x = loc.getX(), z = loc.getZ();
-            p.spawnParticle(Particle.DRAGON_BREATH, x + 2, loc.getY(), z + 2, 5);
-            p.spawnParticle(Particle.DRAGON_BREATH, x + 2, loc.getY(), z - 2, 5);
-            p.spawnParticle(Particle.DRAGON_BREATH, x - 2, loc.getY(), z - 2, 5);
-            p.spawnParticle(Particle.DRAGON_BREATH, x - 2, loc.getY(), z + 2, 5);
+        if (p.getNearbyEntities(3, 2, 3) != null) {
 
-            for (Entity entity : p.getNearbyEntities(5, 2, 5)) {
+            for (Entity entity : p.getNearbyEntities(3, 2, 3)) {
                 if (entity instanceof Player) {
                     Player t = (Player) entity;
-                    Character cht = getPlugin().getCharacterManager().getCharacter(t.getUniqueId());
-                    if (!cht.getImmunities().checkSkills()) {
-
+                    CharacterTargettedBySkillEvent ctbse = new CharacterTargettedBySkillEvent(t.getUniqueId());
+                    Bukkit.getPluginManager().callEvent(ctbse);
+                    if (!ctbse.isCancelled()) {
                         t.teleport(p.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-
                     }
+
                 }
             }
         } else {

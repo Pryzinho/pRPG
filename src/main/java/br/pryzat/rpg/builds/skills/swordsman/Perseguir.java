@@ -13,10 +13,10 @@ import java.util.UUID;
 
 public class Perseguir extends Skill {
 
-    public Perseguir(RpgMain main, UUID uuid, int level) {
-        super(main, uuid, level);
+    public Perseguir(Character owner, int level) {
+        super(owner, level);
         setUniqueId("perseguir");
-        setDisplayName("&aPerseguição !");
+        setDisplayName("&aPerseguir");
         setNeedMana(false);
         setNeedLife(true);
         if (level > 10) setLevel(10);
@@ -36,7 +36,7 @@ public class Perseguir extends Skill {
 
     @Override
     public void execute() {
-        Player p = Bukkit.getPlayer(getOwner());
+        Player p = Bukkit.getPlayer(getOwner().getUUID());
        // Vector lsd = p.getEyeLocation().getDirection().multiply(5);
         // Vector ls = p.getEyeLocation().toVector().add(lsd);
          //lsd.multiply(-1);
@@ -51,6 +51,7 @@ public class Perseguir extends Skill {
             p.sendMessage("RTR.HitEntity null");
             return;
         }
+        e.setGlowing(true); //melhor visualizacao
         if (!(e instanceof Player)) {
             p.sendMessage("Não é um player");
             return;
@@ -68,8 +69,8 @@ public class Perseguir extends Skill {
         v2.setZ(d.getZ());
         p.setVelocity(v2);
 		p.sendMessage(target.getName()); //Debug 
-        Character ch = getPlugin().getCharacterManager().getCharacter(getOwner());
-        if (ch.getSkills().has("stomper")) {
+        Character ch = getOwner();
+        if (ch.getSkill("stomper") != null) {
             if (p.getNearbyEntities(3, 3, 3) != null) {
                 for (Entity entity : p.getNearbyEntities(3, 3, 3)) {
                     if (entity instanceof Player) {

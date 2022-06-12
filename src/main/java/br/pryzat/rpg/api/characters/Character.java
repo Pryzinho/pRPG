@@ -170,7 +170,7 @@ public class Character {
         player.openInventory(inv);
     }
 
-    public UUID getUuid() {
+    public UUID getUUID() {
         return uuid;
     }
 
@@ -276,7 +276,7 @@ public class Character {
      */
     public void removeSkill(@Nullable Player trigger, String suid, boolean silent) {
         if (hasSkill(suid)) {
-            Player t = Bukkit.getPlayer(getUuid());
+            Player t = Bukkit.getPlayer(getUUID());
             if (t != null && t.isOnline()) {
                 if (!silent) {
                     t.sendMessage(PryColor.color("&eSistema &f> &cSua habilidade " + getSkill(suid).getDisplayName() + "&c foi removida de sua conta&f."));
@@ -285,7 +285,7 @@ public class Character {
             }
             skills.remove(suid);
             if (trigger != null && trigger.isOnline()) {
-                trigger.sendMessage(PryColor.color("&eSistema &f> &aVocê removeu a habildiade " + getSkill(suid).getDisplayName() + " &ado jogador " + Bukkit.getOfflinePlayer(getUuid()).getName() + "&f."));
+                trigger.sendMessage(PryColor.color("&eSistema &f> &aVocê removeu a habildiade " + getSkill(suid).getDisplayName() + " &ado jogador " + Bukkit.getOfflinePlayer(getUUID()).getName() + "&f."));
             }
         }
     }
@@ -295,7 +295,7 @@ public class Character {
             if (trigger != null && trigger.isOnline()) {
                 trigger.sendMessage(PryColor.color("&eSistema &f> &aO Jogador já possui está habilidade&f, &amas o novo nivel dela foi atualizado&f."));
             }
-            Player t = Bukkit.getPlayer(getUuid());
+            Player t = Bukkit.getPlayer(getUUID());
             if (t != null && t.isOnline()) {
                 if (!silent) {
                     t.sendMessage(PryColor.color("&eSistema &f> &cSua habilidade " + getSkill(skilluid).getDisplayName() + "&c foi atualizada para nivel " + level + "&f."));
@@ -306,9 +306,9 @@ public class Character {
             skills.replace(skilluid, temp);
         } else {
             if (trigger != null && trigger.isOnline()) {
-                trigger.sendMessage(PryColor.color("&eSistema &f> &aA habilidade " + getLearnableSkill(skilluid).getDisplayName() + " &ade nivel " + level + "&f, &afoi adicionado ao jogador " + Bukkit.getOfflinePlayer(getUuid()).getName() + "&f."));
+                trigger.sendMessage(PryColor.color("&eSistema &f> &aA habilidade " + getLearnableSkill(skilluid).getDisplayName() + " &ade nivel " + level + "&f, &afoi adicionado ao jogador " + Bukkit.getOfflinePlayer(getUUID()).getName() + "&f."));
             }
-            Player t = Bukkit.getPlayer(getUuid());
+            Player t = Bukkit.getPlayer(getUUID());
             if (t != null && t.isOnline()) {
                 if (!silent) {
                     t.sendMessage(PryColor.color("&eSistema &f> &cVocê adquiriu " + getSkill(skilluid).getDisplayName() + "&c de nivel " + level + "&f."));

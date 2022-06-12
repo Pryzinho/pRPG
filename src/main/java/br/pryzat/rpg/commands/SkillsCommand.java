@@ -4,6 +4,8 @@ import br.pryzat.rpg.api.characters.Character;
 import br.pryzat.rpg.api.characters.CharacterManager;
 import br.pryzat.rpg.main.RpgMain;
 import br.pryzat.rpg.utils.Logger;
+import br.pryzat.rpg.utils.PryColor;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,10 +33,13 @@ public class SkillsCommand implements CommandExecutor {
             return true;
         }
         if (args.length != 0){
-            p.sendMessage("args length errdinha");
+            p.sendMessage(PryColor.color("&eSistema &f> &cUtilize &f/skills"));
             return true;
         }
-       // p.openInventory(ch.getClazz().getTrees());
+
+        Bukkit.broadcastMessage("DEBUF > Comando /skills executado com sucesso");
         return true;
     }
+
+
 }

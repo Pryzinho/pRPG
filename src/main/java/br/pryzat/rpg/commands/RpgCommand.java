@@ -140,7 +140,7 @@ public class RpgCommand implements CommandExecutor {
                 }
                 if (args[3].equalsIgnoreCase("add")) {
                     String suid = args[4].toLowerCase();
-                    if (RPG.getRegistredSkill(suid) == null) {
+                    if (ch.getLearnableSkill(suid) == null) {
                         sender.sendMessage(PryColor.color("&cHabilidade invalida."));
                         return true;
                     }
@@ -157,8 +157,7 @@ public class RpgCommand implements CommandExecutor {
                         sender.sendMessage(PryColor.color("&aVocê adicionou &e" + level + "&a Level's na habilidade &b" + skill.getUniqueId() + "&a de &e" + target.getName() + "&a !"));
                         target.sendMessage(PryColor.color("&aSua afinidade com &b" + skill.getUniqueId() + "&a aumentou, sua habilidade subiu em &e" + level + " &aLevel's !"));
                     } else {
-                        ch.getSkills().add(suid, target.getUniqueId(), level);
-                        ch.getSkills().get(suid).setUniqueId(suid);
+                        ch.addSkill(null, suid, level, true);
                         sender.sendMessage(PryColor.color("&aVocê adicionou &e" + level + "&a Level's na habilidade &b" + skill.getUniqueId() + "&a de &e" + target.getName() + "&a !"));
                         target.sendMessage(PryColor.color("&dUma força misteriosa interviu em seu personagem, agora você possui à habilidade &b" + skill.getUniqueId() + "&d !"));
                         target.sendMessage(PryColor.color("&aSua afinidade com &b" + skill.getUniqueId() + "&a aumentou, sua habilidade subiu em &e" + level + " &aLevel's !"));
@@ -167,7 +166,7 @@ public class RpgCommand implements CommandExecutor {
                 }
                 if (args[3].equalsIgnoreCase("dec") || args[3].equalsIgnoreCase("rem")) {
                     String suid = args[4].toLowerCase();
-                    if (RPG.getRegistredSkill(suid) == null) {
+                    if (ch.getLearnableSkill(suid) == null) {
                         sender.sendMessage(PryColor.color("&cHabilidade invalida."));
                         return true;
                     }
@@ -190,7 +189,7 @@ public class RpgCommand implements CommandExecutor {
                 }
                 if (args[3].equalsIgnoreCase("set")) {
                     String suid = args[4].toLowerCase();
-                    if (RPG.getRegistredSkill(suid) == null) {
+                    if (ch.getLearnableSkill(suid) == null) {
                         sender.sendMessage(PryColor.color("&cHabilidade invalida."));
                         return true;
                     }
@@ -208,8 +207,7 @@ public class RpgCommand implements CommandExecutor {
                         target.sendMessage(PryColor.color("&aSua afinidade com &b" + skill.getUniqueId() + "&a aumentou, sua habilidade está no Level &e" + level + "&a !"));
 
                     } else {
-                        ch.getSkills().add(suid, target.getUniqueId(), level);
-                        ch.getSkills().get(suid).setUniqueId(suid);
+                        ch.addSkill(null, suid, level, true);
                         skill = ch.getSkills().get(suid);
                         sender.sendMessage(PryColor.color("&aVocê definiu &e" + level + "&a Level's na habilidade &b" + skill.getUniqueId() + "&a de &e" + target.getName() + "&a !"));
                         target.sendMessage(PryColor.color("&dUma força misteriosa interviu em seu personagem, agora você possui à habilidade &b" + skill.getUniqueId() + "&d !"));
@@ -336,7 +334,7 @@ public class RpgCommand implements CommandExecutor {
                     ItemStack istats = ItemBuilder.create("&1Atributos", Material.NETHER_STAR, statslore); // Name: &1Atributos, Lore: stats:points
                     List<String> skillslore = new ArrayList<>();
                     if (ch.getSkills() != null) {
-                        for (Skill skill : ch.getSkills().toList()) {
+                        for (Skill skill : ch.getSkills().values()) {
                             if (skill != null) {
                                 skillslore.add(skill.getDisplayName() + "&f, &eLevel&f: " + skill.getLevel());
                             }
@@ -361,7 +359,7 @@ public class RpgCommand implements CommandExecutor {
                     sender.sendMessage(PryColor.color("&f- &8Resistência &f: " + attributes.getResistance() + " Ponto(s)"));
                     sender.sendMessage(PryColor.color("&2Habilidades&f:"));
                     if (ch.getSkills() != null) {
-                        for (Skill skill : ch.getSkills().toList()) {
+                        for (Skill skill : ch.getSkills().values()) {
                             sender.sendMessage(PryColor.color("&f- " + skill.getDisplayName() + "&f, Level " + skill.getLevel()));
                         }
                     }

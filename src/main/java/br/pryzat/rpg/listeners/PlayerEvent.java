@@ -1,14 +1,11 @@
 package br.pryzat.rpg.listeners;
 
-import br.pryzat.rpg.api.RPG;
 import br.pryzat.rpg.api.characters.Character;
 import br.pryzat.rpg.api.characters.CharacterManager;
-import br.pryzat.rpg.api.characters.classes.Clazz;
 import br.pryzat.rpg.api.characters.classes.ClazzType;
-import br.pryzat.rpg.api.characters.skills.Branch;
-import br.pryzat.rpg.api.characters.skills.SUID;
 import br.pryzat.rpg.api.characters.skills.Skill;
 import br.pryzat.rpg.api.events.EventManager;
+import br.pryzat.rpg.api.events.bukkit.CharacterTargettedBySkillEvent;
 import br.pryzat.rpg.builds.events.ColheitaMaldita;
 import br.pryzat.rpg.main.RpgMain;
 import br.pryzat.rpg.utils.PryColor;
@@ -18,18 +15,13 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-
-import java.util.UUID;
 
 public class PlayerEvent implements Listener {
     private RpgMain main;
@@ -48,23 +40,24 @@ public class PlayerEvent implements Listener {
         Player p = e.getPlayer();
         Character ch = cm.getCharacter(p.getUniqueId());
         if (e.isSneaking()) {
-           // if (ch.getSkills().get("stomper") == null) return;
+            // if (ch.getSkills().get("stomper") == null) return;
             //  ch.getSkills().get(SkillType.STOMPER).preExecute();
-            if (ch.getSkills().get("puxao") != null){
+            if (ch.getSkills().get("puxao") != null) {
                 ch.getSkills().get("puxao").preExecute();
             }
         } else {
             if (ch.getSkills().get("perseguir") != null) {
-              //  ch.getSkills().get("perseguir").preExecute();
+                //  ch.getSkills().get("perseguir").preExecute();
                 return;
             }
         }
     }
-/*
-                    ch.setClazz(new Clazz(main, ClazzType.SWORDSMAN, new Stats(50, 0, 10, 60)));
-                    ch.setClazz(new Clazz(main, ClazzType.MAGE, new Stats(10, 60, 0, 55)));
-                    ch.setClazz(new Clazz(main, ClazzType.PRIEST, new Stats(10, 30, 0, 100)));
-*//*
+
+    /*
+                        ch.setClazz(new Clazz(main, ClazzType.SWORDSMAN, new Stats(50, 0, 10, 60)));
+                        ch.setClazz(new Clazz(main, ClazzType.MAGE, new Stats(10, 60, 0, 55)));
+                        ch.setClazz(new Clazz(main, ClazzType.PRIEST, new Stats(10, 30, 0, 100)));
+    *//*
         if (e.getView().getTitle().equals(PryColor.color("&eRamificações de Habilidades"))) {
             if (e.getCurrentItem() == null) {
                 e.setCancelled(true);
@@ -164,7 +157,7 @@ public class PlayerEvent implements Listener {
             return;
         }
         if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
-            if (ch.getSkills().has("stomper")) {
+            if (ch.getSkill("stomper") != null) {
                 Skill skill = ch.getSkills().get("stomper");
                 if (skill.isInUse()) {
                     skill.setInUse(false);
@@ -228,7 +221,7 @@ public class PlayerEvent implements Listener {
         int armordefense = 0;
         if (p.getInventory().getArmorContents() != null) {
             for (ItemStack armor : p.getInventory().getArmorContents()) {
-                if (armor.getItemMeta().getPersistentDataContainer().has(NamespacedKey.fromString("rpg.item.resistance"), PersistentDataType.STRING)){
+                if (armor.getItemMeta().getPersistentDataContainer().has(NamespacedKey.fromString("rpg.item.resistance"), PersistentDataType.STRING)) {
                     armordefense += Integer.parseInt(armor.getItemMeta().getPersistentDataContainer().get(NamespacedKey.fromString("rpg.item.resistance"), PersistentDataType.STRING));
                 }
             }
@@ -270,6 +263,15 @@ public class PlayerEvent implements Listener {
         if (!e.getRightClicked().isVisible()) {
             e.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void onTargettedBySkill(CharacterTargettedBySkillEvent e) {
+        Character c = cm.getCharacter(e.getTarget());
+        if (c.getImmunities().checkSkills()) {
+            e.setCancelled(true);
+        }
+
     }
 }
 

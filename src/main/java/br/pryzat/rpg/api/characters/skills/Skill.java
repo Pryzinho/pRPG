@@ -45,12 +45,12 @@ public class Skill {
     }
 
     public void preExecute() {
-        Player p = Bukkit.getPlayer(owner.getUuid());
-        if (incooldowns.containsKey(owner.getUuid())) {
-            if (incooldowns.get(owner.getUuid()) <= System.currentTimeMillis()) {
+        Player p = Bukkit.getPlayer(owner.getUUID());
+        if (incooldowns.containsKey(owner.getUUID())) {
+            if (incooldowns.get(owner.getUUID()) <= System.currentTimeMillis()) {
                 incooldowns.remove(p.getUniqueId());
                 execute();
-                incooldowns.put(owner.getUuid(), getCooldown() + System.currentTimeMillis());
+                incooldowns.put(owner.getUUID(), getCooldown() + System.currentTimeMillis());
             } else {
                 p.sendMessage(PryColor.color("&cEssa habilidade está recarregando!"));
                 p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 50f, 50f);
@@ -58,7 +58,7 @@ public class Skill {
             }
         } else {
             execute();
-            incooldowns.put(owner.getUuid(), getCooldown() + System.currentTimeMillis());
+            incooldowns.put(owner.getUUID(), getCooldown() + System.currentTimeMillis());
         }
 
 
