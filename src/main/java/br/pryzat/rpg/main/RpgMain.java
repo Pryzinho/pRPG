@@ -37,6 +37,7 @@ public class RpgMain extends JavaPlugin {
     @Override
     public void onEnable() {
         ConsoleCommandSender ccs = Bukkit.getConsoleSender();
+        Logger.logInfo(ccs, "&aInciaindo &epRPG...");
         String[] dependencies = {"ProtocolLib", "LuckPerms", "Citizens"};
         int d = 0;
         for (Plugin pl : getServer().getPluginManager().getPlugins()) {
@@ -68,13 +69,14 @@ public class RpgMain extends JavaPlugin {
         em.loadAllEvents();
 
         RPG.loadStaticAcces();
-        Logger.logInfo(ccs, "Carregando jogadores...");
+        Logger.logInfo(ccs, "&aCarregando jogadores&f...");
         getCommand("rpg").setExecutor(new RpgCommand(this));
         getCommand("skills").setExecutor(new SkillsCommand(this));
         getCommand("class").setExecutor(new ClassCommand(this));
         getCommand("test").setExecutor(new TestCommand(this));
         getServer().getPluginManager().registerEvents(new PlayerEvent(this), this);
         em.checkProgramedEvents();
+        Logger.logInfo(ccs, "&aInicializado com sucesso!");
     }
 
     @Override
