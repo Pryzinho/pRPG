@@ -23,7 +23,7 @@ public class SkillsCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            Logger.log(sender.getServer().getConsoleSender(), "&cSomente jogadores podem utilizar este comando.");
+            Logger.log(sender.getServer().getConsoleSender(), "&eSistema &f> &cSomente jogadores podem utilizar este comando.");
             return true;
         }
         Player p = (Player) sender;
@@ -37,7 +37,7 @@ public class SkillsCommand implements CommandExecutor {
             return true;
         }
 
-        Bukkit.broadcastMessage("DEBUF > Comando /skills executado com sucesso");
+        Bukkit.broadcastMessage("DEBUG > Comando /skills executado com sucesso");
         return true;
     }
 
