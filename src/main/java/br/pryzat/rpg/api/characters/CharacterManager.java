@@ -31,7 +31,7 @@ public class CharacterManager implements Listener {
         this.plugin = plugin;
         charactersyml = new PryConfig(plugin, "characters.yml");
         charactersyml.saveDefaultConfig();
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     public void createCharacter(UUID uuid) {
