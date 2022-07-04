@@ -42,10 +42,6 @@ public class PackageItem extends ConsumableItem {
         this.items = items;
     }
 
-    public void setLore(List<String> lore) {
-        this.setLore(lore);
-    }
-
     private void give(Player p) {
         items.forEach(p.getInventory()::addItem);
     }
