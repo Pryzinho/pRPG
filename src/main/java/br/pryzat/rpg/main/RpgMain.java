@@ -39,7 +39,7 @@ public class RpgMain extends JavaPlugin {
     // comecei a fazer isso aproximadamente no dia 19/09/2021
     @Override
     public void onEnable() {
-        ArmorEquipEvent.registerListener(this);
+       //ArmorEquipEvent.registerListener(this);
         ConsoleCommandSender ccs = Bukkit.getConsoleSender();
         Logger.logInfo(ccs, "&aIniciando &epRPG&f.");
         String[] dependencies = {"ProtocolLib", "LuckPerms", "Citizens"};
