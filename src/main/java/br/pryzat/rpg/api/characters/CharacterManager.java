@@ -158,6 +158,9 @@ public class CharacterManager implements Listener {
     @EventHandler
     public void onCharLevelled(CharacterLevelChangeEvent e) {
         Character t = getCharacter(e.getTrigger());
+        if (t == null){
+            return;
+        }
         if (e.getNewLevel() > 100) {
             e.setCancelled(true);
             return;
