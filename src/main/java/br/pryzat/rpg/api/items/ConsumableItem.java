@@ -13,6 +13,8 @@ import java.util.List;
 
 public abstract class ConsumableItem {
     private String iuid;
+
+    private String path = "rpg.consumableitems.";
     private String displayName;
     private Material material;
     private int amount;
@@ -45,7 +47,7 @@ public abstract class ConsumableItem {
         bim.setUnbreakable(true);
         bim.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ENCHANTS);
         PersistentDataContainer pdc = bim.getPersistentDataContainer();
-        pdc.set(NamespacedKey.fromString("rpg.item.uid"), PersistentDataType.STRING, getIUID());
+        pdc.set(NamespacedKey.fromString(path + "uid"), PersistentDataType.STRING, getIUID());
         bis.setItemMeta(bim);
         return bis;
     }
@@ -96,6 +98,9 @@ public abstract class ConsumableItem {
         this.lore = lore;
     }
 
+    protected String getUIDPath(){
+        return path;
+    }
     public abstract void execute(Object obj);
 
 }

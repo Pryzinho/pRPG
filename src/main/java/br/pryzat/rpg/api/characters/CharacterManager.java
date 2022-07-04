@@ -3,6 +3,7 @@ package br.pryzat.rpg.api.characters;
 import br.pryzat.rpg.api.characters.classes.ClazzType;
 import br.pryzat.rpg.api.characters.skills.Skill;
 import br.pryzat.rpg.api.characters.stats.Attributes;
+import br.pryzat.rpg.api.events.bukkit.CharacterChooseClassEvent;
 import br.pryzat.rpg.api.events.bukkit.CharacterLevelChangeEvent;
 import br.pryzat.rpg.main.RpgMain;
 import br.pryzat.rpg.utils.PryColor;
@@ -11,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -118,7 +120,12 @@ public class CharacterManager implements Listener {
             for (String key : plugin.getConfigManager().getYml().getSection("classes")) {
                 if (is.getItemMeta().getPersistentDataContainer().has(NamespacedKey.fromString("rpg.representative.item"), PersistentDataType.STRING)) {
                     if (key.toLowerCase().equals(is.getItemMeta().getPersistentDataContainer().get(NamespacedKey.fromString("rpg.representative.item"), PersistentDataType.STRING))) {
-                        ch.setClazz(ClazzType.valueOf(key));
+                        ClazzType newClass = ClazzType.valueOf(key);
+                        CharacterChooseClassEvent ccce = new CharacterChooseClassEvent(ch, newClass);
+                        Bukkit.getPluginManager().callEvent(ccce);
+                        if (!ccce.isCancelled()) {
+                            ch.setClazz(newClass);
+                        }
                         p.closeInventory();
                     }
                 }
@@ -130,11 +137,13 @@ public class CharacterManager implements Listener {
 
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
+        e.setKeepInventory(true);
         if (!(e.getEntity().getKiller() instanceof Player)) return;
         Player p = e.getEntity();
         Player k = e.getEntity().getKiller();
         Character killer = getCharacter(k.getUniqueId());
         killer.getLevelManager().addExp(10);
+
 
     }
 
@@ -142,8 +151,8 @@ public class CharacterManager implements Listener {
     public void onRespawn(PlayerRespawnEvent e) {
         Player p = e.getPlayer();
         Character ch = getCharacter(p.getUniqueId());
-        ch.setHealth((int) (ch.getMaxHealth() * 0.10));
-        ch.setMana((int) (ch.getMaxMana() * 0.30));
+        ch.setHealth(ch.getMaxHealth() * 0.10);
+        ch.setMana(ch.getMaxMana() * 0.30);
     }
 
     @EventHandler
@@ -189,6 +198,21 @@ public class CharacterManager implements Listener {
                 }
             }
             return;
+        }
+    }
+
+    /**
+     * Somente um teste, sera removido depois...
+     * @param e
+     */
+    @EventHandler(priority = EventPriority.HIGH)
+    public void testBlockClass(CharacterChooseClassEvent e) {
+        if (e.getClazz().equals(ClazzType.PRIEST)) {
+            Player t = Bukkit.getPlayer(e.getTrigger().getUUID());
+            if (t != null && t.isOnline()) {
+                t.sendMessage(PryColor.color("&eSitema &f> &cNão foi possivel selecionar essa classe&f, &cvocê é um pecador safado&f!!! &b:D"));
+            }
+            e.setCancelled(true);
         }
     }
 

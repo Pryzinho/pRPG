@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Warden;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -161,7 +162,7 @@ public class PlayerEvent implements Listener {
                 Skill skill = ch.getSkills().get("stomper");
                 if (skill.isInUse()) {
                     skill.setInUse(false);
-                    int tempLife = ch.getHealth() - skill.getLifeCoust();
+                    int tempLife = (int)(ch.getHealth() - skill.getLifeCoust());
                     if (tempLife <= 0) {
                         ch.setHealth(0);
                         e.setDamage(20);
@@ -170,7 +171,7 @@ public class PlayerEvent implements Listener {
                         ch.setHealth(tempLife);
                     }
                 } else {
-                    int tempLife = ch.getHealth() - (int) e.getDamage();
+                    int tempLife = (int)(ch.getHealth() - e.getDamage());
                     if (tempLife <= 0) {
                         e.setDamage(20);
                         return;
@@ -194,13 +195,16 @@ public class PlayerEvent implements Listener {
         if (!(e.getEntity() instanceof Player)) {
             return;
         }
-        if (!(e.getDamager() instanceof Player)) {
+        Player p = (Player) e.getEntity();
+        Character damaged = cm.getCharacter(p.getUniqueId());
+        if (e.getDamager() instanceof Warden){
+damaged.remHealth(damaged.getMaxHealth() * 0.5);
             return;
         }
-        Player p = (Player) e.getEntity(); // Tomou dano
-        Player d = (Player) e.getDamager(); // Deu dano
-        Character damaged = cm.getCharacter(p.getUniqueId());
-        Character damager = cm.getCharacter(d.getUniqueId());
+        if (e.getDamager() instanceof Player) {
+            Player d = (Player) e.getDamager(); // Deu dano
+
+            Character damager = cm.getCharacter(d.getUniqueId());
        /* if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
             if (skill.isInUse()) {
                 skill.setInUse(false);
@@ -214,34 +218,35 @@ public class PlayerEvent implements Listener {
             }
             return;
         }*/
-        if (damaged.getLevel() < 20) {
-            e.setCancelled(true);
-            return;
-        }
-        int armordefense = 0;
-        if (p.getInventory().getArmorContents() != null) {
-            for (ItemStack armor : p.getInventory().getArmorContents()) {
-                if (armor.getItemMeta().getPersistentDataContainer().has(NamespacedKey.fromString("rpg.item.resistance"), PersistentDataType.STRING)) {
-                    armordefense += Integer.parseInt(armor.getItemMeta().getPersistentDataContainer().get(NamespacedKey.fromString("rpg.item.resistance"), PersistentDataType.STRING));
-                }
-            }
-        }
-        int totalDefense = (damaged.getClazz().getAttributes().getResistance() / 2) + armordefense;
-        int totalDamage = ((int) e.getFinalDamage()) + (damager.getClazz().getAttributes().getStrength() / 2);
-
-        int finalDamage = totalDamage - totalDefense;
-        if (finalDamage <= 0) {
-            e.setDamage(0);
-            return;
-        } else {
-            int tempLife = damaged.getHealth() - finalDamage;
-            if (tempLife <= 0) {
-                e.setDamage(20);
+            if (damaged.getLevel() < 20) {
+                e.setCancelled(true);
                 return;
             }
-            damaged.setHealth(tempLife);
+            int armordefense = 0;
+            if (p.getInventory().getArmorContents() != null) {
+                for (ItemStack armor : p.getInventory().getArmorContents()) {
+                    if (armor.getItemMeta().getPersistentDataContainer().has(NamespacedKey.fromString("rpg.item.resistance"), PersistentDataType.STRING)) {
+                        armordefense += Integer.parseInt(armor.getItemMeta().getPersistentDataContainer().get(NamespacedKey.fromString("rpg.item.resistance"), PersistentDataType.STRING));
+                    }
+                }
+            }
+            int totalDefense = (damaged.getClazz().getAttributes().getResistance() / 2) + armordefense;
+            int totalDamage = ((int) e.getFinalDamage()) + (damager.getClazz().getAttributes().getStrength() / 2);
+
+            int finalDamage = totalDamage - totalDefense;
+            if (finalDamage <= 0) {
+                e.setDamage(0);
+                return;
+            } else {
+                int tempLife = (int) (damaged.getHealth() - finalDamage);
+                if (tempLife <= 0) {
+                    e.setDamage(20);
+                    return;
+                }
+                damaged.setHealth(tempLife);
+            }
+            e.setDamage(0);
         }
-        e.setDamage(0);
     }
 
 

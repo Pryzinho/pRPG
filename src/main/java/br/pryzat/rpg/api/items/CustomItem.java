@@ -35,8 +35,10 @@ public class CustomItem {
 	 * 
 	 * @param name
 	 */
-	public void setName(String name) {
+	public CustomItem setName(String name) {
 		im.setDisplayName(color(name));
+
+		return this;
 	}
 
 	/**
@@ -44,11 +46,11 @@ public class CustomItem {
 	 * 
 	 * @param lore
 	 */
-	public void setLore(List<String> lore) {
+	public CustomItem setLore(List<String> lore) {
 		List<String> newlore = new ArrayList<>();
 		lore.forEach(l -> newlore.add(color(l)));
 		im.setLore(lore);
-
+return this;
 	}
 
 	/**
@@ -56,7 +58,7 @@ public class CustomItem {
 	 * 
 	 * @param bool
 	 */
-	public void hideAttributes(boolean bool) {
+	public CustomItem hideAttributes(boolean bool) {
 		if (bool) {
 			im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		} else {
@@ -64,6 +66,7 @@ public class CustomItem {
 				im.removeItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 			}
 		}
+		return this;
 	}
 
 	/**
@@ -71,7 +74,7 @@ public class CustomItem {
 	 * 
 	 * @param bool
 	 */
-	public void hideEnchants(boolean bool) {
+	public CustomItem hideEnchants(boolean bool) {
 		if (bool) {
 			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		} else {
@@ -79,6 +82,7 @@ public class CustomItem {
 				im.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
 			}
 		}
+		return this;
 	}
 
 	/**
@@ -86,9 +90,10 @@ public class CustomItem {
 	 * 
 	 * @param itemflag
 	 */
-	public void setItemFlags(ItemFlag... itemflag) {
+	public CustomItem setItemFlags(ItemFlag... itemflag) {
 		im.removeItemFlags(ItemFlag.values());
 		im.addItemFlags(itemflag);
+		return this;
 	}
 
 	/**
@@ -99,8 +104,9 @@ public class CustomItem {
 	 * @param persistentdatatype Tipo de objeto que está sendo armazenado (Enum)
 	 * @param value              Objeto a ser armazenado
 	 */
-	public void addData(String key, PersistentDataType persistentdatatype, Object value) {
+	public CustomItem addData(String key, PersistentDataType persistentdatatype, Object value) {
 		pdc.set(NamespacedKey.fromString(key), persistentdatatype, value);
+		return this;
 	}
 
 	public PersistentDataContainer getDataManager() {

@@ -476,8 +476,6 @@ public class RpgCommand implements CommandExecutor {
                     p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event " + args[1] + " " + args[2]));
                     p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " &aenable &f: &aAtiva o evento&f."));
                     p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " &cdisable &f: &aDesativa o evento&f."));
-                    p.sendMessage(" ");
-                    return true;
                 } else {
                     if (args.length < 3) {
                         p.sendMessage(" ");
@@ -588,9 +586,9 @@ public class RpgCommand implements CommandExecutor {
                     p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event " + args[1]));
                     p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " &bhelp &f: &aAjuda na utilização do(s) comando(s)."));
                     p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " &blocations &f: &aGerencia as localizações salvas do evento."));
-                    p.sendMessage(" ");
-                    return true;
                 }
+                p.sendMessage(" ");
+                return true;
             } else {
                 p.sendMessage(PryColor.color("&cEsse evento não existe."));
                 return true;

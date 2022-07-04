@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -38,8 +39,8 @@ public class ColheitaMaldita extends Event {
     public void finish(Player p) {
         if (isFinished()) return;
         if (reamingFlowers <= 0) {
-            for (Entity e : guardians){
-                if (e != null){
+            for (Entity e : guardians) {
+                if (e != null) {
                     e.remove();
                 }
             }
@@ -55,10 +56,9 @@ public class ColheitaMaldita extends Event {
                                 Player t = (Player) e;
                                 t.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 20 * 30, 1, false));
                                 t.sendMessage(PryColor.color("&5Você foi envenenado pelas raizes da flor obsidiana."));
-                                getPlugin().getCharacterManager().getCharacter(t.getUniqueId()).updateGraphics();
                                 cancel();
                             }
-                        }.runTaskLater(getPlugin(), 3 * 20);
+                        }.runTaskLater(getPlugin(), 30);
                     }
                 });
             }
@@ -69,11 +69,11 @@ public class ColheitaMaldita extends Event {
     public void start(Player p) {
         if (p != null) {
             if (isStarted()) {
-                p.sendMessage(PryColor.color("&eSitema &f> &cO evento ja foi iniciado&f!"));
+                p.sendMessage(PryColor.color("&eSistema &f> &cO evento já está ocorrendo&f!"));
                 return;
             }
         }
-        if (isStarted())return;
+        if (isStarted()) return;
         for (Location loc : flowers.values()) {
             this.reamingFlowers += 1;
             Block block = loc.getBlock();
@@ -108,11 +108,11 @@ public class ColheitaMaldita extends Event {
     public void ready(Player p) {
         if (p != null) {
             if (isReady()) {
-                p.sendMessage(PryColor.color("&eSitema &f> &cO evento ja foi iniciado&f!"));
+                p.sendMessage(PryColor.color("&eSistema &f> &cO evento já está ocorrendo&f!"));
                 return;
             }
         }
-        if (isReady())return;
+        if (isReady()) return;
         Bukkit.broadcastMessage(" ");
         Bukkit.broadcastMessage(PryColor.color("&aColheita &4Maldita"));
         Bukkit.broadcastMessage(PryColor.color("&bAs flores obsidianas irão crescer em &b1 Minuto"));
@@ -133,18 +133,18 @@ public class ColheitaMaldita extends Event {
         // Material.WHITER_ROSE troquei pq o viaversion so roda items da 1.8, mas a wither fica perfeita nos client 1.17.x
         Random r = new Random();
         int n = r.nextInt(99);
-        if (n <= 49){
-            ItemStack is = ItemBuilder.create("&dFlor Obsidiana", Material.ALLIUM, Arrays.asList("&5Uma flor misteriosa que nasce em raizes obsidianas", "&5Diz a lenda que começaram a crescer na grama ", "&5que a caixa de pandora estava em cima.", "&bQuando aberta ocorrera um evento aleatório com o personagem."));
+        if (n <= 49) {
+            ItemStack is = ItemBuilder.create("&dFlor Obsidiana", Material.WITHER_ROSE, Arrays.asList("&5Uma flor misteriosa que nasce em raizes obsidianas", "&5Diz a lenda que começaram a crescer na grama ", "&5que a caixa de pandora estava em cima.", "&bQuando aberta ocorrera um evento aleatório com o personagem."));
             is.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
             p.getInventory().addItem(is);
         } else {
-            IronGolem ig = (IronGolem)p.getWorld().spawnEntity(p.getLocation(), EntityType.IRON_GOLEM);
-            ig.setCustomName(PryColor.color("&cGuardião Obsidiano"));
-            ig.setCustomNameVisible(true);
-            ig.setCanPickupItems(false);
-            ig.setHealth(100);
-            ig.setPlayerCreated(false);
-            guardians.add(ig);
+            Warden wd = (Warden) p.getWorld().spawnEntity(p.getLocation(), EntityType.WARDEN);
+            wd.setCustomName(PryColor.color("&cGuardião Obsidiano"));
+            wd.setCustomNameVisible(true);
+            wd.setCanPickupItems(false);
+            wd.setAnger(p, 150);
+            wd.setRemoveWhenFarAway(false);
+            guardians.add(wd);
         }
         finish(p);
     }

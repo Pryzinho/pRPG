@@ -33,8 +33,8 @@ public class Character {
     private final UUID uuid;
     private Player player;
     private String dateOfBirth; // (dd/MM/yyyy) > 01/01/2000
-    private int MAX_HP, MAX_MANA;
-    private int HEALTH, MANA;
+    private double MAX_HP, MAX_MANA;
+    private double HEALTH, MANA;
     private ClazzType clazz;
     private Attributes attributes;
     private final Level level;
@@ -138,6 +138,7 @@ public class Character {
         //skills = clazz.getSkills();
         attributes = new Attributes(clazz.getAttributes());
         this.clazz.giveInitialItens(getPlayer());
+
     }
 
     /*
@@ -190,58 +191,58 @@ public class Character {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public int getMaxHealth() {
+    public double getMaxHealth() {
         return MAX_HP;
     }
 
-    public void setMaxHealth(int maxhealth) {
+    public void setMaxHealth(double maxhealth) {
         this.MAX_HP = maxhealth;
         updateGraphics();
     }
 
-    public int getHealth() {
+    public double getHealth() {
         return HEALTH;
     }
 
-    public void setHealth(int health) {
+    public void setHealth(double health) {
         this.HEALTH = health;
         updateGraphics();
     }
 
-    public void addHealth(int health) {
+    public void addHealth(double health) {
         this.HEALTH += health;
         updateGraphics();
     }
 
-    public void remHealth(int health) {
+    public void remHealth(double health) {
         this.HEALTH -= health;
         updateGraphics();
     }
 
-    public int getMaxMana() {
+    public double getMaxMana() {
         return MAX_MANA;
     }
 
-    public void setMaxMana(int maxmana) {
+    public void setMaxMana(double maxmana) {
         this.MAX_MANA = maxmana;
         updateGraphics();
     }
 
-    public int getMana() {
+    public double getMana() {
         return MANA;
     }
 
-    public void setMana(int MANA) {
+    public void setMana(double MANA) {
         this.MANA = MANA;
         updateGraphics();
     }
 
-    public void addMana(int mana) {
+    public void addMana(double mana) {
         this.MANA += mana;
         updateGraphics();
     }
 
-    public void remMana(int mana) {
+    public void remMana(double mana) {
         this.MANA -= mana;
         updateGraphics();
     }
@@ -369,7 +370,7 @@ public class Character {
     public void updateGraphics() {
         if (getPlayer() == null) return;
         if (!getPlayer().isOnline()) return;
-        ActionBar.sendMessage(getPlayer(), "&cHP&f: " + getHealth() + "&f/&c" + getMaxHealth() + " &bMana&f: " + getMana() + "&f/&b" + getMaxMana(), Integer.MAX_VALUE, plugin);
+        ActionBar.sendMessage(getPlayer(), "&cHP&f: " + (int)getHealth() + "&f/&c" + (int)getMaxHealth() + " &bMana&f: " + (int)getMana() + "&f/&b" + (int)getMaxMana(), Integer.MAX_VALUE, plugin);
     }
 
     public void setAttributes(Attributes attributes) {
