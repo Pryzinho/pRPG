@@ -29,7 +29,7 @@ public class ItemManager implements Listener {
 
 
     public void loadAllItems() {
-        items.put("grisaia", new Grisaia(1));
+        items.put("grisaia", new Grisaia(main,1));
         loadAllPackages();
     }
 
