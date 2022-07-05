@@ -17,6 +17,7 @@ import com.comphenix.protocol.ProtocolManager;
 import com.jeff_media.armorequipevent.ArmorEquipEvent;
 import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -39,7 +40,7 @@ public class RpgMain extends JavaPlugin {
     // comecei a fazer isso aproximadamente no dia 19/09/2021
     @Override
     public void onEnable() {
-       //ArmorEquipEvent.registerListener(this);
+        //ArmorEquipEvent.registerListener(this);
         ConsoleCommandSender ccs = Bukkit.getConsoleSender();
         Logger.logInfo(ccs, "&aIniciando &epRPG&f.");
         String[] dependencies = {"ProtocolLib", "LuckPerms", "Citizens"};
@@ -66,13 +67,13 @@ public class RpgMain extends JavaPlugin {
         conm.getYml().saveDefaultConfig();
         lm = new LocationsManager(this);
         lm.getYml().saveDefaultConfig();
+        im = new ItemManager(this);
+        im.loadAllItems();
         cm = new CharacterManager(this);
         cm.getCharactersYml().saveDefaultConfig();
         cm.loadCharacters();
         em = new EventManager(this);
         em.loadAllEvents();
-        im = new ItemManager(this);
-        im.loadAllItems();
 
 
         RPG.loadStaticAcces();
@@ -161,5 +162,4 @@ public class RpgMain extends JavaPlugin {
         }
     }
 */
-
 }

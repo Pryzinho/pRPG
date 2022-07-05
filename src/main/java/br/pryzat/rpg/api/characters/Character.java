@@ -6,6 +6,7 @@ import br.pryzat.rpg.api.characters.skills.Skill;
 import br.pryzat.rpg.api.characters.stats.Immunities;
 import br.pryzat.rpg.api.characters.stats.Attributes;
 import br.pryzat.rpg.api.items.CustomItem;
+import br.pryzat.rpg.api.items.ItemManager;
 import br.pryzat.rpg.main.RpgMain;
 import br.pryzat.rpg.utils.PryColor;
 import br.pryzat.rpg.utils.PryConfig;
@@ -159,7 +160,7 @@ public class Character {
         Set<String> clazzes = config.getSection("classes");
         for (int i = 0; i < clazzes.size(); i++) {
             String key = (String) clazzes.toArray()[i];
-            CustomItem ci = new CustomItem(Material.valueOf(config.getString("classes." + key + ".material")));
+            CustomItem ci = ItemManager.getItemFromPath(config, "classes." + key + ".material");
             ci.setName(config.getString("classes." + key + ".displayName"));
             ci.setLore((List<String>) config.getList("classes." + key + ".description"));
             ci.hideEnchants(true);

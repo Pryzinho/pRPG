@@ -11,20 +11,24 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class CustomItem {
+	private JavaPlugin pl;
 	private ItemStack is;
 	private ItemMeta im;
 	private PersistentDataContainer pdc;
 
-	public CustomItem(ItemStack is) {
+	public CustomItem(JavaPlugin pl, ItemStack is) {
+		this.pl = pl;
 		this.is = is;
 		this.im = is.getItemMeta();
 		this.pdc = im.getPersistentDataContainer();
 	}
 
-	public CustomItem(Material material) {
+	public CustomItem(JavaPlugin pl, Material material) {
+		this.pl = pl;
 		this.is = new ItemStack(material);
 		this.im = is.getItemMeta();
 		this.pdc = im.getPersistentDataContainer();
@@ -105,7 +109,7 @@ return this;
 	 * @param value              Objeto a ser armazenado
 	 */
 	public CustomItem addData(String key, PersistentDataType persistentdatatype, Object value) {
-		pdc.set(NamespacedKey.fromString(key), persistentdatatype, value);
+		pdc.set(new NamespacedKey(pl, key), persistentdatatype, value);
 		return this;
 	}
 
@@ -121,7 +125,7 @@ return this;
 	 *         verdadeiro ou falso.
 	 */
 	public boolean hasKey(String key, PersistentDataType type) {
-		return pdc.has(NamespacedKey.fromString(key), type);
+		return pdc.has(new NamespacedKey(pl, key), type);
 	}
 
 	/**
@@ -135,7 +139,7 @@ return this;
 	public boolean contains(String key, PersistentDataType type, Object value) {
 		if (!hasKey(key, type))
 			return false;
-		if (!pdc.get(NamespacedKey.fromString(key), type).equals(value))
+		if (!pdc.get(new NamespacedKey(pl, key), type).equals(value))
 			return false;
 
 		return true;
@@ -150,7 +154,7 @@ return this;
 	 */
 	public void removeKey(String key, PersistentDataType type) {
 		if (hasKey(key, type))
-			pdc.remove(NamespacedKey.fromString(key));
+			pdc.remove(new NamespacedKey(pl, key));
 	}
 
 	public ItemStack toItemStack() {

@@ -8,12 +8,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
 public abstract class ConsumableItem {
+    private JavaPlugin pl;
     private String iuid;
-
     private String path = "rpg.consumableitems.";
     private String displayName;
     private Material material;
@@ -22,13 +23,16 @@ public abstract class ConsumableItem {
 
     /**
      * Create a new Item
-     * @param iuid Item Unique Identifier
+     *
+     * @param pl          Instance of plugin to register the namespacedkey
+     * @param iuid        Item Unique Identifier
      * @param displayName Display Name
-     * @param material Bukkit Material
-     * @param amount Amount of the item
-     * @param lore Lore of the item
+     * @param material    Bukkit Material
+     * @param amount      Amount of the item
+     * @param lore        Lore of the item
      */
-    public ConsumableItem(String iuid, String displayName, Material material, int amount, List<String> lore) {
+    public ConsumableItem(JavaPlugin pl, String iuid, String displayName, Material material, int amount, List<String> lore) {
+        this.pl = pl;
         this.iuid = iuid;
         this.displayName = displayName;
         this.material = material;
@@ -47,7 +51,7 @@ public abstract class ConsumableItem {
         bim.setUnbreakable(true);
         bim.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ENCHANTS);
         PersistentDataContainer pdc = bim.getPersistentDataContainer();
-        pdc.set(NamespacedKey.fromString(path + "uid"), PersistentDataType.STRING, getIUID());
+        pdc.set(new NamespacedKey(pl, path + "uid"), PersistentDataType.STRING, getIUID());
         bis.setItemMeta(bim);
         return bis;
     }
@@ -55,19 +59,28 @@ public abstract class ConsumableItem {
     public boolean equals(Item t) {
         if (t == null) return false;
         ItemStack is = t.toItem();
-        if (!is.getItemMeta().getPersistentDataContainer().has(NamespacedKey.fromString("rpg.item.uid"), PersistentDataType.STRING)) return false;
-        if (is.getItemMeta().getPersistentDataContainer().get(NamespacedKey.fromString("rpg.item.uid"), PersistentDataType.STRING) != getIUID()) return false;
+        if (!is.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(pl, "rpg.item.uid"), PersistentDataType.STRING))
+            return false;
+        if (is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(pl, "rpg.item.uid"), PersistentDataType.STRING) != getIUID())
+            return false;
         return true;
     }
+
     public boolean equals(ItemStack t) {
         if (t == null) return false;
-        if (!t.getItemMeta().getPersistentDataContainer().has(NamespacedKey.fromString("rpg.item.uid"), PersistentDataType.STRING)) return false;
-        if (t.getItemMeta().getPersistentDataContainer().get(NamespacedKey.fromString("rpg.item.uid"), PersistentDataType.STRING) != getIUID()) return false;
+        if (!t.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(pl, "rpg.item.uid"), PersistentDataType.STRING))
+            return false;
+        if (t.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(pl, "rpg.item.uid"), PersistentDataType.STRING) != getIUID())
+            return false;
         return true;
     }
 
     public String getIUID() {
         return iuid;
+    }
+
+    public JavaPlugin getPlugin() {
+        return pl;
     }
 
     public void setIUID(String iuid) {
@@ -98,9 +111,10 @@ public abstract class ConsumableItem {
         this.lore = lore;
     }
 
-    protected String getUIDPath(){
+    protected String getUIDPath() {
         return path;
     }
+
     public abstract void execute(Object obj);
 
 }

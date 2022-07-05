@@ -1,8 +1,11 @@
 package br.pryzat.rpg.api.items;
 
+import br.pryzat.rpg.api.characters.classes.ClazzType;
+import br.pryzat.rpg.api.characters.stats.Attributes;
 import br.pryzat.rpg.api.events.bukkit.CharacterChooseClassEvent;
 import br.pryzat.rpg.builds.items.Grisaia;
 import br.pryzat.rpg.main.RpgMain;
+import br.pryzat.rpg.utils.PryConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -15,14 +18,15 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ItemManager implements Listener {
-    private RpgMain main;
+    private static RpgMain main;
     private HashMap<String, ConsumableItem> items;
 
-    public ItemManager(RpgMain main) {
-        this.main = main;
+    public ItemManager(RpgMain pl) {
+        main = pl;
         this.items = new HashMap<>();
         Bukkit.getPluginManager().registerEvents(this, main);
     }
+
 
     public void loadAllItems() {
         items.put("grisaia", new Grisaia(1));
@@ -32,13 +36,13 @@ public class ItemManager implements Listener {
 
     private void loadAllPackages() {
         // Package: Força aos Novatos (Formally known as 'fn', registered in: rpg.consumableitems.fn).
-        PackageItem fn = new PackageItem("fn", "&cForça aos Novatos", Material.ENDER_CHEST, 1);
+        PackageItem fn = new PackageItem(main, "fn", "&cForça aos Novatos", Material.ENDER_CHEST, 1);
         List<String> fnl = new ArrayList<>(); //Item lore
         fnl.add("&aPacote especial para novos jogadores&f.");
         fn.setLore(fnl);
         List<ItemStack> fni = new ArrayList<>(); //Pakcage Items
         fni.add(
-                new CustomItem(Material.NETHERITE_HOE)
+                new CustomItem(main, Material.NETHERITE_HOE)
                         .setName("&dFoice do Aprendiz")
                         .setLore(Arrays.asList("&bColeta o dobro de XP em monstros abaixo do nivel 20&f."))
                         .hideEnchants(true)
@@ -78,9 +82,24 @@ public class ItemManager implements Listener {
     //
 
     @EventHandler
-    public void onClazzSelect(CharacterChooseClassEvent e){
-        if (e.isCancelled())return;
-        if (!e.isFirst())return;
+    public void onClazzSelect(CharacterChooseClassEvent e) {
+        if (e.isCancelled()) return;
+        if (!e.isFirst()) return;
         getItem("fn").execute(e.getTrigger());
+    }
+
+    public static List<ItemStack> getInitialItems(String clazztype) {
+        return Arrays.asList(
+                new Item(main, "&9Capacete Inicial", Material.LEATHER_HELMET, new Attributes(0, 0, 0, 5)).toItem(),
+                new Item(main, "&9Peitoral Inicial", Material.LEATHER_CHESTPLATE, new Attributes(0, 0, 0, 10)).toItem(),
+                new Item(main, "&9Calças Inicial", Material.LEATHER_LEGGINGS, new Attributes(0, 0, 0, 5)).toItem(),
+                new Item(main, "&9Botas Inicial", Material.LEATHER_BOOTS, new Attributes(0, 0, 10, 5)).toItem(),
+                new Item(main, "&9Espada Inicial", Material.WOODEN_SWORD, new Attributes(10, 0, 5, 0)).toItem(),
+                new Item(main, "&9Escudo Inicial", Material.SHIELD, new Attributes(0, 0, 0, 30)).toItem()
+        );
+    }
+
+    public static CustomItem getItemFromPath(PryConfig config, String path) {
+        return new CustomItem(main, Material.valueOf(config.getString(path)));
     }
 }

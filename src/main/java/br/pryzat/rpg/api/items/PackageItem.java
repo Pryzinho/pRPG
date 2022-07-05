@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +21,8 @@ public class PackageItem extends ConsumableItem {
      * @param material    Bukkit Material
      * @param amount      Amount of the item
      */
-    public PackageItem(String iuid, String displayName, Material material, int amount) {
-        super(iuid, displayName, material, amount, null);
+    public PackageItem(JavaPlugin pl, String iuid, String displayName, Material material, int amount) {
+        super(pl, iuid, displayName, material, amount, null);
         setIUID(iuid);
     }
 
@@ -33,7 +34,7 @@ public class PackageItem extends ConsumableItem {
         Character ch = (Character) obj;
         Player t = Bukkit.getPlayer(ch.getUUID());
         if (t != null && t.isOnline()) {
-        // check player inventory...
+            // check player inventory...
             give(t);
         }
     }

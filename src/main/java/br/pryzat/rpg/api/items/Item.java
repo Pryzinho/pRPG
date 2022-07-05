@@ -9,23 +9,26 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.ArrayList;
 
 public class Item {
+    private JavaPlugin pl;
     private String iuid;
     private String displayName;
     private Material material;
     private List<String> lore;
     private Attributes attributes;
 
-    public Item(String displayName, Material material, @Nullable Attributes attributes) {
+    public Item(JavaPlugin pl, String displayName, Material material, @Nullable Attributes attributes) {
+       this.pl = pl;
         this.displayName = displayName;
         this.material = material;
         this.attributes = attributes;
-		this.lore = new ArrayList<String>();
+        this.lore = new ArrayList<String>();
     }
 
     public ItemStack toItem() {
@@ -50,12 +53,12 @@ public class Item {
         bim.setUnbreakable(true);
         bim.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ENCHANTS);
         PersistentDataContainer pdc = bim.getPersistentDataContainer();
-pdc.set(NamespacedKey.fromString("rpg.item.uid"), PersistentDataType.STRING, getIUID());
+        pdc.set(new NamespacedKey(pl, "rpg.item.uid"), PersistentDataType.STRING, getIUID());
         if (getStats() != null) {
-            pdc.set(NamespacedKey.fromString("rpg.item.strength"), PersistentDataType.STRING, String.valueOf(getStats().getStrength()));
-            pdc.set(NamespacedKey.fromString("rpg.item.inteligency"), PersistentDataType.STRING, String.valueOf(getStats().getInteligency()));
-            pdc.set(NamespacedKey.fromString("rpg.item.velocity"), PersistentDataType.STRING, String.valueOf(getStats().getVelocity()));
-            pdc.set(NamespacedKey.fromString("rpg.item.resistance"), PersistentDataType.STRING, String.valueOf(getStats().getResistance()));
+            pdc.set(new NamespacedKey(pl, "rpg.item.strength"), PersistentDataType.STRING, String.valueOf(getStats().getStrength()));
+            pdc.set(new NamespacedKey(pl,"rpg.item.inteligency"), PersistentDataType.STRING, String.valueOf(getStats().getInteligency()));
+            pdc.set(new NamespacedKey(pl,"rpg.item.velocity"), PersistentDataType.STRING, String.valueOf(getStats().getVelocity()));
+            pdc.set(new NamespacedKey(pl,"rpg.item.resistance"), PersistentDataType.STRING, String.valueOf(getStats().getResistance()));
         }
         bis.setItemMeta(bim);
         return bis;
