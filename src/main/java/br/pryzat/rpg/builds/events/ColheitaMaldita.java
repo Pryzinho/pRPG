@@ -30,7 +30,6 @@ public class ColheitaMaldita extends Event {
 
     public ColheitaMaldita(RpgMain plugin, String euid) {
         super(plugin, euid);
-        plugin.getCommand(euid).setExecutor(this);
         setReady(false);
         setStarted(false);
         setFinished(false);
@@ -160,7 +159,9 @@ public class ColheitaMaldita extends Event {
 
     @Override
     public boolean onCommand(CommandSender s, Command command, String label, String[] args) {
-        if (!(s instanceof Player)) return true;
+        if (!(s instanceof Player)) {
+            s.sendMessage(PryColor.color("&eSistema &f> &cSomente jogadores podem jogadores podem utilizar esse comando&f."));
+            return true;}
         Player p = (Player) s;
         if (!p.hasPermission("pryzat.rpg.admin")) {
             p.sendMessage(PryColor.color("&eSistema > &cEste comando não existe!"));
