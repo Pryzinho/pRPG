@@ -442,6 +442,7 @@ public class RpgCommand implements CommandExecutor {
 				for (int i = 2; i <= args.length; i++) {
                     listArgs.add(args[i]);
 				}
+				}
                 main.getCommand(args[1]).execute(sender, label, (String[]) listArgs.toArray());
                 return true;
             } else {
