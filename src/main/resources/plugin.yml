@@ -10,14 +10,19 @@ commands:
   test:
     aliases: teste
   rpg:
-   description: Gerenciador do RPG
+   description: Gerenciador do RPG.
    aliases: sistema
   #Players area
   skills:
-    description: Gerencia suas skills
+    description: Gerencia suas skills.
     aliases: habilidades
   class:
-    description: Define sua classe
+    description: Define sua classe.
     aliases: classe
+  #Events area
+  colheitamaldita:
+    description: Gerencia o evento Colheita Maldita.
+    aliases: [ecm]
+
 
 

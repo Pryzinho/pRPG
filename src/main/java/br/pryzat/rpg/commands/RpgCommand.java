@@ -20,6 +20,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RpgCommand implements CommandExecutor {
@@ -29,7 +30,6 @@ public class RpgCommand implements CommandExecutor {
         this.main = main;
     }
 
-    //o
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("pryzat.rpg.admin")) {
@@ -418,8 +418,8 @@ public class RpgCommand implements CommandExecutor {
             Player p = (Player) sender;
             // /rpg event colheitamaldita locations set flower 1
             // /rpg event <EUID> locations set <spawn/flower> <Number>
-            if (args.length > 7 || args.length < 2) {
-                Character ch = cm.getCharacter(p.getUniqueId());
+            final int LIMIT = 7;  // Caso seja criado um evento que um comando dele exiga mais argumentos do que 6, esse valor deve ser alterado.
+            if (args.length >= LIMIT || args.length < 2) {
                 p.sendMessage(" ");
                 p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event"));
                 p.sendMessage(PryColor.color("&8/rpg event &bhelp &f: &aAjuda na utilização do(s) comando(s)."));
@@ -435,162 +435,16 @@ public class RpgCommand implements CommandExecutor {
                 p.sendMessage(" ");
                 return true;
             }
-            if (RPG.verifyEUID(args[1])) {
-                Event event = RPG.getEvent(args[1]);
-                if (!event.isEnabled()) {
-                    if (args.length == 2) {
-                        p.sendMessage(PryColor.color("&eSistema &f> &cEsse evento está desativado&f"));
-                        return true;
-                    }
-                    if (args[2].equalsIgnoreCase("help")) {
-                        if (args.length != 3) {
-                            p.sendMessage(PryColor.color("&eSistema &f> &cSintaxe incorreta verifique o manual, o comando será executado mesmo com esse erro."));
-                        }
-                        p.sendMessage(" ");
-                        p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event " + args[1]));
-                        p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " &aenable &f: &aAtiva o evento&f."));
-                        p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " &cdisable &f: &aDesativa o evento&f."));
-                        p.sendMessage(" ");
-                        return true;
-                    }
-                    if (args.length != 3) {
-                        p.sendMessage(" ");
-                        p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event " + args[1]));
-                        p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " &aenable &f: &aAtiva o evento&f."));
-                        p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " &cdisable &f: &aDesativa o evento&f."));
-                        p.sendMessage(" ");
-                        return true;
-                    }
-                    if (args[2].equalsIgnoreCase("enable")) {
-                        event.setEnabled(true);
-                        p.sendMessage(PryColor.color("&eSistema &f> &aEvento &8" + event.getEuid() + " &a&lativado&a com sucesso&f."));
-                        return true;
-                    }
-                    if (args[2].equalsIgnoreCase("disable")) {
-                        event.setEnabled(false);
-                        p.sendMessage(PryColor.color("&eSistema &f> &aEvento &8" + event.getEuid() + " &c&ldesativado&a com sucesso&f."));
-
-                        return true;
-                    }
-                    p.sendMessage(" ");
-                    p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event " + args[1] + " " + args[2]));
-                    p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " &aenable &f: &aAtiva o evento&f."));
-                    p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " &cdisable &f: &aDesativa o evento&f."));
-                } else {
-                    if (args.length < 3) {
-                        p.sendMessage(" ");
-                        p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event " + args[1]));
-                        p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " &bhelp &f: &aAjuda na utilização do(s) comando(s)."));
-                        p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " &blocations &f: &aGerencia as localizações salvas do evento."));
-                        p.sendMessage(" ");
-                        return true;
-                    }
-                    if (args[2].equalsIgnoreCase("start")) {
-                        if (args.length > 3) {
-                            p.sendMessage(PryColor.color("&eSistema &f> &cSintaxe incorreta verifique o manual, o comando será executado mesmo com esse erro."));
-                        }
-                        //((ColheitaMaldita)event).ready(p);
-                        em.getColheitaMaldita().ready(p);
-                        return true;
-                    }
-                    if (args[2].equalsIgnoreCase("help")) {
-                        if (args.length > 3) {
-                            p.sendMessage(PryColor.color("&eSistema &f> &cSintaxe incorreta verifique o manual, o comando será executado mesmo com esse erro."));
-                        }
-                        p.sendMessage(" ");
-                        p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event " + args[1]));
-                        p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " &bhelp &f: &aAjuda na utilização do(s) comando(s)."));
-                        p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " &blocations &f: &aGerencia as localizações salvas do evento."));
-                        p.sendMessage(" ");
-                        return true;
-                    }
-                    if (args[2].equalsIgnoreCase("locations")) {
-                        if (args.length < 4) {
-                            p.sendMessage(" ");
-                            p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event " + args[1] + " locations"));
-                            p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " locations &bhelp &f: &aAjuda na utilização do(s) comando(s)."));
-                            p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " locations &eset &f<&aSpawn&f/&dAnotherLocation&f> &f: &aDefine certa localização utilizada no evento."));
-                            p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " locations &crem &f<&aSpawn&f/&dAnotherLocation&f> &f: &aRemove certa localização utilizada no evento."));
-                            p.sendMessage(" ");
-                            return true;
-                        }
-                        if (args[3].equalsIgnoreCase("help")) {
-                            if (args.length > 4) {
-                                p.sendMessage(PryColor.color("&eSistema &f> &cSintaxe incorreta verifique o manual, o comando será executado mesmo com esse erro."));
-                            }
-                            p.sendMessage(" ");
-                            p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event " + args[1] + " locations"));
-                            p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " locations &bhelp &f: &aAjuda na utilização do(s) comando(s)."));
-                            p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " locations &eset &f<&aSpawn&f/&dAnotherLocation&f> &f: &aDefine certa localização utilizada no evento."));
-                            p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " locations &crem &f<&aSpawn&f/&dAnotherLocation&f> &f: &aRemove certa localização utilizada no evento."));
-                            p.sendMessage(" ");
-                            return true;
-                        }
-                        if (args[3].equalsIgnoreCase("set")) {
-                            if (args.length < 5 || args.length > 6) {
-                                p.sendMessage(" ");
-                                p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event " + args[1] + " locations set"));
-                                p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " locations &eset &aspawn &f: &aDefine o local de aparição no evento."));
-                                p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " locations &eset &aanotherlocation &f<ID> &f: &aDefine certa localização utilizada no evento de acordo com o id."));
-                                p.sendMessage(" ");
-                                return true;
-                            }
-                            switch (args[4].toLowerCase()) {
-                                case "spawn":
-                                    if (args.length != 5) {
-                                        p.sendMessage(PryColor.color("&eSistema &f> &cSintaxe incorreta verifique o manual, o comando será executado mesmo com esse erro."));
-                                    }
-                                    return true;
-                                case "anotherlocation":
-                                    if (args.length != 6) {
-                                        p.sendMessage(" ");
-                                        p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event " + args[1] + " locations set"));
-                                        p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " locations &eset &aspawn &f: &aDefine o local de aparição no evento."));
-                                        p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " locations &eset &aanotherlocation &f<ID> &f: &aDefine certa localização utilizada no evento de acordo com o id."));
-                                        p.sendMessage(" ");
-                                        return true;
-                                    }
-                                    try {
-                                        int index = Integer.parseInt(args[5]);
-                                        if (em.getColheitaMaldita().getFlowers() == null) {
-                                            em.getColheitaMaldita().initFlowers();
-                                        }
-                                        em.getColheitaMaldita().getFlowers().put(index, p.getLocation());
-                                        p.sendMessage(PryColor.color("&aLocalização definida com sucesso!"));
-                                    } catch (Exception ex) {
-                                        p.sendMessage(PryColor.color("&cO Id não é um número."));
-                                        return true;
-                                    }
-                                    return true;
-                                default:
-                                    p.sendMessage(" ");
-                                    p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event " + args[1] + " locations set"));
-                                    p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " locations &eset &aspawn &f: &aDefine o local de aparição no evento."));
-                                    p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " locations &eset &aanotherlocation &f<ID> &f: &aDefine certa localização utilizada no evento de acordo com o id."));
-                                    p.sendMessage(" ");
-                                    return true;
-                            }
-                        }
-                        if (args[3].equalsIgnoreCase("rem")) {
-                            return true;
-                        }
-                        p.sendMessage(" ");
-                        p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event " + args[1] + " locations"));
-                        p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " locations &bhelp &f: &aAjuda na utilização do(s) comando(s)."));
-                        p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " locations &eset &f<&aSpawn&f/&dAnotherLocation&f> &f: &aDefine certa localização utilizada no evento."));
-                        p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " locations &crem &f<&aSpawn&f/&dAnotherLocation&f> &f: &aRemove certa localização utilizada no evento."));
-                        p.sendMessage(" ");
-                        return true;
-                    }
-                    p.sendMessage(" ");
-                    p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event " + args[1]));
-                    p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " &bhelp &f: &aAjuda na utilização do(s) comando(s)."));
-                    p.sendMessage(PryColor.color("&8/rpg event " + args[1] + " &blocations &f: &aGerencia as localizações salvas do evento."));
+            // Useless     if (RPG.verifyEUID(args[1])) {
+            if (main.getEventManager().isEvent(args[1])) {
+                List<String> listArgs = new ArrayList<>();
+                for (int i = 2; i <= args.length; i++) {
+                    listArgs.add(args[i]);
                 }
-                p.sendMessage(" ");
+                main.getCommand(args[1]).execute(sender, label, (String[]) listArgs.toArray());
                 return true;
             } else {
-                p.sendMessage(PryColor.color("&cEsse evento não existe."));
+                p.sendMessage(PryColor.color("&eSistema &f> &cEsse evento não existe&f."));
                 return true;
             }
 			/*
@@ -602,7 +456,7 @@ public class RpgCommand implements CommandExecutor {
             return true;
 			*/
         }
-        sender.sendMessage(PryColor.color("&cUse: /rpg help"));
+        sender.sendMessage(PryColor.color("&eSistema &f> &cUtilize&f: &8/rpg &bhelp"));
         return true;
     }
 }

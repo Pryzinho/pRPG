@@ -91,7 +91,7 @@ public class RpgMain extends JavaPlugin {
     @Override
     public void onDisable() {
         cm.saveCharacters();
-        em.registerAllEvents();
+        em.saveAllEvents();
         HandlerList.unregisterAll();
     }
 

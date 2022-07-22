@@ -5,6 +5,8 @@ discord_bot:
 events:
   colheitamaldita:
     enabled: false
+  draculaexpedition:
+    enabled: false
 
 classes:
   SWORDSMAN:

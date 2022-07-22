@@ -6,13 +6,13 @@ import br.pryzat.rpg.main.RpgMain;
 import org.bukkit.Location;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
+import java.util.*;
 
 public class EventManager {
     private final RpgMain plugin;
     // Custom Events
+
+    private List<String> eventsuids = new ArrayList<>();
     private ColheitaMaldita ecm;
 
     public EventManager(RpgMain main) {
@@ -20,28 +20,13 @@ public class EventManager {
     }
 
     public void loadAllEvents() {
-        HashMap<Integer, Location> flowers = new HashMap<>();
-        for (String key : plugin.getLocationManager().getYml().getSection("flowers")) {
-            if (key != null) {
-                flowers.put(Integer.parseInt(key), plugin.getLocationManager().getYml().getLocation("flowers." + key));
-            }
-        }
-        ecm = new ColheitaMaldita(plugin, "colheitamaldita", flowers);
-        ecm.setEnabled(plugin.getConfigManager().getYml().getBoolean("events.colheitamaldita.enabled"));
+        ecm = new ColheitaMaldita(plugin, "colheitamaldita");
+        register(ecm);
     }
 
-    public void registerAllEvents() {
-        if (ecm.isEnabled()) {
-            if (ecm.getFlowers() == null) {
-                ecm.initFlowers();
-            }
-            for (int i = 0; i < ecm.getFlowers().size(); i++) {
-                if (ecm.getFlowers().get(i) != null) {
-                    plugin.getLocationManager().getYml().setLocation("flowers." + (i + 1), ecm.getFlowers().get(i));
-                }
-            }
-        }
-        plugin.getConfigManager().getYml().set("events." + ecm.getEuid(), RPG.getEvent(ecm.getEuid()).isEnabled());
+    public void saveAllEvents() {
+        ecm.saveConfiguration();
+
         plugin.getLocationManager().getYml().saveConfig();
     }
 
@@ -51,12 +36,18 @@ public class EventManager {
         String date = sdf.format(new Date(System.currentTimeMillis()));
         switch (date) {
             case "12":
-                if (!ecm.isEnabled()) ecm.ready(null);
             case "16":
-                if (!ecm.isEnabled()) ecm.ready(null);
             case "20":
-                if (!ecm.isEnabled()) ecm.ready(null);
+                if (ecm.isEnabled()) ecm.ready(null);
+                break;
         }
+    }
+
+    public boolean isEvent(String euid){
+        return eventsuids.stream().anyMatch(euid::equals);
+    }
+    public void register(Event e){
+        eventsuids.add(e.getEuid());
     }
 
     public ColheitaMaldita getColheitaMaldita() {

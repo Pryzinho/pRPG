@@ -2,6 +2,8 @@ package br.pryzat.rpg.builds.events;
 
 import br.pryzat.rpg.api.events.Event;
 import br.pryzat.rpg.main.RpgMain;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class DraculaExpedition extends Event {
@@ -26,4 +28,13 @@ public class DraculaExpedition extends Event {
     public void ready(Player p) {
 
     }
+    @Override
+    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+        return false;
+    }
+    @Override
+    public void saveConfiguration() {
+
+    }
+
 }
