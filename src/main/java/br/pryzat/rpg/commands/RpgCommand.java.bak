@@ -438,9 +438,10 @@ public class RpgCommand implements CommandExecutor {
             // Useless     if (RPG.verifyEUID(args[1])) {
             if (main.getEventManager().isEvent(args[1])) {
                 List<String> listArgs = new ArrayList<>();
-                for (int i = 2; i <= args.length; i++) {
+                if (args.length > 2) {
+				for (int i = 2; i <= args.length; i++) {
                     listArgs.add(args[i]);
-                }
+				}
                 main.getCommand(args[1]).execute(sender, label, (String[]) listArgs.toArray());
                 return true;
             } else {
