@@ -30,6 +30,7 @@ public class ColheitaMaldita extends Event {
 
     public ColheitaMaldita(RpgMain plugin, String euid) {
         super(plugin, euid);
+        plugin.getCommand(euid).setExecutor(this);
         setReady(false);
         setStarted(false);
         setFinished(false);

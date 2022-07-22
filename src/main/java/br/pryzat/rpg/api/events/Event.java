@@ -18,7 +18,6 @@ public abstract class Event implements CommandExecutor {
         CONFIG_PATH = "events." + euid + ".";
         LOCATIONS_PATH = CONFIG_PATH;
         this.enabled = plugin.getConfigManager().getYml().getBoolean("events." + euid + ".enabled");
-        plugin.getCommand(euid).setExecutor(this);
     }
 
     public abstract void finish(Player p);
