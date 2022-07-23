@@ -24,7 +24,8 @@ public class TestCommand implements CommandExecutor {
             p.sendMessage("Args erradinha");
             return true;
         }
-        main.changePlayerNameAboveHead(p, "Teste de nome");
+        main.getCharacterManager().getCharacter(p.getUniqueId()).getLevelManager().setExp(10000000);
+      //  main.changePlayerNameAboveHead(p, "Teste de nome");
         return true;
     }
 }

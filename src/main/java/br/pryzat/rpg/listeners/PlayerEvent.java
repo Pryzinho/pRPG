@@ -111,7 +111,7 @@ public class PlayerEvent implements Listener {
     public void onTryCloseUnSelected(InventoryCloseEvent e) {
         if (!(e.getPlayer() instanceof Player)) return;
         Player p = (Player) e.getPlayer();
-        if (e.getView().getTitle().equals(PryColor.color("&bSelecione sua classe..."))) {
+        if (e.getView().title().toString().equals(PryColor.color("&bSelecione sua classe..."))) {
             Character ch = cm.getCharacter(p.getUniqueId());
             ClazzType clazz = ch.getClazz();
             if (clazz == null) {

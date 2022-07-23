@@ -2,6 +2,7 @@ package br.pryzat.rpg.api.characters;
 
 import br.pryzat.rpg.api.events.bukkit.CharacterLevelChangeEvent;
 import br.pryzat.rpg.main.RpgMain;
+import br.pryzat.rpg.utils.PryColor;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
@@ -28,7 +29,7 @@ public class Level {
         @Override
         public void run() {
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 30f, 30f);
-            p.sendMessage("&aVocê subiu " + acontinuos + " nivel(is)&f.");
+            p.sendMessage(PryColor.color("&aVocê subiu " + acontinuos + " nivel(is)&f."));
             acontinuos = 0;
         }
     };
@@ -39,7 +40,7 @@ public class Level {
         @Override
         public void run() {
             p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 30f, 30f);
-            p.sendMessage("&cVocê perdeu " + rcontinuos + " nivel(is)&f.");
+            p.sendMessage(PryColor.color("&cVocê perdeu " + rcontinuos + " nivel(is)&f."));
             rcontinuos = 0;
         }
     };
@@ -67,7 +68,7 @@ public class Level {
         Player p = Bukkit.getPlayer(owner);
         if (p != null && p.isOnline()) {
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 30f, 30f);
-            p.sendMessage("&aSeu nivel foi definido para " + this.level);
+            p.sendMessage(PryColor.color("&aSeu nivel foi definido para " + this.level));
         }
         checkLevelUp();
     }
