@@ -3,15 +3,14 @@ package br.pryzat.rpg.main;
 import br.pryzat.rpg.api.RPG;
 import br.pryzat.rpg.api.characters.CharacterManager;
 import br.pryzat.rpg.api.events.EventManager;
+import br.pryzat.rpg.api.items.CustomItem;
 import br.pryzat.rpg.api.items.ItemManager;
 import br.pryzat.rpg.commands.ClassCommand;
 import br.pryzat.rpg.commands.RpgCommand;
 import br.pryzat.rpg.commands.SkillsCommand;
 import br.pryzat.rpg.commands.TestCommand;
 import br.pryzat.rpg.listeners.PlayerEvent;
-import br.pryzat.rpg.utils.ConfigManager;
-import br.pryzat.rpg.utils.LocationsManager;
-import br.pryzat.rpg.utils.Logger;
+import br.pryzat.rpg.utils.*;
 import br.pryzat.rpg.utils.packetwrapper.WrapperPlayServerPlayerInfo;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -22,17 +21,23 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.google.common.collect.Lists;
+import net.kyori.adventure.text.Component;
 import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
+import java.util.Set;
 
-public class RpgMain extends JavaPlugin {  
+public class RpgMain extends JavaPlugin {
     private final String[] DEPENDENCIES = {"ProtocolLib", "LuckPerms", "Citizens"};
     private ConfigManager conm;
     private LocationsManager lm;
@@ -51,17 +56,17 @@ public class RpgMain extends JavaPlugin {
         //ArmorEquipEvent.registerListener(this);
         ConsoleCommandSender ccs = Bukkit.getConsoleSender();
         Logger.logInfo(ccs, "&aIniciando &epRPG&f.");
-        for (String dependencie : DEPENDENCIES){
-            if (!getServer().getPluginManager().isPluginEnabled(dependencie)){
+        for (String dependencie : DEPENDENCIES) {
+            if (!getServer().getPluginManager().isPluginEnabled(dependencie)) {
                 Logger.logError(ccs, "As dependências não foram encontradas.");
                 getServer().getPluginManager().disablePlugin(this);
             } else {
                 Logger.logInfo(ccs, "Dependência &e" + dependencie + "&a encontrada&f.");
             }
         }
-            RegisteredServiceProvider<LuckPerms> lp_provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
-            lp = lp_provider.getProvider();
-            protocolmanager = ProtocolLibrary.getProtocolManager();
+        RegisteredServiceProvider<LuckPerms> lp_provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+        lp = lp_provider.getProvider();
+        protocolmanager = ProtocolLibrary.getProtocolManager();
         // CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TestTrait.class).withName("teleportador"));
 
         conm = new ConfigManager(this);

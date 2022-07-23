@@ -57,6 +57,9 @@ public class CharacterManager implements Listener {
                         }
                     }
                 }
+                if (ch.getClazz() == null){
+                    ch.setClazz(ClazzType.SWORDSMAN);
+                }
                 charactersyml.set(uuid.toString() + ".class", ch.getClazz().toString());
                 charactersyml.set(uuid + ".immunities.skills", ch.getImmunities().checkSkills());
                 charactersyml.set(uuid + ".immunities.damage.physical", ch.getImmunities().checkPhysicalDamage());

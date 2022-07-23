@@ -11,6 +11,7 @@ import br.pryzat.rpg.main.RpgMain;
 import br.pryzat.rpg.utils.PryColor;
 import br.pryzat.rpg.utils.PryConfig;
 import br.pryzat.rpg.utils.ActionBar;
+import net.kyori.adventure.text.Component;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.types.InheritanceNode;
@@ -19,6 +20,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -155,7 +157,7 @@ public class Character {
 
     */
     public void selectClazz() {
-        Inventory inv = Bukkit.createInventory(null, 9 * 3, PryColor.color("&bSelecione sua classe..."));
+        Inventory inv = Bukkit.createInventory(null, InventoryType.CHEST, Component.text(PryColor.color("&bSelecione sua classe...")));
         PryConfig config = plugin.getConfigManager().getYml();
         Set<String> clazzes = config.getSection("classes");
         for (int i = 0; i < clazzes.size(); i++) {
@@ -166,7 +168,7 @@ public class Character {
             ci.hideEnchants(true);
             ci.hideAttributes(true);
             String codeclass = key.toLowerCase();
-            ci.getDataManager().set(NamespacedKey.fromString("rpg.representative.item"), PersistentDataType.STRING, codeclass);
+            ci.getDataManager().set(new NamespacedKey(plugin, "rpg.representative.item"), PersistentDataType.STRING, codeclass);
             inv.setItem(10 + i, ci.toItemStack());
         }
         player.openInventory(inv);
