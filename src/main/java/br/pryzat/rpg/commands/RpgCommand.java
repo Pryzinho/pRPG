@@ -439,7 +439,7 @@ public class RpgCommand implements CommandExecutor {
             if (main.getEventManager().isEvent(args[1])) {
                 List<String> listArgs = new ArrayList<>();
                 if (args.length > 2) {
-				for (int i = 2; i <= args.length; i++) {
+				for (int i = 2; i < args.length; i++) {
                     listArgs.add(args[i]);
 				}
 				}

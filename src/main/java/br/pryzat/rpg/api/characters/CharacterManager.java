@@ -118,8 +118,8 @@ public class CharacterManager implements Listener {
         if (e.getView().getTitle().equals(PryColor.color("&bSelecione sua classe..."))) {
 
             for (String key : plugin.getConfigManager().getYml().getSection("classes")) {
-                if (is.getItemMeta().getPersistentDataContainer().has(NamespacedKey.fromString("rpg.representative.item"), PersistentDataType.STRING)) {
-                    if (key.toLowerCase().equals(is.getItemMeta().getPersistentDataContainer().get(NamespacedKey.fromString("rpg.representative.item"), PersistentDataType.STRING))) {
+                if (is.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin,"rpg.representative.item"), PersistentDataType.STRING)) {
+                    if (key.toLowerCase().equals(is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin,"rpg.representative.item"), PersistentDataType.STRING))) {
                         ClazzType newClass = ClazzType.valueOf(key);
                         CharacterChooseClassEvent ccce = new CharacterChooseClassEvent(ch, newClass);
                         Bukkit.getPluginManager().callEvent(ccce);
@@ -213,7 +213,7 @@ public class CharacterManager implements Listener {
         if (e.getClazz().equals(ClazzType.PRIEST)) {
             Player t = Bukkit.getPlayer(e.getTrigger().getUUID());
             if (t != null && t.isOnline()) {
-                t.sendMessage(PryColor.color("&eSitema &f> &cNão foi possivel selecionar essa classe&f, &cvocê é um pecador safado&f!!! &b:D"));
+                t.sendMessage(PryColor.color("&eSistema &f> &cNão foi possivel selecionar essa classe&f, &cvocê é um pecador safado&f!!! &b:D"));
             }
             e.setCancelled(true);
         }

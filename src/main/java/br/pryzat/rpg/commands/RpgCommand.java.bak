@@ -443,7 +443,7 @@ public class RpgCommand implements CommandExecutor {
                     listArgs.add(args[i]);
 				}
 				}
-                main.getCommand(args[1]).execute(sender, label, (String[]) listArgs.toArray());
+                main.getCommand(args[1]).execute(sender, label, Arrays.copyOf(listArgs.toArray(), listArgs.toArray().length, String[].class));
                 return true;
             } else {
                 p.sendMessage(PryColor.color("&eSistema &f> &cEsse evento não existe&f."));
