@@ -90,12 +90,12 @@ public class ItemManager implements Listener {
 
     public static List<ItemStack> getInitialItems(String clazztype) {
         return Arrays.asList(
-                new Item(main, "&9Capacete Inicial", Material.LEATHER_HELMET, new Attributes(0, 0, 0, 5)).toItem(),
-                new Item(main, "&9Peitoral Inicial", Material.LEATHER_CHESTPLATE, new Attributes(0, 0, 0, 10)).toItem(),
-                new Item(main, "&9Calças Inicial", Material.LEATHER_LEGGINGS, new Attributes(0, 0, 0, 5)).toItem(),
-                new Item(main, "&9Botas Inicial", Material.LEATHER_BOOTS, new Attributes(0, 0, 10, 5)).toItem(),
-                new Item(main, "&9Espada Inicial", Material.WOODEN_SWORD, new Attributes(10, 0, 5, 0)).toItem(),
-                new Item(main, "&9Escudo Inicial", Material.SHIELD, new Attributes(0, 0, 0, 30)).toItem()
+                new Item(main, "&9Capacete Inicial", Material.LEATHER_HELMET, new Attributes(0, 0, 0, 5)).setIUID("thel").toItem(),
+                new Item(main, "&9Peitoral Inicial", Material.LEATHER_CHESTPLATE, new Attributes(0, 0, 0, 10)).setIUID("tche").toItem(),
+                new Item(main, "&9Calças Inicial", Material.LEATHER_LEGGINGS, new Attributes(0, 0, 0, 5)).setIUID("tleg").toItem(),
+                new Item(main, "&9Botas Inicial", Material.LEATHER_BOOTS, new Attributes(0, 0, 10, 5)).setIUID("tboo").toItem(),
+                new Item(main, "&9Espada Inicial", Material.WOODEN_SWORD, new Attributes(10, 0, 5, 0)).setIUID("tswo").toItem(),
+                new Item(main, "&9Escudo Inicial", Material.SHIELD, new Attributes(0, 0, 0, 30)).setIUID("tshi").toItem()
         );
     }
 

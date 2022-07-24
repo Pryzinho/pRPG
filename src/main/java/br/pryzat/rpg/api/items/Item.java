@@ -68,8 +68,9 @@ public class Item {
         return iuid;
     }
 
-    public void setIUID(String iuid) {
+    public Item setIUID(String iuid) {
         this.iuid = iuid;
+        return this;
     }
 
     public String getDisplayName() {
