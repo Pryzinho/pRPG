@@ -1,10 +1,10 @@
 package br.pryzat.rpg.builds.events;
 
-import br.pryzat.rpg.api.RPG;
 import br.pryzat.rpg.api.events.Event;
 import br.pryzat.rpg.utils.ItemBuilder;
 import br.pryzat.rpg.utils.PryColor;
 import br.pryzat.rpg.main.RpgMain;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,7 +13,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -53,7 +52,7 @@ public class ColheitaMaldita extends Event {
                     e.remove();
                 }
             }
-            Bukkit.broadcastMessage(PryColor.color("&cTodas as &dFlores Obsidianas&c foram colhidas, em consequência às raizes destruirão todas as entidades proximas."));
+            Bukkit.getServer().broadcast(Component.text(PryColor.color("&cTodas as &dFlores Obsidianas&c foram colhidas, em consequência às raizes destruirão todas as entidades proximas.")));
             for (Location loc : flowers.values()) {
                 loc.getWorld().getNearbyEntities(loc, 3, 3, 3).forEach(e -> {
                     if (e instanceof ArmorStand) {
@@ -88,21 +87,18 @@ public class ColheitaMaldita extends Event {
             Block block = loc.getBlock();
             block.setType(Material.OBSIDIAN);
             ArmorStand as = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
-            as.setCustomName(PryColor.color("&dFlor obsidiana petrificada"));
+            as.customName(Component.text(PryColor.color("&dFlor obsidiana petrificada")));
             as.setCustomNameVisible(true);
             as.setInvisible(true);
             as.setInvulnerable(true);
             as.setCollidable(false);
             as.setCanPickupItems(false);
             as.setGravity(false);
-            if (as.getNearbyEntities(3, 3, 3) != null) {
-                as.getNearbyEntities(3, 3, 3).forEach(e -> {
-                    if (e instanceof Player) {
-                        Player t = (Player) e;
-                        t.damage(getPlugin().getCharacterManager().getCharacter(t.getUniqueId()).getMaxHealth() * 0.15);
-                    }
-                });
-            }
+            as.getNearbyEntities(3, 3, 3).forEach(e -> {
+                if (e instanceof Player t) {
+                    t.damage(getPlugin().getCharacterManager().getCharacter(t.getUniqueId()).getMaxHealth() * 0.15);
+                }
+            });
         }
         setStarted(true);
     }
@@ -119,12 +115,13 @@ public class ColheitaMaldita extends Event {
                 return;
             }
         }
-        if (!isEnabled())return;
+        if (!isEnabled()) return;
         if (isReady()) return;
-        Bukkit.broadcastMessage(" ");
-        Bukkit.broadcastMessage(PryColor.color("&aColheita &4Maldita"));
-        Bukkit.broadcastMessage(PryColor.color("&bAs flores obsidianas irão crescer em &b1 Minuto"));
-        Bukkit.broadcastMessage(" ");
+        Bukkit.getServer().broadcast(Component.text(" "));
+        Bukkit.getServer().broadcast(Component.text(PryColor.color("&aColheita &4Maldita")));
+        Bukkit.getServer().broadcast(Component.text(PryColor.color("&bAs flores obsidianas irão crescer em &b1 Minuto")));
+        Bukkit.getServer().broadcast(Component.text(" "));
+
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -147,7 +144,7 @@ public class ColheitaMaldita extends Event {
             p.getInventory().addItem(is);
         } else {
             Warden wd = (Warden) p.getWorld().spawnEntity(p.getLocation(), EntityType.WARDEN);
-            wd.setCustomName(PryColor.color("&cGuardião Obsidiano"));
+            wd.customName(Component.text(PryColor.color("&cGuardião Obsidiano")));
             wd.setCustomNameVisible(true);
             wd.setCanPickupItems(false);
             wd.setAnger(p, 150);
@@ -159,10 +156,10 @@ public class ColheitaMaldita extends Event {
 
     @Override
     public boolean onCommand(CommandSender s, Command command, String label, String[] args) {
-        if (!(s instanceof Player)) {
+        if (!(s instanceof Player p)) {
             s.sendMessage(PryColor.color("&eSistema &f> &cSomente jogadores podem jogadores podem utilizar esse comando&f."));
-            return true;}
-        Player p = (Player) s;
+            return true;
+        }
         if (!p.hasPermission("pryzat.rpg.admin")) {
             p.sendMessage(PryColor.color("&eSistema > &cEste comando não existe!"));
             return true;
@@ -206,8 +203,8 @@ public class ColheitaMaldita extends Event {
                 p.sendMessage(PryColor.color("&eSistema &f> &bO evento está &aativado&f."));
             } else {
                 p.sendMessage(PryColor.color("&eSistema &f> &bO evento está &cdesativado&f."));
-                return true;
             }
+            return true;
         }
         if (args[0].equalsIgnoreCase("enable")) {
             if (args.length > 1) {
@@ -230,12 +227,12 @@ public class ColheitaMaldita extends Event {
                 p.sendMessage(PryColor.color("&eSistema &f> &aEvento &8" + getEuid() + " &c&ldesativado&a com sucesso&f."));
             } else {
                 p.sendMessage(PryColor.color("&eSistema &f> &cO evento já está desativado&f."));
-                return true;
             }
+            return true;
         }
 
         if (isEnabled()) {
-            p.sendMessage(PryColor.color("&eSistema &f> &cEsse evento está desabilitado&f, &cas únicas funções disponieis s]ao&f: &bhelp&f, &aenable&f, &cdisable&f."));
+            p.sendMessage(PryColor.color("&eSistema &f> &cEsse evento está desabilitado&f, &cas únicas funções disponiveis são&f: &bhelp&f, &astatus&f, &aenable&f, &cdisable&f."));
             return true;
         }
         if (args[0].equalsIgnoreCase("start")) {
@@ -259,9 +256,6 @@ public class ColheitaMaldita extends Event {
                 return true;
             }
             if (args[1].equalsIgnoreCase("help")) {
-                if (args.length > 2) {
-                    p.sendMessage(PryColor.color("&eSistema &f> &cSintaxe incorreta verifique o manual, o comando será executado mesmo com esse erro."));
-                }
                 p.sendMessage(" ");
                 p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event " + getEuid() + " locations"));
                 p.sendMessage(PryColor.color("&4Atenção&f, &4saiba que gerenciar eventos utilizando esse comando é ineficiente&f!"));
@@ -287,7 +281,7 @@ public class ColheitaMaldita extends Event {
                 }
                 if (args[2].equalsIgnoreCase("flower")) {
                     try {
-                        int index = Integer.parseInt(args[5]);
+                        int index = Integer.parseInt(args[3]);
                         if (flowers.containsKey(index)) {
                             flowers.replace(index, p.getLocation());
                             p.sendMessage(PryColor.color("&eSistema &f> &aLocalização redefinida com sucesso&f! (&dFlor &b" + index + "&f)"));
@@ -316,6 +310,7 @@ public class ColheitaMaldita extends Event {
                 // Usage: /colheitamaldita locations(args[0]) rem(args[1]) número da flor (basciamente o id  que fica registrado na hashmap <Integer, Location>)
                 // é necessario checar se as args length sao igual a 4
                 p.sendMessage("a"); // me nego a nao poder reduzir o tamanho do if a 1 linha no intelij idea
+                return true;
             }
         }
         p.sendMessage(" ");
@@ -338,6 +333,8 @@ public class ColheitaMaldita extends Event {
             }
         }
         getPlugin().getConfigManager().getYml().set(CONFIG_PATH + ".enabled", isEnabled());
+        getPlugin().getConfigManager().getYml().saveConfig();
+        getPlugin().getLocationManager().getYml().saveConfig();
     }
 
     public HashMap<Integer, Location> getFlowers() {
