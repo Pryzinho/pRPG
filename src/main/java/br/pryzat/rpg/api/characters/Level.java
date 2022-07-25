@@ -80,6 +80,7 @@ public class Level {
             return;
         }
         this.level += level;
+        /*
         acontinuos++;
         Player p = Bukkit.getPlayer(owner);
         if (p != null && p.isOnline()) {
@@ -88,6 +89,7 @@ public class Level {
             }
             arun.runTaskLater(plugin, 3 * 20);
         }
+         */
         checkLevelUp();
     }
 
@@ -99,6 +101,7 @@ public class Level {
         }
         this.level -= level;
 
+        /*
         rcontinuos++;
         Player p = Bukkit.getPlayer(owner);
         if (p != null && p.isOnline()) {
@@ -107,6 +110,7 @@ public class Level {
             }
             rrun.runTaskLater(plugin, 3 * 20);
         }
+        */
         checkLevelUp();
     }
 
@@ -137,7 +141,7 @@ public class Level {
     }
 
     public void checkLevelUp() {
-        if (level >= 20) {
+      /*  if (level >= 20) {
             Player player = Bukkit.getPlayer(owner);
             LuckPerms lp = LuckPermsProvider.get();
             User user;
@@ -171,7 +175,7 @@ public class Level {
                     lp.getUserManager().saveUser(user);
                 }
             }
-        }
+        }*/
         if (level < 20) {
             reqExp = (level + 1) * 1000;
             if (experience >= reqExp) {
