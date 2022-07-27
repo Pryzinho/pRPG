@@ -162,7 +162,7 @@ public class PlayerEvent implements Listener {
                 Skill skill = ch.getSkills().get("stomper");
                 if (skill.isInUse()) {
                     skill.setInUse(false);
-                    int tempLife = (int)(ch.getHealth() - skill.getLifeCoust());
+                    int tempLife = (int) (ch.getHealth() - skill.getLifeCoust());
                     if (tempLife <= 0) {
                         ch.setHealth(0);
                         e.setDamage(20);
@@ -171,7 +171,7 @@ public class PlayerEvent implements Listener {
                         ch.setHealth(tempLife);
                     }
                 } else {
-                    int tempLife = (int)(ch.getHealth() - e.getDamage());
+                    int tempLife = (int) (ch.getHealth() - e.getDamage());
                     if (tempLife <= 0) {
                         e.setDamage(20);
                         return;
@@ -197,8 +197,9 @@ public class PlayerEvent implements Listener {
         }
         Player p = (Player) e.getEntity();
         Character damaged = cm.getCharacter(p.getUniqueId());
-        if (e.getDamager() instanceof Warden){
-damaged.remHealth(damaged.getMaxHealth() * 0.5);
+        if (e.getDamager() instanceof Warden) {
+            damaged.remHealth(damaged.getMaxHealth() * 0.5);
+            e.setDamage(0);
             return;
         }
         if (e.getDamager() instanceof Player) {
@@ -246,7 +247,23 @@ damaged.remHealth(damaged.getMaxHealth() * 0.5);
                 damaged.setHealth(tempLife);
             }
             e.setDamage(0);
+            return;
         }
+
+        int totalDefense = (damaged.getClazz().getAttributes().getResistance() / 2);
+        int finalDamage = (int) e.getDamage() - totalDefense;
+        if (finalDamage <= 0) {
+            e.setDamage(0);
+            return;
+        } else {
+            int tempLife = (int) (damaged.getHealth() - finalDamage);
+            if (tempLife <= 0) {
+                e.setDamage(20);
+                return;
+            }
+            damaged.setHealth(tempLife);
+        }
+        e.setDamage(0);
     }
 
 

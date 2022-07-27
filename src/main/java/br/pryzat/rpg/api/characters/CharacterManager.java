@@ -53,23 +53,23 @@ public class CharacterManager implements Listener {
                 if (ch.getSkills() != null) {
                     for (Skill skill : ch.getSkills().values()) {
                         if (skill != null) {
-                            charactersyml.set(uuid.toString() + ".skills." + skill.getUniqueId(), skill.getLevel());
+                            charactersyml.set(uuid + ".skills." + skill.getUniqueId(), skill.getLevel());
                         }
                     }
                 }
                 if (ch.getClazz() == null){
                     ch.setClazz(ClazzType.SWORDSMAN);
                 }
-                charactersyml.set(uuid.toString() + ".class", ch.getClazz().toString());
+                charactersyml.set(uuid + ".class", ch.getClazz().toString());
                 charactersyml.set(uuid + ".immunities.skills", ch.getImmunities().checkSkills());
                 charactersyml.set(uuid + ".immunities.damage.physical", ch.getImmunities().checkPhysicalDamage());
                 charactersyml.set(uuid + ".immunities.damage.magic", ch.getImmunities().checkMagicDamage());
-                charactersyml.set(uuid.toString() + ".stats.strength", ch.getAttributes().getStrength());
-                charactersyml.set(uuid.toString() + ".stats.inteligency", ch.getAttributes().getInteligency());
-                charactersyml.set(uuid.toString() + ".stats.velocity", ch.getAttributes().getVelocity());
-                charactersyml.set(uuid.toString() + ".stats.resistance", ch.getAttributes().getResistance());
-                charactersyml.set(uuid.toString() + ".level", ch.getLevel());
-                charactersyml.set(uuid.toString() + ".experience", ch.getLevelManager().getExp());
+                charactersyml.set(uuid + ".stats.strength", ch.getAttributes().getStrength());
+                charactersyml.set(uuid + ".stats.inteligency", ch.getAttributes().getInteligency());
+                charactersyml.set(uuid + ".stats.velocity", ch.getAttributes().getVelocity());
+                charactersyml.set(uuid + ".stats.resistance", ch.getAttributes().getResistance());
+                charactersyml.set(uuid + ".level", ch.getLevel());
+                charactersyml.set(uuid + ".experience", ch.getLevelManager().getExp());
             }
             charactersyml.saveConfig();
         }
@@ -141,6 +141,8 @@ public class CharacterManager implements Listener {
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
         e.setKeepInventory(true);
+        e.setShouldDropExperience(false);
+        e.getDrops().clear();
         if (!(e.getEntity().getKiller() instanceof Player)) return;
         Player p = e.getEntity();
         Player k = e.getEntity().getKiller();
