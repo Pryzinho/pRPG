@@ -192,19 +192,29 @@ public class PlayerEvent implements Listener {
         if (e.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
             return;
         }
-        if (!(e.getEntity() instanceof Player)) {
+        if (!(e.getEntity() instanceof Player p)) {
             return;
         }
-        Player p = (Player) e.getEntity();
         Character damaged = cm.getCharacter(p.getUniqueId());
+
+        int armordefense = 0;
+        if (p.getInventory().getArmorContents() != null) {
+            for (ItemStack armor : p.getInventory().getArmorContents()) {
+                if (armor.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(main, "rpg.item.resistance"), PersistentDataType.STRING)) {
+                    armordefense += Integer.parseInt(armor.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(main, "rpg.item.resistance"), PersistentDataType.STRING));
+                }
+            }
+        }
+        int totalDefense = (damaged.getClazz().getAttributes().getResistance() / 2) + armordefense;
+
+
         if (e.getDamager() instanceof Warden) {
-            damaged.remHealth(damaged.getMaxHealth() * 0.5);
+            damaged.remHealth(damaged.getMaxHealth() * 0.25);
             e.setDamage(0);
             return;
         }
         if (e.getDamager() instanceof Player) {
             Player d = (Player) e.getDamager(); // Deu dano
-
             Character damager = cm.getCharacter(d.getUniqueId());
        /* if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
             if (skill.isInUse()) {
@@ -215,54 +225,24 @@ public class PlayerEvent implements Listener {
                 } else {
                     ch.setHealth(tempLife);
 
-                }
+                } pq iso ta aqui eu nao sei, a cause sempre vai ser uma entidade, que viajem!
             }
             return;
         }*/
-            if (damaged.getLevel() < 20) {
+            if (damaged.getLevel() < 20) { // Cancela o dano se o damaged estiver abaixo do nivel 20.
                 e.setCancelled(true);
                 return;
             }
-            int armordefense = 0;
-            if (p.getInventory().getArmorContents() != null) {
-                for (ItemStack armor : p.getInventory().getArmorContents()) {
-                    if (armor.getItemMeta().getPersistentDataContainer().has(NamespacedKey.fromString("rpg.item.resistance"), PersistentDataType.STRING)) {
-                        armordefense += Integer.parseInt(armor.getItemMeta().getPersistentDataContainer().get(NamespacedKey.fromString("rpg.item.resistance"), PersistentDataType.STRING));
-                    }
-                }
-            }
-            int totalDefense = (damaged.getClazz().getAttributes().getResistance() / 2) + armordefense;
-            int totalDamage = ((int) e.getFinalDamage()) + (damager.getClazz().getAttributes().getStrength() / 2);
 
+            int totalDamage = ((int) e.getDamage()) + (damager.getClazz().getAttributes().getStrength() / 2);
             int finalDamage = totalDamage - totalDefense;
-            if (finalDamage <= 0) {
-                e.setDamage(0);
-                return;
-            } else {
-                int tempLife = (int) (damaged.getHealth() - finalDamage);
-                if (tempLife <= 0) {
-                    e.setDamage(20);
-                    return;
-                }
-                damaged.setHealth(tempLife);
-            }
-            e.setDamage(0);
-            return;
-        }
-
-        int totalDefense = (damaged.getClazz().getAttributes().getResistance() / 2);
-        int finalDamage = (int) e.getDamage() - totalDefense;
-        if (finalDamage <= 0) {
-            e.setDamage(0);
-            return;
-        } else {
             int tempLife = (int) (damaged.getHealth() - finalDamage);
-            if (tempLife <= 0) {
-                e.setDamage(20);
-                return;
-            }
             damaged.setHealth(tempLife);
+            e.setDamage(0);
+            return;
         }
+        int finalDamage = (int) (e.getDamage() * 20) - totalDefense; //Adição teporaria no dano so para testes...
+        damaged.remHealth(finalDamage);
         e.setDamage(0);
     }
 

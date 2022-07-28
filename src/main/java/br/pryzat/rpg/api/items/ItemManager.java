@@ -8,9 +8,13 @@ import br.pryzat.rpg.main.RpgMain;
 import br.pryzat.rpg.utils.PryConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +33,7 @@ public class ItemManager implements Listener {
 
 
     public void loadAllItems() {
-        items.put("grisaia", new Grisaia(main,1));
+        items.put("grisaia", new Grisaia(main, 1));
         loadAllPackages();
     }
 
@@ -82,10 +86,30 @@ public class ItemManager implements Listener {
     //
 
     @EventHandler
+    public void onPackageOpen(PlayerInteractEvent e) {
+        Player p = e.getPlayer();
+        if (!e.getAction().isRightClick()) return;
+        ItemStack is = p.getInventory().getItemInMainHand();
+        if (is == null) return;
+        if (!is.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(main, "rpg.consumableitems.uid")))
+            return;
+        items.keySet().forEach(key -> {
+            if (is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(main, "rpg.consumableitems.uid"), PersistentDataType.STRING).equals(key)) {
+                p.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+                items.get(key).execute(main.getCharacterManager().getCharacter(p.getUniqueId()));
+            }
+        });
+
+    }
+
+    @EventHandler
     public void onClazzSelect(CharacterChooseClassEvent e) {
         if (e.isCancelled()) return;
         if (!e.isFirst()) return;
-        getItem("fn").execute(e.getTrigger());
+        Player p = e.getTrigger().getPlayer();
+        if (p != null) {
+            p.getInventory().addItem(getItem("fn").toItem());
+        }
     }
 
     public static List<ItemStack> getInitialItems(String clazztype) {

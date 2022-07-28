@@ -18,6 +18,7 @@ import net.luckperms.api.node.types.InheritanceNode;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.inventory.InventoryType;
@@ -178,8 +179,13 @@ public class Character {
         return uuid;
     }
 
+    @Nullable
     public Player getPlayer() {
-        return player;
+        Player temp = Bukkit.getPlayer(getUUID());
+        if (temp == null || !temp.isOnline()) {
+            return null;
+        }
+        return temp;
     }
 
     public void setPlayer(Player player) {
@@ -209,16 +215,41 @@ public class Character {
 
     public void setHealth(double health) {
         this.HEALTH = health;
+        if (health <= 0) {
+            if (getPlayer() != null) {
+                this.HEALTH = 0;
+                getPlayer().damage(getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+            }
+        } else if (health > MAX_HP) {
+            this.HEALTH = MAX_HP;
+        }
         updateGraphics();
+
     }
 
     public void addHealth(double health) {
         this.HEALTH += health;
+        if (health <= 0) {
+            if (getPlayer() != null) {
+                this.HEALTH = 0;
+                getPlayer().damage(getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+            }
+        } else if (health > MAX_HP) {
+            this.HEALTH = MAX_HP;
+        }
         updateGraphics();
     }
 
     public void remHealth(double health) {
         this.HEALTH -= health;
+        if (health <= 0) {
+            if (getPlayer() != null) {
+                this.HEALTH = 0;
+                getPlayer().damage(getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+            }
+        } else if (health > MAX_HP) {
+            this.HEALTH = MAX_HP;
+        }
         updateGraphics();
     }
 
@@ -368,15 +399,15 @@ public class Character {
         return immunities;
     }
 
+    public void setAttributes(Attributes attributes) {
+        this.attributes = attributes;
+    }
 
     // Graphics area, frontend
     public void updateGraphics() {
         if (getPlayer() == null) return;
-        if (!getPlayer().isOnline()) return;
-        ActionBar.sendMessage(getPlayer(), "&cHP&f: " + (int)getHealth() + "&f/&c" + (int)getMaxHealth() + " &bMana&f: " + (int)getMana() + "&f/&b" + (int)getMaxMana(), Integer.MAX_VALUE, plugin);
+        ActionBar.sendMessage(getPlayer(), "&cHP&f: " + (int) getHealth() + "&f/&c" + (int) getMaxHealth() + " &bMana&f: " + (int) getMana() + "&f/&b" + (int) getMaxMana(), Integer.MAX_VALUE, plugin);
     }
 
-    public void setAttributes(Attributes attributes) {
-        this.attributes = attributes;
-    }
+
 }

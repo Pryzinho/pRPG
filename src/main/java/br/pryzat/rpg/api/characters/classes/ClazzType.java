@@ -81,6 +81,7 @@ public enum ClazzType {
     }
 
     public void giveInitialItens(Player p) {
+        if(p == null)return;
         if (!p.isOnline()) return;
         innitItems.forEach(i -> p.getInventory().addItem(i));
     }
