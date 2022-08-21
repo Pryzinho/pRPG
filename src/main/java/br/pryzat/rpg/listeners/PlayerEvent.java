@@ -8,10 +8,13 @@ import br.pryzat.rpg.api.events.EventManager;
 import br.pryzat.rpg.api.events.bukkit.CharacterTargettedBySkillEvent;
 import br.pryzat.rpg.builds.events.ColheitaMaldita;
 import br.pryzat.rpg.main.RpgMain;
+import br.pryzat.rpg.utils.ConfigManager;
 import br.pryzat.rpg.utils.PryColor;
+import io.papermc.paper.event.player.AsyncChatEvent;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Warden;
 import org.bukkit.event.EventHandler;
@@ -19,22 +22,50 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+
+import javax.annotation.Nullable;
 
 public class PlayerEvent implements Listener {
     private RpgMain main;
     private CharacterManager cm;
+    private ConfigManager confm;
     private EventManager em;
 
     public PlayerEvent(RpgMain main) {
         this.main = main;
         this.cm = main.getCharacterManager();
         this.em = main.getEventManager();
+        this.confm = main.getConfigManager();
     }
 
+    //Listener responsavel pela soma de xp por mob morto pelo jogador ou outros...
+    private final NamespacedKey ENTITY_UID_KEY = new NamespacedKey(main, "pry.rpg.entity");
+    private final String CONFIG_ENTITY_SETTINGS_PATH = "entity_settings";
+
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent e) {
+        if (e.getEntity().getKiller() == null) return;
+        PersistentDataContainer pdc = e.getEntity().getPersistentDataContainer();
+        Player p = e.getEntity().getKiller();
+        confm.getYml().saveDefaultConfig();
+        confm.getYml().getSection(CONFIG_ENTITY_SETTINGS_PATH)
+                .stream()
+                .forEach(t -> {
+                    if (pdc.has(ENTITY_UID_KEY)) {
+                        if (confm.getYml().getString(CONFIG_ENTITY_SETTINGS_PATH + "." + t).equals(pdc.get(ENTITY_UID_KEY, PersistentDataType.STRING))) {
+                            cm.getCharacter(p.getUniqueId()).getLevelManager().addExp(confm.getYml().getLong(CONFIG_ENTITY_SETTINGS_PATH + "." + t + ".experience"));
+                        }
+                    } else {
+                        cm.getCharacter(p.getUniqueId()).getLevelManager().addExp((confm.getYml().getLong(CONFIG_ENTITY_SETTINGS_PATH + "." + e.getEntityType().toString().toLowerCase() + ".experience")));
+                    }
+                });
+    }
 
     @EventHandler
     private void tempSkill(PlayerToggleSneakEvent e) {
@@ -131,7 +162,7 @@ public class PlayerEvent implements Listener {
     }
 
     @EventHandler
-    public void onTryChatInNullClazz(AsyncPlayerChatEvent e) {
+    public void onTryChatInNullClazz(AsyncChatEvent e) {
         Player p = e.getPlayer();
         Character ch = cm.getCharacter(p.getUniqueId());
         if (ch.getClazz() == null) {
@@ -198,13 +229,11 @@ public class PlayerEvent implements Listener {
         Character damaged = cm.getCharacter(p.getUniqueId());
 
         int armordefense = 0;
-        if (p.getInventory().getArmorContents() != null) {
             for (ItemStack armor : p.getInventory().getArmorContents()) {
                 if (armor.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(main, "rpg.item.resistance"), PersistentDataType.STRING)) {
                     armordefense += Integer.parseInt(armor.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(main, "rpg.item.resistance"), PersistentDataType.STRING));
                 }
             }
-        }
         int totalDefense = (damaged.getClazz().getAttributes().getResistance() / 2) + armordefense;
 
 

@@ -44,3 +44,16 @@ classes:
       - "Lore 1"
       - "Lore 2"
       - "Lore 3"
+
+# Configurações dos mobs ou entidades.
+entity_settings:
+  zombie:
+    experience: 10
+  slime:
+    experience: 100
+  pig:
+    experience: 1
+  cow:
+    experience: 1
+  wither:
+    experience: 2000
