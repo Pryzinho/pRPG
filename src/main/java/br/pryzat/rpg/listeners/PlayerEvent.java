@@ -13,6 +13,7 @@ import br.pryzat.rpg.utils.PryColor;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -61,9 +62,11 @@ public class PlayerEvent implements Listener {
                     if (pdc.has(ENTITY_UID_KEY)) {
                         if (confm.getYml().getString(CONFIG_ENTITY_SETTINGS_PATH + "." + t).equals(pdc.get(ENTITY_UID_KEY, PersistentDataType.STRING))) {
                             cm.getCharacter(p.getUniqueId()).getLevelManager().addExp(confm.getYml().getLong(CONFIG_ENTITY_SETTINGS_PATH + "." + t + ".experience"));
+                        p.playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 40f, 40f); //Debugg test
                         }
                     } else {
                         cm.getCharacter(p.getUniqueId()).getLevelManager().addExp((confm.getYml().getLong(CONFIG_ENTITY_SETTINGS_PATH + "." + e.getEntityType().toString().toLowerCase() + ".experience")));
+                        p.playSound(p.getLocation(), Sound.ENTITY_WITHER_DEATH, 40f, 40f); //Debugg test
                     }
                 });
     }

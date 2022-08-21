@@ -175,6 +175,13 @@ public class CharacterManager implements Listener {
             t.getLevelManager().set(1);
             return;
         }
+        if (e.getCause() == CharacterLevelChangeEvent.Cause.ADD){
+            Player p = Bukkit.getPlayer(e.getTrigger());
+            if (p != null && p.isOnline()){
+                p.sendMessage(PryColor.color("&eSistema &f> &aVocê subiu de nível."));
+                t.getAttributes().addResistance((e.getNewLevel() - t.getLevel()) * 2);
+            }
+        }
         if (t.getLevel() % 2 == 0 && e.getCause() == CharacterLevelChangeEvent.Cause.REMOVE) {
             t.remSkillPoints(1);
             return;

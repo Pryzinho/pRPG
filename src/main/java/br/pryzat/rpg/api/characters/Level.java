@@ -90,7 +90,6 @@ public class Level {
             arun.runTaskLater(plugin, 3 * 20);
         }
          */
-        checkLevelUp();
     }
 
     public void rem(int level) {
@@ -111,7 +110,6 @@ public class Level {
             rrun.runTaskLater(plugin, 3 * 20);
         }
         */
-        checkLevelUp();
     }
 
     public long getExp() {
@@ -180,19 +178,34 @@ public class Level {
             reqExp = (level + 1) * 1000;
             if (experience >= reqExp) {
                 add(1);
-                setExp(experience - reqExp);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        setExp(experience - reqExp);
+                    }
+                }.runTaskLaterAsynchronously(plugin, 20);
             }
         } else if (level >= 20 && level < 30) {
             reqExp = (level + 1) * 2000;
             if (experience >= reqExp) {
                 add(1);
-                setExp(experience - reqExp);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        setExp(experience - reqExp);
+                    }
+                }.runTaskLaterAsynchronously(plugin, 20);
             }
         } else if (level >= 30) {
             reqExp = (level + 1) * 3000;
             if (experience >= reqExp) {
                 add(1);
-                setExp(experience - reqExp);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        setExp(experience - reqExp);
+                    }
+                }.runTaskLaterAsynchronously(plugin, 20);
             }
         }
 
