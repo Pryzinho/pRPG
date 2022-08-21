@@ -45,12 +45,13 @@ public class PlayerEvent implements Listener {
     }
 
     //Listener responsavel pela soma de xp por mob morto pelo jogador ou outros...
-    private final NamespacedKey ENTITY_UID_KEY = new NamespacedKey(main, "pry.rpg.entity");
+    private NamespacedKey ENTITY_UID_KEY;
     private final String CONFIG_ENTITY_SETTINGS_PATH = "entity_settings";
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
         if (e.getEntity().getKiller() == null) return;
+        ENTITY_UID_KEY = new NamespacedKey(main, "pry.rpg.entity");
         PersistentDataContainer pdc = e.getEntity().getPersistentDataContainer();
         Player p = e.getEntity().getKiller();
         confm.getYml().saveDefaultConfig();
