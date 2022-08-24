@@ -11,6 +11,7 @@ import br.pryzat.rpg.main.RpgMain;
 import br.pryzat.rpg.utils.ConfigManager;
 import br.pryzat.rpg.utils.PryColor;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
@@ -49,22 +50,31 @@ public class PlayerEvent implements Listener {
     private NamespacedKey ENTITY_UID_KEY;
     private final String CONFIG_ENTITY_SETTINGS_PATH = "entity_settings";
 
+    public void a(String txt){
+        Bukkit.getConsoleSender().sendMessage(txt);
+    }
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
+        a("EntityDeathEvent invoked");
         if (e.getEntity().getKiller() == null) return;
+        a("Entity killer is a valid player");
         ENTITY_UID_KEY = new NamespacedKey(main, "pry.rpg.entity");
         PersistentDataContainer pdc = e.getEntity().getPersistentDataContainer();
         Player p = e.getEntity().getKiller();
+        p.sendMessage("you're the killer");
         confm.getYml().saveDefaultConfig();
         confm.getYml().getSection(CONFIG_ENTITY_SETTINGS_PATH)
                 .stream()
                 .forEach(t -> {
                     if (pdc.has(ENTITY_UID_KEY)) {
+                        a("Custom Entity Dead");
                         if (confm.getYml().getString(CONFIG_ENTITY_SETTINGS_PATH + "." + t).equals(pdc.get(ENTITY_UID_KEY, PersistentDataType.STRING))) {
+                          a("Custom Entity Recognized");
                             cm.getCharacter(p.getUniqueId()).getLevelManager().addExp(confm.getYml().getLong(CONFIG_ENTITY_SETTINGS_PATH + "." + t + ".experience"));
                         p.playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 40f, 40f); //Debugg test
                         }
                     } else {
+                        a("Normal Entity Dead");
                         cm.getCharacter(p.getUniqueId()).getLevelManager().addExp((confm.getYml().getLong(CONFIG_ENTITY_SETTINGS_PATH + "." + e.getEntityType().toString().toLowerCase() + ".experience")));
                         p.playSound(p.getLocation(), Sound.ENTITY_WITHER_DEATH, 40f, 40f); //Debugg test
                     }
