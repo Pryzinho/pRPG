@@ -1,6 +1,7 @@
 package br.pryzat.rpg.api.characters;
 
 import br.pryzat.rpg.api.RPG;
+import br.pryzat.rpg.api.characters.classes.Beast;
 import br.pryzat.rpg.api.characters.classes.ClazzType;
 import br.pryzat.rpg.api.characters.skills.Skill;
 import br.pryzat.rpg.api.characters.stats.Immunities;
@@ -40,6 +41,7 @@ public class Character {
     private double MAX_HP, MAX_MANA;
     private double HEALTH, MANA;
     private ClazzType clazz;
+    private Beast beast;
     private Attributes attributes;
     private final Level level;
     private HashMap<String, Skill> skills;
@@ -127,6 +129,7 @@ public class Character {
         }
         level.set(21);
         this.skills = new HashMap<>();
+        this.beast = new Beast(plugin, this, Beast.Type.NONE);
     }
 
     public ClazzType getClazz() {
@@ -215,42 +218,32 @@ public class Character {
 
     public void setHealth(double health) {
         this.HEALTH = health;
-        if (health <= 0) {
-            if (getPlayer() != null) {
-                this.HEALTH = 0;
-                getPlayer().damage(getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-            }
-        } else if (health > MAX_HP) {
-            this.HEALTH = MAX_HP;
-        }
+        checkHealth();
         updateGraphics();
 
     }
 
     public void addHealth(double health) {
         this.HEALTH += health;
-        if (health <= 0) {
-            if (getPlayer() != null) {
-                this.HEALTH = 0;
-                getPlayer().damage(getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-            }
-        } else if (health > MAX_HP) {
-            this.HEALTH = MAX_HP;
-        }
+        checkHealth();
         updateGraphics();
     }
 
     public void remHealth(double health) {
         this.HEALTH -= health;
-        if (health <= 0) {
+        checkHealth();
+        updateGraphics();
+    }
+
+    public void checkHealth() {
+        if (this.HEALTH <= 0) {
+            this.HEALTH = 0;
             if (getPlayer() != null) {
-                this.HEALTH = 0;
                 getPlayer().damage(getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
             }
-        } else if (health > MAX_HP) {
+        } else if (this.HEALTH > MAX_HP) {
             this.HEALTH = MAX_HP;
         }
-        updateGraphics();
     }
 
     public double getMaxMana() {
@@ -402,6 +395,30 @@ public class Character {
     public void setAttributes(Attributes attributes) {
         this.attributes = attributes;
     }
+
+    public Beast getBeast() {
+        return this.beast;
+    }
+
+    public boolean hasBeast() {
+        if (beast.getType() != Beast.Type.NONE) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Verifica se o jogador tem uma besta e ela está invocada
+     *
+     * @return Retorna verdadeiro se o jogador estiver com sua besta invocada
+     */
+    public boolean isWithBeast() {
+        if (hasBeast() && getBeast().isInvoked()) {
+            return true;
+        }
+        return false;
+    }
+
 
     // Graphics area, frontend
     public void updateGraphics() {

@@ -1,4 +1,4 @@
-package br.pryzat.rpg.api.events.bukkit;
+package br.pryzat.rpg.api.events.bukkit.character;
 
 
 import br.pryzat.rpg.api.characters.Character;

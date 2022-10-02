@@ -3,8 +3,8 @@ package br.pryzat.rpg.api.characters;
 import br.pryzat.rpg.api.characters.classes.ClazzType;
 import br.pryzat.rpg.api.characters.skills.Skill;
 import br.pryzat.rpg.api.characters.stats.Attributes;
-import br.pryzat.rpg.api.events.bukkit.CharacterChooseClassEvent;
-import br.pryzat.rpg.api.events.bukkit.CharacterLevelChangeEvent;
+import br.pryzat.rpg.api.events.bukkit.character.CharacterChooseClassEvent;
+import br.pryzat.rpg.api.events.bukkit.character.CharacterLevelChangeEvent;
 import br.pryzat.rpg.main.RpgMain;
 import br.pryzat.rpg.utils.PryColor;
 import br.pryzat.rpg.utils.PryConfig;
@@ -143,6 +143,10 @@ public class CharacterManager implements Listener {
         e.setKeepInventory(true);
         e.setShouldDropExperience(false);
         e.getDrops().clear();
+        Character c = getCharacter(e.getEntity().getUniqueId());
+        if (c.isWithBeast()){
+            c.getBeast().despawn();
+        }
         if (!(e.getEntity().getKiller() instanceof Player)) return;
         Player p = e.getEntity();
         Player k = e.getEntity().getKiller();

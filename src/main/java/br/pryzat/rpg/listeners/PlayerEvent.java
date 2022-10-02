@@ -2,10 +2,11 @@ package br.pryzat.rpg.listeners;
 
 import br.pryzat.rpg.api.characters.Character;
 import br.pryzat.rpg.api.characters.CharacterManager;
+import br.pryzat.rpg.api.characters.classes.Beast;
 import br.pryzat.rpg.api.characters.classes.ClazzType;
 import br.pryzat.rpg.api.characters.skills.Skill;
 import br.pryzat.rpg.api.events.EventManager;
-import br.pryzat.rpg.api.events.bukkit.CharacterTargettedBySkillEvent;
+import br.pryzat.rpg.api.events.bukkit.character.CharacterTargettedBySkillEvent;
 import br.pryzat.rpg.builds.events.ColheitaMaldita;
 import br.pryzat.rpg.main.RpgMain;
 import br.pryzat.rpg.utils.ConfigManager;
@@ -16,7 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Warden;
 import org.bukkit.event.EventHandler;
@@ -30,8 +31,6 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-
-import javax.annotation.Nullable;
 
 public class PlayerEvent implements Listener {
     private RpgMain main;
@@ -50,9 +49,10 @@ public class PlayerEvent implements Listener {
     private NamespacedKey ENTITY_UID_KEY;
     private final String CONFIG_ENTITY_SETTINGS_PATH = "entity_settings";
 
-    public void a(String txt){
+    public void a(String txt) {
         Bukkit.getConsoleSender().sendMessage(txt);
     }
+
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
         a("EntityDeathEvent invoked");
@@ -63,15 +63,15 @@ public class PlayerEvent implements Listener {
         Player p = e.getEntity().getKiller();
         p.sendMessage("you're the killer");
         confm.getYml().saveDefaultConfig();
-        confm.getYml().getSection(CONFIG_ENTITY_SETTINGS_PATH)
+        confm.getYml().getList(CONFIG_ENTITY_SETTINGS_PATH)
                 .stream()
                 .forEach(t -> {
                     if (pdc.has(ENTITY_UID_KEY)) {
                         a("Custom Entity Dead");
                         if (confm.getYml().getString(CONFIG_ENTITY_SETTINGS_PATH + "." + t).equals(pdc.get(ENTITY_UID_KEY, PersistentDataType.STRING))) {
-                          a("Custom Entity Recognized");
+                            a("Custom Entity Recognized");
                             cm.getCharacter(p.getUniqueId()).getLevelManager().addExp(confm.getYml().getLong(CONFIG_ENTITY_SETTINGS_PATH + "." + t + ".experience"));
-                        p.playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 40f, 40f); //Debugg test
+                            p.playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 40f, 40f); //Debugg test
                         }
                     } else {
                         a("Normal Entity Dead");
@@ -154,8 +154,7 @@ public class PlayerEvent implements Listener {
 */
     @EventHandler
     public void onTryCloseUnSelected(InventoryCloseEvent e) {
-        if (!(e.getPlayer() instanceof Player)) return;
-        Player p = (Player) e.getPlayer();
+        if (!(e.getPlayer() instanceof Player p)) return;
         if (e.getView().title().toString().equals(PryColor.color("&bSelecione sua classe..."))) {
             Character ch = cm.getCharacter(p.getUniqueId());
             ClazzType clazz = ch.getClazz();
@@ -232,10 +231,20 @@ public class PlayerEvent implements Listener {
 
     }
 
+
     @EventHandler
     private void onDamagedByCharacter(EntityDamageByEntityEvent e) {
         if (e.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
             return;
+        }
+        if (e.getDamager() instanceof Player && e.getEntity() instanceof LivingEntity) {
+            Player d = (Player) e.getDamager(); // Deu dano
+            Character damager = cm.getCharacter(d.getUniqueId());
+            if (damager.hasBeast() && damager.getBeast().isInvoked()) {
+                if (damager.getBeast().getMode() == Beast.Mode.ATTACK) {
+                    damager.getBeast().getEntity().setTarget((LivingEntity) e.getEntity());
+                }
+            }
         }
         if (!(e.getEntity() instanceof Player p)) {
             return;
@@ -243,13 +252,22 @@ public class PlayerEvent implements Listener {
         Character damaged = cm.getCharacter(p.getUniqueId());
 
         int armordefense = 0;
-            for (ItemStack armor : p.getInventory().getArmorContents()) {
-                if (armor.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(main, "rpg.item.resistance"), PersistentDataType.STRING)) {
-                    armordefense += Integer.parseInt(armor.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(main, "rpg.item.resistance"), PersistentDataType.STRING));
-                }
+        for (ItemStack armor : p.getInventory().getArmorContents()) {
+            if (armor.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(main, "rpg.item.resistance"), PersistentDataType.STRING)) {
+                armordefense += Integer.parseInt(armor.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(main, "rpg.item.resistance"), PersistentDataType.STRING));
             }
+        }
         int totalDefense = (damaged.getClazz().getAttributes().getResistance() / 2) + armordefense;
+        double dr = 1; // Redução de dano
+        if (damaged.getClazz() == ClazzType.SWORDSMAN){
+            dr -= 10 / 100; // 10% de redução de dano por ser cavaleiro.
+        }
+        if (damaged.hasBeast() && damaged.getBeast().isInvoked()) {
+            if (damaged.getBeast().getMode() == Beast.Mode.DEFENSE) {
+                dr -= 25 / 100; // 25% de redução de dano. Futuramente a redução pode depender da besta.
 
+            }
+        }
 
         if (e.getDamager() instanceof Warden) {
             damaged.remHealth(damaged.getMaxHealth() * 0.25);
@@ -278,13 +296,16 @@ public class PlayerEvent implements Listener {
             }
 
             int totalDamage = ((int) e.getDamage()) + (damager.getClazz().getAttributes().getStrength() / 2);
-            int finalDamage = totalDamage - totalDefense;
+            int finalDamage = (int) ((totalDamage - totalDefense) * dr);
+            if (damaged.isWithBeast() && damaged.getBeast().getMode() == Beast.Mode.DEFENSE){
+                    damaged.getBeast().getEntity().damage(finalDamage * 0.25, e.getDamager());
+            }
             int tempLife = (int) (damaged.getHealth() - finalDamage);
             damaged.setHealth(tempLife);
             e.setDamage(0);
             return;
         }
-        int finalDamage = (int) (e.getDamage() * 20) - totalDefense; //Adição teporaria no dano so para testes...
+        int finalDamage = (int) (e.getDamage() * 20) - totalDefense; //Adição temporaria no dano so para testes...
         damaged.remHealth(finalDamage);
         e.setDamage(0);
     }

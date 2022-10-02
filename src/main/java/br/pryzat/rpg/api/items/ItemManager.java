@@ -1,8 +1,7 @@
 package br.pryzat.rpg.api.items;
 
-import br.pryzat.rpg.api.characters.classes.ClazzType;
 import br.pryzat.rpg.api.characters.stats.Attributes;
-import br.pryzat.rpg.api.events.bukkit.CharacterChooseClassEvent;
+import br.pryzat.rpg.api.events.bukkit.character.CharacterChooseClassEvent;
 import br.pryzat.rpg.builds.items.Grisaia;
 import br.pryzat.rpg.main.RpgMain;
 import br.pryzat.rpg.utils.PryConfig;

@@ -3,6 +3,8 @@ package br.pryzat.rpg.api;
 import br.pryzat.rpg.api.characters.skills.Skill;
 import br.pryzat.rpg.api.events.Event;
 import br.pryzat.rpg.builds.skills.swordsman.Stomper;
+import br.pryzat.rpg.builds.skills.tamer.invocations.InvokeDavidDeer;
+import br.pryzat.rpg.builds.skills.tamer.invocations.InvokeMetalPig;
 
 import java.util.*;
 
@@ -39,6 +41,8 @@ public class RPG {
         registerSUID(new SUID("puxao", "&bVa pa onde?", Material.IRON_SHOVEL, Arrays.asList("Se correr o bixo pega, se ficar o bixo come")), Puxao.class);
   */
         learnableskills.put("stomper", new Stomper(null, 1));
+        learnableskills.put("invokemetalpig", new InvokeMetalPig(null, 1));
+        learnableskills.put("invokedaviddeer", new InvokeDavidDeer(null, 1));
     }
 
     /**

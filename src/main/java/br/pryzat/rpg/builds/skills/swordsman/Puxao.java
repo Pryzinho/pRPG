@@ -2,17 +2,13 @@ package br.pryzat.rpg.builds.skills.swordsman;
 
 import br.pryzat.rpg.api.characters.Character;
 import br.pryzat.rpg.api.characters.skills.Skill;
-import br.pryzat.rpg.api.events.bukkit.CharacterTargettedBySkillEvent;
-import br.pryzat.rpg.main.RpgMain;
+import br.pryzat.rpg.api.events.bukkit.character.CharacterTargettedBySkillEvent;
 import br.pryzat.rpg.utils.PryColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
-
-import java.util.UUID;
 
 public class Puxao extends Skill {
 

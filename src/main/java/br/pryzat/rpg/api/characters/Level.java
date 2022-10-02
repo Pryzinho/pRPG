@@ -1,20 +1,14 @@
 package br.pryzat.rpg.api.characters;
 
-import br.pryzat.rpg.api.events.bukkit.CharacterLevelChangeEvent;
+import br.pryzat.rpg.api.events.bukkit.character.CharacterLevelChangeEvent;
 import br.pryzat.rpg.main.RpgMain;
 import br.pryzat.rpg.utils.PryColor;
-import net.luckperms.api.LuckPerms;
-import net.luckperms.api.LuckPermsProvider;
-import net.luckperms.api.model.user.User;
-import net.luckperms.api.node.types.InheritanceNode;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class Level {
     private RpgMain plugin;

@@ -1,14 +1,10 @@
 package br.pryzat.rpg.api.characters.classes;
 
 import br.pryzat.rpg.api.characters.stats.Attributes;
-import br.pryzat.rpg.api.items.CustomItem;
-import br.pryzat.rpg.api.items.Item;
 import br.pryzat.rpg.api.items.ItemManager;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
 import java.util.List;
 
 public enum ClazzType {
@@ -64,7 +60,6 @@ public enum ClazzType {
     PRIEST(
             ItemManager.getInitialItems("PRIEST"),
             new Attributes(0, 0, 0, 0)); //Sacerzin -> Hp+++, Mana++, Ataque magico+, Defesa ;
-
 
     // Items iniciais, recebidos após escolher a classe
     List<ItemStack> innitItems;

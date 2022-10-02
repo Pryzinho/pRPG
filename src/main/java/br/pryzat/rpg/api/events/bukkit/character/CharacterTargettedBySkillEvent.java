@@ -1,4 +1,4 @@
-package br.pryzat.rpg.api.events.bukkit;
+package br.pryzat.rpg.api.events.bukkit.character;
 
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
