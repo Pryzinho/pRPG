@@ -146,6 +146,9 @@ public class Skill {
     }
 
     public void setManaCoust(int manaCoust) {
+        if (owner == null){
+            manaCoust = 0;
+        }
         this.manaCoust = manaCoust;
     }
 

@@ -25,7 +25,9 @@ public class InvokeMetalPig extends Skill {
             case 5:
                 setCooldown(40 * 1000); // 40s
         }
-        setManaCoust((int) (owner.getMaxMana() * 15 / 100));
+        if (owner != null) {
+            setManaCoust((int) (owner.getMaxMana() * 15 / 100));
+        }
     }
 
     @Override
