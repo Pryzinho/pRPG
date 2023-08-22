@@ -167,9 +167,6 @@ public class ColheitaMaldita extends Event {
         if (args.length == 0) {
             p.sendMessage(" ");
             p.sendMessage(PryColor.color("&eAjuda sobre o comando &f/rpg event " + getEuid()));
-            p.sendMessage(PryColor.color("&4Atenção&f, &4saiba que gerenciar eventos utilizando esse comando é ineficiente&f!"));
-            p.sendMessage(PryColor.color("&4Se deseja gerenciar algum evento é &aextremamente recomendado&4 utilizar&f: &8/&f<&bId do Evento&f>"));
-            p.sendMessage(PryColor.color("&eExexemplo&f: &8/colheitamaldita"));
             p.sendMessage(PryColor.color("&8/rpg event " + getEuid() + " &ahelp &f: &aAjuda do evento&f."));
             p.sendMessage(" ");
             return true;

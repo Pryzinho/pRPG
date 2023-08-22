@@ -272,12 +272,12 @@ public class RpgCommand implements CommandExecutor {
                     }
                     switch (args[4]) {
                         case "strength":
-                            ch.getClazz().getAttributes().remStrength(points);
+                            ch.getClazz().getAttributes().addStrength(-points);
                             sender.sendMessage(PryColor.color("&aVocê &cremoveu &e" + points + "&a Ponto(s) no atributo &4Força &ade &e" + target.getName() + "&a !"));
                             target.sendMessage(PryColor.color("&aSeus pontos de &4Força &c diminuiu &aem &e" + points + " &a Ponto(s)"));
                             return true;
                         case "resistance":
-                            ch.getClazz().getAttributes().remResistance(points);
+                            ch.getClazz().getAttributes().addResistance(-points);
                             sender.sendMessage(PryColor.color("&aVocê &cremoveu &e" + points + "&a Ponto(s) no atributo &8Resistência &ade &e" + target.getName() + "&a !"));
                             target.sendMessage(PryColor.color("&aSeus pontos de &8Resistência &c diminuiu &aem &e" + points + " &a Ponto(s)"));
                             return true;
@@ -296,19 +296,22 @@ public class RpgCommand implements CommandExecutor {
                         return true;
                     }
                     switch (args[4]) {
-                        case "strength":
+                        case "strength" -> {
                             ch.getClazz().getAttributes().setStrength(points);
                             sender.sendMessage(PryColor.color("&aVocê definiu &e" + points + "&a Ponto(s) no atributo &4Força &ade &e" + target.getName() + "&a !"));
                             target.sendMessage(PryColor.color("&aSeus pontos de &4Força&a foram redefinidos para &e" + points + " &a Ponto(s)"));
                             return true;
-                        case "resistance":
+                        }
+                        case "resistance" -> {
                             ch.getClazz().getAttributes().setResistance(points);
                             sender.sendMessage(PryColor.color("&aVocê definiu &e" + points + "&a Ponto(s) no atributo &8Resistência &ade &e" + target.getName() + "&a !"));
                             target.sendMessage(PryColor.color("&aSeus pontos de &8Resistência&a foram redefenidos para &e" + points + " &a Ponto(s)"));
                             return true;
-                        default:
+                        }
+                        default -> {
                             sender.sendMessage(PryColor.color("&cEsse atributo não existe."));
                             return true;
+                        }
                     }
 
                 }

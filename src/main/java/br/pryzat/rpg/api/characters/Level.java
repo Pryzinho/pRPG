@@ -17,34 +17,37 @@ public class Level {
     private long experience;
     private long reqExp;
     private int acontinuos = 0;
-    private BukkitRunnable arun = new BukkitRunnable() {
-        Player p = Bukkit.getPlayer(owner);
-
-        @Override
-        public void run() {
-            p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 30f, 30f);
-            p.sendMessage(PryColor.color("&aVocê subiu " + acontinuos + " nivel(is)&f."));
-            acontinuos = 0;
-        }
-    };
+    private BukkitRunnable arun;
     private int rcontinuos = 0;
-    private BukkitRunnable rrun = new BukkitRunnable() {
-        Player p = Bukkit.getPlayer(owner);
-
-        @Override
-        public void run() {
-            p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 30f, 30f);
-            p.sendMessage(PryColor.color("&cVocê perdeu " + rcontinuos + " nivel(is)&f."));
-            rcontinuos = 0;
-        }
-    };
+    private BukkitRunnable rrun;
 
     public Level(RpgMain plugin, UUID uuid) {
         this.plugin = plugin;
         owner = uuid;
+        this.arun = new BukkitRunnable() {
+            Player p = Bukkit.getPlayer(owner);
+
+            @Override
+            public void run() {
+                p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 30f, 30f);
+                p.sendMessage(PryColor.color("&aVocê subiu " + acontinuos + " nivel(is)&f."));
+                acontinuos = 0;
+            }
+        };
+        rrun = new BukkitRunnable() {
+            Player p = Bukkit.getPlayer(owner);
+
+            @Override
+            public void run() {
+                p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 30f, 30f);
+                p.sendMessage(PryColor.color("&cVocê perdeu " + rcontinuos + " nivel(is)&f."));
+                rcontinuos = 0;
+            }
+        };
         level = 1;
         experience = 0;
         checkLevelUp();
+
     }
 
     public int get() {
@@ -65,6 +68,10 @@ public class Level {
             p.sendMessage(PryColor.color("&aSeu nivel foi definido para " + this.level));
         }
         checkLevelUp();
+    }
+
+    public void syncSet(int level){
+        this.level = level;
     }
 
     public void add(int level) {

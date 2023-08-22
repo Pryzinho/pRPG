@@ -9,8 +9,10 @@ import br.pryzat.rpg.api.events.EventManager;
 import br.pryzat.rpg.api.events.bukkit.character.CharacterTargettedBySkillEvent;
 import br.pryzat.rpg.builds.events.ColheitaMaldita;
 import br.pryzat.rpg.main.RpgMain;
+import br.pryzat.rpg.utils.Announcer;
 import br.pryzat.rpg.utils.ConfigManager;
 import br.pryzat.rpg.utils.PryColor;
+import com.nickuc.login.api.nLoginAPI;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -52,7 +54,16 @@ public class PlayerEvent implements Listener {
     public void a(String txt) {
         Bukkit.getConsoleSender().sendMessage(txt);
     }
-
+    @EventHandler
+    public void onTryMoveInNullClazz(PlayerMoveEvent e) {
+        Player p = e.getPlayer();
+        Character ch = cm.getCharacter(p.getUniqueId());
+        if (ch == null)return;
+        if (ch.getClazz() == null && nLoginAPI.getApi().isAuthenticated(p.getName())) {
+            p.sendMessage(Announcer.text("&eSistema &f> &cVocê ainda não selecionou sua classe&f,&c digite&f: &8/&bclasse"));
+            e.setCancelled(true);
+        }
+    }
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
         a("EntityDeathEvent invoked");
@@ -164,15 +175,6 @@ public class PlayerEvent implements Listener {
         }
     }
 
-    @EventHandler
-    public void onTryMoveInNullClazz(PlayerMoveEvent e) {
-        Player p = e.getPlayer();
-        Character ch = cm.getCharacter(p.getUniqueId());
-        if (ch.getClazz() == null) {
-            p.sendMessage(PryColor.color("&eSistema &f> &cVocê ainda não selecionou sua classe, digite: &8/&bclasse"));
-            e.setCancelled(true);
-        }
-    }
 
     @EventHandler
     public void onTryChatInNullClazz(AsyncChatEvent e) {
@@ -192,7 +194,7 @@ public class PlayerEvent implements Listener {
         Player p = (Player) e.getEntity();
         Character ch = cm.getCharacter(p.getUniqueId());
         if (e.getCause() == EntityDamageEvent.DamageCause.POISON) {
-            ch.remHealth((int) (ch.getMaxHealth() * 0.01));
+            ch.addHealth((int) -(ch.getMaxHealth() * 0.01));
             if (ch.getHealth() <= 0) {
                 ch.setHealth(0);
                 e.setDamage(20);
@@ -253,24 +255,28 @@ public class PlayerEvent implements Listener {
 
         int armordefense = 0;
         for (ItemStack armor : p.getInventory().getArmorContents()) {
-            if (armor.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(main, "rpg.item.resistance"), PersistentDataType.STRING)) {
-                armordefense += Integer.parseInt(armor.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(main, "rpg.item.resistance"), PersistentDataType.STRING));
+            if (armor != null) {
+                if (armor.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(main, "rpg.item.resistance"), PersistentDataType.STRING)) {
+                    armordefense += Integer.parseInt(armor.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(main, "rpg.item.resistance"), PersistentDataType.STRING));
+                }
             }
         }
+        // defesa e redução de dano (%) deveria ser parte do propio characters
         int totalDefense = (damaged.getClazz().getAttributes().getResistance() / 2) + armordefense;
         double dr = 1; // Redução de dano
         if (damaged.getClazz() == ClazzType.SWORDSMAN){
-            dr -= 10 / 100; // 10% de redução de dano por ser cavaleiro.
+            dr -= 10/100; // 10% de redução de dano por ser cavaleiro.
         }
         if (damaged.hasBeast() && damaged.getBeast().isInvoked()) {
             if (damaged.getBeast().getMode() == Beast.Mode.DEFENSE) {
-                dr -= 25 / 100; // 25% de redução de dano. Futuramente a redução pode depender da besta.
+                // evento que quando muda o modo da besta aumenta a redução de dano? Em realidade isso tem que ser uma redução separada, ja que pode anular ottalemtne o dano se nao for feito adequadamente
+                dr -= 25/100; // 25% de redução de dano. Futuramente a redução pode depender da besta.
 
             }
         }
 
-        if (e.getDamager() instanceof Warden) {
-            damaged.remHealth(damaged.getMaxHealth() * 0.25);
+        if (e.getDamager() instanceof Warden) { // inseguro definir isso assim, melhor usar pdc
+            damaged.addHealth(-damaged.getMaxHealth() * 0.25);
             e.setDamage(0);
             return;
         }
@@ -306,7 +312,9 @@ public class PlayerEvent implements Listener {
             return;
         }
         int finalDamage = (int) (e.getDamage() * 20) - totalDefense; //Adição temporaria no dano so para testes...
-        damaged.remHealth(finalDamage);
+        if (finalDamage > 0) {
+            damaged.addHealth(-finalDamage);
+        }
         e.setDamage(0);
     }
 

@@ -54,7 +54,7 @@ public class Item {
         bim.setUnbreakable(true);
         bim.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ENCHANTS);
         PersistentDataContainer pdc = bim.getPersistentDataContainer();
-        pdc.set(new NamespacedKey(pl, "rpg.item.uid"), PersistentDataType.STRING, getIUID());
+        pdc.set(new NamespacedKey(pl, "rpg.item.uid"), PersistentDataType.STRING, getUniqueId());
         if (getStats() != null) {
             pdc.set(new NamespacedKey(pl, "rpg.item.strength"), PersistentDataType.STRING, String.valueOf(getStats().getStrength()));
             pdc.set(new NamespacedKey(pl, "rpg.item.inteligency"), PersistentDataType.STRING, String.valueOf(getStats().getInteligency()));
@@ -65,11 +65,11 @@ public class Item {
         return bis;
     }
 
-    public String getIUID() {
+    public String getUniqueId() {
         return iuid;
     }
 
-    public Item setIUID(String iuid) {
+    public Item setUniqueId(String iuid) {
         this.iuid = iuid;
         return this;
     }

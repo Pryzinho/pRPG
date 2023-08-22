@@ -61,18 +61,14 @@ public abstract class ConsumableItem {
         ItemStack is = t.toItem();
         if (!is.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(pl, "rpg.item.uid"), PersistentDataType.STRING))
             return false;
-        if (is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(pl, "rpg.item.uid"), PersistentDataType.STRING) != getIUID())
-            return false;
-        return true;
+        return is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(pl, "rpg.item.uid"), PersistentDataType.STRING) == getIUID();
     }
 
     public boolean equals(ItemStack t) {
         if (t == null) return false;
         if (!t.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(pl, "rpg.item.uid"), PersistentDataType.STRING))
             return false;
-        if (t.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(pl, "rpg.item.uid"), PersistentDataType.STRING) != getIUID())
-            return false;
-        return true;
+        return t.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(pl, "rpg.item.uid"), PersistentDataType.STRING) == getIUID();
     }
 
     public String getIUID() {

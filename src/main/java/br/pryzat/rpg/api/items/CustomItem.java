@@ -139,10 +139,7 @@ return this;
 	public boolean contains(String key, PersistentDataType type, Object value) {
 		if (!hasKey(key, type))
 			return false;
-		if (!pdc.get(new NamespacedKey(pl, key), type).equals(value))
-			return false;
-
-		return true;
+		return pdc.get(new NamespacedKey(pl, key), type).equals(value);
 
 	}
 

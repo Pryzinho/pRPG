@@ -8,6 +8,7 @@ import br.pryzat.rpg.api.events.bukkit.character.CharacterLevelChangeEvent;
 import br.pryzat.rpg.main.RpgMain;
 import br.pryzat.rpg.utils.PryColor;
 import br.pryzat.rpg.utils.PryConfig;
+import com.nickuc.login.api.event.bukkit.auth.AuthenticateEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -45,34 +46,32 @@ public class CharacterManager implements Listener {
     }
 
     public void saveCharacters() {
-        if (characters.keySet() != null) {
-            for (UUID uuid : characters.keySet()) {
-                Character ch = characters.get(uuid);
-                charactersyml.set(uuid.toString() + ".dateOfBirth", ch.getDateOfBirth());
-                charactersyml.set(uuid + ".skillsPoints", ch.getSkillPoints());
-                if (ch.getSkills() != null) {
-                    for (Skill skill : ch.getSkills().values()) {
-                        if (skill != null) {
-                            charactersyml.set(uuid + ".skills." + skill.getUniqueId(), skill.getLevel());
-                        }
+        for (UUID uuid : characters.keySet()) {
+            Character ch = characters.get(uuid);
+            charactersyml.set(uuid.toString() + ".dateOfBirth", ch.getDateOfBirth());
+            charactersyml.set(uuid + ".skillsPoints", ch.getSkillPoints());
+            if (ch.getSkills() != null) {
+                for (Skill skill : ch.getSkills().values()) {
+                    if (skill != null) {
+                        charactersyml.set(uuid + ".skills." + skill.getUniqueId(), skill.getLevel());
                     }
                 }
-                if (ch.getClazz() == null){
-                    ch.setClazz(ClazzType.SWORDSMAN);
-                }
-                charactersyml.set(uuid + ".class", ch.getClazz().toString());
-                charactersyml.set(uuid + ".immunities.skills", ch.getImmunities().checkSkills());
-                charactersyml.set(uuid + ".immunities.damage.physical", ch.getImmunities().checkPhysicalDamage());
-                charactersyml.set(uuid + ".immunities.damage.magic", ch.getImmunities().checkMagicDamage());
-                charactersyml.set(uuid + ".stats.strength", ch.getAttributes().getStrength());
-                charactersyml.set(uuid + ".stats.inteligency", ch.getAttributes().getInteligency());
-                charactersyml.set(uuid + ".stats.velocity", ch.getAttributes().getVelocity());
-                charactersyml.set(uuid + ".stats.resistance", ch.getAttributes().getResistance());
-                charactersyml.set(uuid + ".level", ch.getLevel());
-                charactersyml.set(uuid + ".experience", ch.getLevelManager().getExp());
             }
-            charactersyml.saveConfig();
+            if (ch.getClazz() == null) {
+                ch.setClazz(ClazzType.SWORDSMAN);
+            }
+            charactersyml.set(uuid + ".class", ch.getClazz().toString());
+            charactersyml.set(uuid + ".immunities.skills", ch.getImmunities().checkSkills());
+            charactersyml.set(uuid + ".immunities.damage.physical", ch.getImmunities().checkPhysicalDamage());
+            charactersyml.set(uuid + ".immunities.damage.magic", ch.getImmunities().checkMagicDamage());
+            charactersyml.set(uuid + ".stats.strength", ch.getAttributes().getStrength());
+            charactersyml.set(uuid + ".stats.inteligency", ch.getAttributes().getInteligency());
+            charactersyml.set(uuid + ".stats.velocity", ch.getAttributes().getVelocity());
+            charactersyml.set(uuid + ".stats.resistance", ch.getAttributes().getResistance());
+            charactersyml.set(uuid + ".level", ch.getLevel());
+            charactersyml.set(uuid + ".experience", ch.getLevelManager().getExp());
         }
+        charactersyml.saveConfig();
     }
 
     public void loadCharacters() {
@@ -101,7 +100,7 @@ public class CharacterManager implements Listener {
     }
 
     @EventHandler
-    private void onJoin(PlayerJoinEvent e) {
+    private void onJoin(AuthenticateEvent e) {
         UUID uuid = e.getPlayer().getUniqueId();
         Character ch = getCharacter(uuid);
         if (ch == null) {
@@ -119,7 +118,6 @@ public class CharacterManager implements Listener {
         ItemStack is = e.getCurrentItem();
         Character ch = getCharacter(p.getUniqueId());
         if (e.getView().getTitle().equals(PryColor.color("&bSelecione sua classe..."))) {
-
             for (String key : plugin.getConfigManager().getYml().getSection("classes")) {
                 if (is.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin,"rpg.representative.item"), PersistentDataType.STRING)) {
                     if (key.toLowerCase().equals(is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin,"rpg.representative.item"), PersistentDataType.STRING))) {
@@ -147,9 +145,10 @@ public class CharacterManager implements Listener {
         if (c.isWithBeast()){
             c.getBeast().despawn();
         }
-        if (!(e.getEntity().getKiller() instanceof Player)) return;
+        if (e.getEntity().getKiller() == null) return;
         Player p = e.getEntity();
         Player k = e.getEntity().getKiller();
+        assert k != null;
         Character killer = getCharacter(k.getUniqueId());
         killer.getLevelManager().addExp(10);
 

@@ -22,7 +22,7 @@ import java.util.List;
 
 public class ItemManager implements Listener {
     private static RpgMain main;
-    private HashMap<String, ConsumableItem> items;
+    private HashMap<String, ConsumableItem> items; // ItemUniqueId, ConsumableItem ? Troca isso pra items
 
     public ItemManager(RpgMain pl) {
         main = pl;
@@ -38,7 +38,7 @@ public class ItemManager implements Listener {
 
 
     private void loadAllPackages() {
-        // Package: Força aos Novatos (Formally known as 'fn', registered in: rpg.consumableitems.fn).
+        // Package: Força aos Novatos (ItemUniqueId: 'fn', PDC: rpg.consumableitems.fn).
         PackageItem fn = new PackageItem(main, "fn", "&cForça aos Novatos", Material.ENDER_CHEST, 1);
         List<String> fnl = new ArrayList<>(); //Item lore
         fnl.add("&aPacote especial para novos jogadores&f.");
@@ -47,7 +47,7 @@ public class ItemManager implements Listener {
         fni.add(
                 new CustomItem(main, Material.NETHERITE_HOE)
                         .setName("&dFoice do Aprendiz")
-                        .setLore(Arrays.asList("&bColeta o dobro de XP em monstros abaixo do nivel 20&f."))
+                        .setLore(List.of("&bColeta o dobro de XP em monstros abaixo do nivel 20&f."))
                         .hideEnchants(true)
                         .hideAttributes(true)
                         .toItemStack()
@@ -89,16 +89,16 @@ public class ItemManager implements Listener {
         Player p = e.getPlayer();
         if (!e.getAction().isRightClick()) return;
         ItemStack is = p.getInventory().getItemInMainHand();
-        if (is == null) return;
         if (!is.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(main, "rpg.consumableitems.uid")))
             return;
         items.keySet().forEach(key -> {
+            if (key == null)return;
             if (is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(main, "rpg.consumableitems.uid"), PersistentDataType.STRING).equals(key)) {
                 p.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
                 items.get(key).execute(main.getCharacterManager().getCharacter(p.getUniqueId()));
             }
         });
-
+        e.setCancelled(true);
     }
 
     @EventHandler
@@ -106,19 +106,19 @@ public class ItemManager implements Listener {
         if (e.isCancelled()) return;
         if (!e.isFirst()) return;
         Player p = e.getTrigger().getPlayer();
-        if (p != null) {
+        if (p != null && !e.isCancelled()) {
             p.getInventory().addItem(getItem("fn").toItem());
         }
     }
 
     public static List<ItemStack> getInitialItems(String clazztype) {
         return Arrays.asList(
-                new Item(main, "&9Capacete Inicial", Material.LEATHER_HELMET, new Attributes(0, 0, 0, 5)).setIUID("thel").toItem(),
-                new Item(main, "&9Peitoral Inicial", Material.LEATHER_CHESTPLATE, new Attributes(0, 0, 0, 10)).setIUID("tche").toItem(),
-                new Item(main, "&9Calças Inicial", Material.LEATHER_LEGGINGS, new Attributes(0, 0, 0, 5)).setIUID("tleg").toItem(),
-                new Item(main, "&9Botas Inicial", Material.LEATHER_BOOTS, new Attributes(0, 0, 10, 5)).setIUID("tboo").toItem(),
-                new Item(main, "&9Espada Inicial", Material.WOODEN_SWORD, new Attributes(10, 0, 5, 0)).setIUID("tswo").toItem(),
-                new Item(main, "&9Escudo Inicial", Material.SHIELD, new Attributes(0, 0, 0, 30)).setIUID("tshi").toItem()
+                new Item(main, "&9Capacete Inicial", Material.LEATHER_HELMET, new Attributes(0, 0, 0, 5)).setUniqueId("thel").toItem(),
+                new Item(main, "&9Peitoral Inicial", Material.LEATHER_CHESTPLATE, new Attributes(0, 0, 0, 10)).setUniqueId("tche").toItem(),
+                new Item(main, "&9Calças Inicial", Material.LEATHER_LEGGINGS, new Attributes(0, 0, 0, 5)).setUniqueId("tleg").toItem(),
+                new Item(main, "&9Botas Inicial", Material.LEATHER_BOOTS, new Attributes(0, 0, 10, 5)).setUniqueId("tboo").toItem(),
+                new Item(main, "&9Espada Inicial", Material.WOODEN_SWORD, new Attributes(10, 0, 5, 0)).setUniqueId("tswo").toItem(),
+                new Item(main, "&9Escudo Inicial", Material.SHIELD, new Attributes(0, 0, 0, 30)).setUniqueId("tshi").toItem()
         );
     }
 

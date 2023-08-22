@@ -14,7 +14,7 @@ public class PackageItem extends ConsumableItem {
     private List<ItemStack> items = new ArrayList<>();
 
     /**
-     * Create a new Item
+     * Cria um novo Pacote (Presente/Crate) - Aberto ao clicar com botao direito.
      *
      * @param iuid        Item Unique Identifier
      * @param displayName Display Name
@@ -27,6 +27,7 @@ public class PackageItem extends ConsumableItem {
     }
 
     /**
+     * Abre o pacote, e dar os item que estão dentro, futuramente talvez dê um efeito ou condição.
      * @param obj No caso do PackageItem o obj sempre vai ser uma instancia do character (alvo).
      */
     @Override
@@ -34,7 +35,6 @@ public class PackageItem extends ConsumableItem {
         Character ch = (Character) obj;
         Player t = Bukkit.getPlayer(ch.getUUID());
         if (t != null && t.isOnline()) {
-            // check player inventory...
             give(t);
         }
     }
