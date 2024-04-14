@@ -9,6 +9,8 @@ import br.pryzat.rpg.builds.skills.tamer.invocations.InvokeMetalPig;
 import java.util.*;
 
 public class RPG {
+    // Default Integrated Classes Resource File
+    private List<String> dicrf = List.of("swordsman");
     // Skill Area
     private static HashMap<String, Skill> learnableskills = new HashMap<>();
     // Clazz Skills Branches
@@ -18,7 +20,13 @@ public class RPG {
     // Items Area
     private static List<String> iuids = new ArrayList<>();
 
-
+    /**
+     * DICRF - Default Integrated Classes Resource File
+     * @return Retorna a lista equivalente ao nome das classes que estão na pasta resource do plugin.
+     */
+    public static List<String> getDICRF(){
+        return getDICRF();
+    }
     public static void registerAllItems() {
         // Swordsman
         iuids.add("initial.swordsman.helmet");

@@ -128,4 +128,12 @@ public class Attributes {
     public void addResistance(int resistance) {
         this.resistance += resistance;
     }
+
+    public boolean contains(String attribute) {
+        return true;
+    }
+
+    public void put(String attribute, double aDouble) {
+        
+    }
 }

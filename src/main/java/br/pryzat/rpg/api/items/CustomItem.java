@@ -162,4 +162,9 @@ return this;
 	private String color(String txt) {
 		return ChatColor.translateAlternateColorCodes('&', txt);
 	}
+
+    public CustomItem setCustomModelData(int model) {
+		this.im.setCustomModelData(model);
+		return this;
+    }
 }

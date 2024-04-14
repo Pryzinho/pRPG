@@ -3,7 +3,7 @@ package br.pryzat.rpg.listeners;
 import br.pryzat.rpg.api.characters.Character;
 import br.pryzat.rpg.api.characters.CharacterManager;
 import br.pryzat.rpg.api.characters.classes.Beast;
-import br.pryzat.rpg.api.characters.classes.ClazzType;
+import br.pryzat.rpg.api.characters.classes.BaseClass;
 import br.pryzat.rpg.api.characters.skills.Skill;
 import br.pryzat.rpg.api.events.EventManager;
 import br.pryzat.rpg.api.events.bukkit.character.CharacterTargettedBySkillEvent;
@@ -168,7 +168,7 @@ public class PlayerEvent implements Listener {
         if (!(e.getPlayer() instanceof Player p)) return;
         if (e.getView().title().toString().equals(PryColor.color("&bSelecione sua classe..."))) {
             Character ch = cm.getCharacter(p.getUniqueId());
-            ClazzType clazz = ch.getClazz();
+            BaseClass clazz = ch.getClazz();
             if (clazz == null) {
                 ch.selectClazz();
             }
@@ -264,7 +264,7 @@ public class PlayerEvent implements Listener {
         // defesa e redução de dano (%) deveria ser parte do propio characters
         int totalDefense = (damaged.getClazz().getAttributes().getResistance() / 2) + armordefense;
         double dr = 1; // Redução de dano
-        if (damaged.getClazz() == ClazzType.SWORDSMAN){
+        if (damaged.getClazz() == BaseClass.SWORDSMAN){
             dr -= 10/100; // 10% de redução de dano por ser cavaleiro.
         }
         if (damaged.hasBeast() && damaged.getBeast().isInvoked()) {

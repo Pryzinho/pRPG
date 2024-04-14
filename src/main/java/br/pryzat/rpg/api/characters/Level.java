@@ -21,6 +21,7 @@ public class Level {
     private int rcontinuos = 0;
     private BukkitRunnable rrun;
 
+
     public Level(RpgMain plugin, UUID uuid) {
         this.plugin = plugin;
         owner = uuid;
@@ -140,41 +141,6 @@ public class Level {
     }
 
     public void checkLevelUp() {
-      /*  if (level >= 20) {
-            Player player = Bukkit.getPlayer(owner);
-            LuckPerms lp = LuckPermsProvider.get();
-            User user;
-            if (player == null) {
-                CompletableFuture<User> userFuture = lp.getUserManager().loadUser(owner);
-                try {
-                    user = userFuture.get();
-                } catch (InterruptedException | ExecutionException e) {
-                    user = null;
-                }
-                if (user != null) {
-                    InheritanceNode node = InheritanceNode.builder("iniciante").value(true).build();
-                    user.data().remove(node);
-                    lp.getUserManager().saveUser(user);
-                }
-            } else {
-                if (player.isOnline()) {
-                    user = lp.getUserManager().getUser(owner);
-                } else {
-                    CompletableFuture<User> userFuture = lp.getUserManager().loadUser(owner);
-                    try {
-                        user = userFuture.get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        user = null;
-                    }
-                }
-                if (player.hasPermission("group.iniciante") && user != null) {
-                    assert user != null;
-                    InheritanceNode node = InheritanceNode.builder("iniciante").value(true).build();
-                    user.data().remove(node);
-                    lp.getUserManager().saveUser(user);
-                }
-            }
-        }*/
         if (level < 20) {
             reqExp = (level + 1) * 1000;
             if (experience >= reqExp) {

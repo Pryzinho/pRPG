@@ -1,5 +1,7 @@
 package br.pryzat.rpg.api.items;
 
+import br.pryzat.rpg.api.characters.classes.BaseClass;
+import br.pryzat.rpg.api.characters.stats.AttributeHandler;
 import br.pryzat.rpg.api.characters.stats.Attributes;
 import br.pryzat.rpg.api.events.bukkit.character.CharacterChooseClassEvent;
 import br.pryzat.rpg.builds.items.Grisaia;
@@ -16,15 +18,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class ItemManager implements Listener {
+public class ItemHandler implements Listener {
     private static RpgMain main;
     private HashMap<String, ConsumableItem> items; // ItemUniqueId, ConsumableItem ? Troca isso pra items
 
-    public ItemManager(RpgMain pl) {
+    public ItemHandler(RpgMain pl) {
         main = pl;
         this.items = new HashMap<>();
         Bukkit.getPluginManager().registerEvents(this, main);
@@ -92,7 +95,7 @@ public class ItemManager implements Listener {
         if (!is.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(main, "rpg.consumableitems.uid")))
             return;
         items.keySet().forEach(key -> {
-            if (key == null)return;
+            if (key == null) return;
             if (is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(main, "rpg.consumableitems.uid"), PersistentDataType.STRING).equals(key)) {
                 p.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
                 items.get(key).execute(main.getCharacterManager().getCharacter(p.getUniqueId()));
@@ -111,16 +114,53 @@ public class ItemManager implements Listener {
         }
     }
 
-    public static List<ItemStack> getInitialItems(String clazztype) {
-        return Arrays.asList(
-                new Item(main, "&9Capacete Inicial", Material.LEATHER_HELMET, new Attributes(0, 0, 0, 5)).setUniqueId("thel").toItem(),
-                new Item(main, "&9Peitoral Inicial", Material.LEATHER_CHESTPLATE, new Attributes(0, 0, 0, 10)).setUniqueId("tche").toItem(),
-                new Item(main, "&9Calças Inicial", Material.LEATHER_LEGGINGS, new Attributes(0, 0, 0, 5)).setUniqueId("tleg").toItem(),
-                new Item(main, "&9Botas Inicial", Material.LEATHER_BOOTS, new Attributes(0, 0, 10, 5)).setUniqueId("tboo").toItem(),
-                new Item(main, "&9Espada Inicial", Material.WOODEN_SWORD, new Attributes(10, 0, 5, 0)).setUniqueId("tswo").toItem(),
-                new Item(main, "&9Escudo Inicial", Material.SHIELD, new Attributes(0, 0, 0, 30)).setUniqueId("tshi").toItem()
-        );
+    /**
+     * @param namespace Espaço reservado para guardar informações sobre o item.
+     * @param bukkitItem ItemStack que vai ser analisado.
+     * @param IUID Identificador único de um item do RPG.
+     * @return Retorna true(verdadeiro) caso o item tenha o IUID especifico ou false(falso) caso o item não tenha o IUID ou não esteja no namespace correto.
+     */
+    public boolean matchInNamespace(NamespacedKey namespace, ItemStack bukkitItem, String IUID) {
+        return bukkitItem.getItemMeta().getPersistentDataContainer().has(namespace, PersistentDataType.STRING) &&
+                IUID.equalsIgnoreCase(bukkitItem.getItemMeta().getPersistentDataContainer().get(main.REPRESENTATIVE_ITEM_NAMESPACE, PersistentDataType.STRING));
     }
+
+
+    public static List<ItemStack> getInitialItems(List<String> items) {
+        List<ItemStack> itemStacks = new ArrayList<>();
+        items.forEach(item -> {
+            if (item.startsWith("RPGITEM")) {
+                String iuid;
+                String displayName;
+                Material material;
+                Attributes attributes;
+
+                Matcher matcher = Pattern.compile("\\((.*?)\\)").matcher(item);
+                // Verifica se o padrão foi encontrado e extrai o conteúdo entre parênteses
+                if (matcher.find()) {
+                    String[] deserializedItem = matcher.group(1).split(";");
+                    if (deserializedItem.length != 4) {
+                        Bukkit.getLogger().warning("[pRPG] Um item RPG precisa ter quatro argumentos. Argumentos encontrado: " + matcher.group(1));
+                        return;
+                    }
+                    iuid = deserializedItem[0];
+                    displayName = deserializedItem[1];
+                    material = Material.matchMaterial(deserializedItem[2]);
+                    if (material == null) {
+                        Bukkit.getLogger().warning("[pRPG] Material invalido em um item, IUID: " + iuid);
+                        return;
+                    }
+                    attributes = AttributeHandler.byStringConfig(deserializedItem[3]);
+                } else {
+                    Bukkit.getLogger().warning("[pRPG] Não foi possível encontrar nenhuma especificação entre parenteses de um item.");
+                    return;
+                }
+                itemStacks.add(new Item(main, displayName, material, attributes).setUniqueId(iuid).toItem());
+            }
+        });
+        return itemStacks;
+    }
+
 
     public static CustomItem getItemFromPath(PryConfig config, String path) {
         return new CustomItem(main, Material.valueOf(config.getString(path)));

@@ -1,25 +1,16 @@
 package br.pryzat.rpg.api.characters;
 
 import br.pryzat.rpg.api.RPG;
-import br.pryzat.rpg.api.characters.classes.Beast;
-import br.pryzat.rpg.api.characters.classes.ClazzType;
+import br.pryzat.rpg.api.characters.classes.BaseClass;
 import br.pryzat.rpg.api.characters.skills.Skill;
 import br.pryzat.rpg.api.characters.stats.Immunities;
 import br.pryzat.rpg.api.characters.stats.Attributes;
-import br.pryzat.rpg.api.items.CustomItem;
-import br.pryzat.rpg.api.items.ItemManager;
 import br.pryzat.rpg.main.RpgMain;
 import br.pryzat.rpg.utils.PryColor;
-import br.pryzat.rpg.utils.PryConfig;
 import br.pryzat.rpg.utils.ActionBar;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.persistence.PersistentDataType;
 
 import javax.annotation.Nullable;
 import java.text.SimpleDateFormat;
@@ -28,10 +19,8 @@ import java.util.*;
 public class Character {
     private final RpgMain plugin;
     private final UUID uuid;
-    private Player player;
     private String dateOfBirth; // (dd/MM/yyyy) > 01/01/2000
-    private ClazzType clazz;
-    private Beast beast;
+    private BaseClass clazz;
     private Attributes attributes;
     private final Level level;
     private HashMap<String, Skill> skills;
@@ -42,52 +31,27 @@ public class Character {
         this.plugin = plugin;
         this.uuid = uniqueuid;
         this.skillPoints = 0;
-        this.player = Bukkit.getPlayer(uniqueuid);
         this.attributes = new Attributes();
         this.immunities = new Immunities();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         sdf.setCalendar(new GregorianCalendar());
         this.dateOfBirth = sdf.format(new Date(System.currentTimeMillis()));
         level = new Level(plugin, uniqueuid);
-        String NEWBIE_GROUP = (plugin.getConfigManager().getYml().getString("NEWBIE_GROUP") == null) ? plugin.getConfigManager().getYml().getString("NEWBIE_GROUP") : "iniciante";
-        if (level.get() <= 20) {
-            if (player == null) {
-                if (!plugin.getPermissionsManager().playerInGroup(null, Bukkit.getOfflinePlayer(uniqueuid), NEWBIE_GROUP)) {
-                    plugin.getPermissionsManager().playerAddGroup(null, Bukkit.getOfflinePlayer(uniqueuid), NEWBIE_GROUP);
-                }
-            } else {
-                if (!plugin.getPermissionsManager().playerInGroup(player, NEWBIE_GROUP)) {
-                    plugin.getPermissionsManager().playerAddGroup(player, NEWBIE_GROUP);
-                }
-            }
-        } else {
-            if (player == null || !player.isOnline()) {
-                if (plugin.getPermissionsManager().playerInGroup(null, Bukkit.getOfflinePlayer(uniqueuid), NEWBIE_GROUP)) {
-                    plugin.getPermissionsManager().playerRemoveGroup(null, Bukkit.getOfflinePlayer(uniqueuid), NEWBIE_GROUP);
-                }
-            } else {
-                if (plugin.getPermissionsManager().playerInGroup(player, NEWBIE_GROUP)) {
-                    plugin.getPermissionsManager().playerRemoveGroup(player, NEWBIE_GROUP);
-                }
-            }
-        }
         level.syncSet(21);
         this.skills = new HashMap<>();
-        this.beast = new Beast(plugin, this, Beast.Type.NONE);
-
     }
 
-    public ClazzType getClazz() {
+    public BaseClass getClazz() {
         return clazz;
     }
 
-    public void setClazz(ClazzType clazz) {
+    public void setClazz(BaseClass clazz) {
         this.clazz = clazz;
         attributes = new Attributes(clazz.getAttributes());
-        setMaxHealth(50 + clazz.getAttributes().getResistance());
-        setHealth(getMaxHealth());
-        setMaxMana(20);
-        setMana(20);
+        // setMaxHealth(50 + clazz.getAttributes().getResistance());
+        //  setHealth(getMaxHealth());
+        //  setMaxMana(20);
+        //  setMana(20);
         //skills = clazz.getSkills();
         this.clazz.giveInitialItens(getPlayer());
 
@@ -103,28 +67,18 @@ public class Character {
         - Lore 2
         - Lore 3
     */
-    public void selectClazz() {
-        Inventory inv = Bukkit.createInventory(null, InventoryType.CHEST, Component.text(PryColor.color("&bSelecione sua classe...")));
-        PryConfig config = plugin.getConfigManager().getYml();
-        Set<String> clazzes = config.getSection("classes");
-        for (int i = 0; i < clazzes.size(); i++) {
-            String key = (String) clazzes.toArray()[i];
-            CustomItem ci = ItemManager.getItemFromPath(config, "classes." + key + ".material");
-            ci.setName(config.getString("classes." + key + ".displayName"));
-            ci.setLore((List<String>) config.getList("classes." + key + ".description"));
-            ci.hideEnchants(true);
-            ci.hideAttributes(true);
-            String codeclass = key.toLowerCase();
-            ci.getDataManager().set(new NamespacedKey(plugin, "rpg.representative.item"), PersistentDataType.STRING, codeclass);
-            inv.setItem(10 + i, ci.toItemStack());
-        }
-        player.openInventory(inv);
-    }
 
+    /**
+     * @return Retorna o unique user identifier do jogador.
+     */
     public UUID getUUID() {
         return uuid;
     }
 
+    /**
+     *
+     * @return Retorna o jogador caso ele esteja online ou null caso não esteja.
+     */
     @Nullable
     public Player getPlayer() {
         Player temp = Bukkit.getPlayer(getUUID());
@@ -134,10 +88,9 @@ public class Character {
         return temp;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
+    /**
+     * @return Data de quando o personagem foi criado, formatado em dd/MM/yyyy.
+     */
     public String getDateOfBirth() {
         return dateOfBirth;
     }
@@ -163,14 +116,11 @@ public class Character {
     public void setHealth(double health) {
         attributes.setHealth(health);
         checkHealth();
-        updateGraphics();
-
     }
 
     public void addHealth(double health) {
         attributes.addHealth(health);
         checkHealth();
-        updateGraphics();
     }
 
     public double getMaxMana() {
@@ -183,17 +133,14 @@ public class Character {
 
     public void setMaxMana(double maxmana) {
         attributes.setMaxMana(maxmana);
-        updateGraphics();
     }
 
     public void setMana(double MANA) {
         attributes.setMana(MANA);
-        updateGraphics();
     }
 
     public void addMana(double mana) {
         attributes.addMana(mana);
-        updateGraphics();
     }
 
     public void checkHealth() {
@@ -328,24 +275,6 @@ public class Character {
     public void setAttributes(Attributes attributes) {
         this.attributes = attributes;
     }
-
-    public Beast getBeast() {
-        return this.beast;
-    }
-
-    public boolean hasBeast() {
-        return beast.getType() != Beast.Type.NONE;
-    }
-
-    /**
-     * Verifica se o jogador tem uma besta e ela está invocada
-     *
-     * @return Retorna verdadeiro se o jogador estiver com sua besta invocada
-     */
-    public boolean isWithBeast() {
-        return hasBeast() && getBeast().isInvoked();
-    }
-
 
     // Graphics area, frontend
     public void updateGraphics() {

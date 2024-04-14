@@ -2,8 +2,9 @@ package br.pryzat.rpg.main;
 
 import br.pryzat.rpg.api.RPG;
 import br.pryzat.rpg.api.characters.CharacterManager;
+import br.pryzat.rpg.api.characters.classes.ClassesManager;
 import br.pryzat.rpg.api.events.EventManager;
-import br.pryzat.rpg.api.items.ItemManager;
+import br.pryzat.rpg.api.items.ItemHandler;
 import br.pryzat.rpg.commands.ClassCommand;
 import br.pryzat.rpg.commands.RpgCommand;
 import br.pryzat.rpg.commands.SkillsCommand;
@@ -22,22 +23,26 @@ import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.google.common.collect.Lists;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class RpgMain extends JavaPlugin {
     private final String[] DEPENDENCIES = {"ProtocolLib", "Vault", "Citizens", "nLogin"};
+    public NamespacedKey REPRESENTATIVE_ITEM_NAMESPACE;
     private ConfigManager conm;
     private LocationsManager lm;
+    private ClassesManager classesManager;
     private CharacterManager cm;
     private EventManager em;
-    private ItemManager im;
+    private ItemHandler im;
     // Depends
     private Permission permissionsManager;
     private ProtocolManager protocolmanager;
@@ -58,6 +63,7 @@ public class RpgMain extends JavaPlugin {
                 Logger.logInfo(ccs, "Dependência &e" + dependencie + "&a encontrada&f.");
             }
         }
+        this.REPRESENTATIVE_ITEM_NAMESPACE = new NamespacedKey(this, "rpg.representative.item");
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
         assert rsp != null;
         permissionsManager = rsp.getProvider();
@@ -68,14 +74,25 @@ public class RpgMain extends JavaPlugin {
         conm.getYml().saveDefaultConfig();
         lm = new LocationsManager(this);
         lm.getYml().saveDefaultConfig();
-        im = new ItemManager(this);
+        im = new ItemHandler(this);
         im.loadAllItems();
+        classesManager = new ClassesManager(this);
         cm = new CharacterManager(this);
         cm.getCharactersYml().saveDefaultConfig();
         cm.loadCharacters();
         em = new EventManager(this);
         em.loadAllEvents();
-
+        if (!permissionsManager.hasGroupSupport()) {
+            Logger.logError(ccs, "&cNenhum plugin de permissão com suporte a Grupos foi identificado&f.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        String NEWBIE_GROUP = (getConfigManager().getYml().getString("NEWBIE_GROUP") == null) ? "iniciante" : getConfigManager().getYml().getString("NEWBIE_GROUP");
+        if (!Arrays.asList(permissionsManager.getGroups()).contains(NEWBIE_GROUP)) {
+            Logger.logError(ccs, "&cNão foi possivel reconheçer o grupo '" + NEWBIE_GROUP + "'&f.&c Crie o grupo em seu plugin de permissão! (" + permissionsManager.getName() + ")");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
 
         RPG.loadStaticAcces();
         Logger.logInfo(ccs, "&aCarregando jogadores&f...");
@@ -105,6 +122,13 @@ public class RpgMain extends JavaPlugin {
 
     public LocationsManager getLocationManager() {
         return lm;
+    }
+
+    public ItemHandler getItemHandler(){
+        return im;
+    }
+    public ClassesManager getClassesManager() {
+        return classesManager;
     }
 
     public CharacterManager getCharacterManager() {
