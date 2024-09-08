@@ -1,4 +1,4 @@
-package br.pryzat.rpg.api.characters;
+package br.pryzat.rpg.api.characters.stats;
 
 import br.pryzat.rpg.api.events.bukkit.character.CharacterLevelChangeEvent;
 import br.pryzat.rpg.main.RpgMain;
@@ -21,8 +21,18 @@ public class Level {
     private int rcontinuos = 0;
     private BukkitRunnable rrun;
 
+    // Definido de acordo com o plano do usuario (mortal, espirito e etc...)
+    // restrictions[0] = maxLevel
+    // restrictions[1] = Ao primeiro termo da PA que aumenta o exp necessario pra upar
+    // restrictions[2] = Razão da pa de exp pra upar
+    private int[] restrictions;
 
-    public Level(RpgMain plugin, UUID uuid) {
+    /**
+     * @param plugin
+     * @param uuid
+     * @param restrictions Primeiro argumento equivale a maxLevel e o segundo ao primeiro termo da pa de exp
+     */
+    public Level(RpgMain plugin, UUID uuid, int[] restrictions) {
         this.plugin = plugin;
         owner = uuid;
         this.arun = new BukkitRunnable() {
@@ -47,6 +57,8 @@ public class Level {
         };
         level = 1;
         experience = 0;
+        this.restrictions = restrictions;
+        reqExp = restrictions[1];
         checkLevelUp();
 
     }
@@ -63,35 +75,26 @@ public class Level {
             return;
         }
         this.level = level;
-        Player p = Bukkit.getPlayer(owner);
-        if (p != null && p.isOnline()) {
-            p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 30f, 30f);
-            p.sendMessage(PryColor.color("&aSeu nivel foi definido para " + this.level));
-        }
+        reqExp = getRequiredExp();
         checkLevelUp();
     }
 
-    public void syncSet(int level){
+    public void syncSet(int level) {
         this.level = level;
+        reqExp = getRequiredExp();
     }
 
     public void add(int level) {
-        CharacterLevelChangeEvent clce = new CharacterLevelChangeEvent(owner, CharacterLevelChangeEvent.Cause.ADD, get() + 1);
+        CharacterLevelChangeEvent clce = new CharacterLevelChangeEvent(owner, CharacterLevelChangeEvent.Cause.ADD, get() + level);
         Bukkit.getPluginManager().callEvent(clce);
         if (clce.isCancelled()) {
             return;
         }
         this.level += level;
-        /*
-        acontinuos++;
-        Player p = Bukkit.getPlayer(owner);
-        if (p != null && p.isOnline()) {
-            if (!arun.isCancelled()) {
-                arun.cancel();
-            }
-            arun.runTaskLater(plugin, 3 * 20);
+        if (this.level > restrictions[0]) {
+            this.level = restrictions[0];
         }
-         */
+        reqExp = getRequiredExp();
     }
 
     public void rem(int level) {
@@ -101,17 +104,10 @@ public class Level {
             return;
         }
         this.level -= level;
-
-        /*
-        rcontinuos++;
-        Player p = Bukkit.getPlayer(owner);
-        if (p != null && p.isOnline()) {
-            if (!rrun.isCancelled()) {
-                rrun.cancel();
-            }
-            rrun.runTaskLater(plugin, 3 * 20);
+        if (this.level <= 0) {
+            this.level = 1;
         }
-        */
+        reqExp = getRequiredExp();
     }
 
     public long getExp() {
@@ -120,61 +116,41 @@ public class Level {
     }
 
     public void setExp(long exp) {
+        if (exp < 0) {
+            return;
+        }
         experience = exp;
-        if (experience < 0) experience = 0;
         checkLevelUp();
     }
 
     public void addExp(long exp) {
+        if (exp <= 0) {
+            return;
+        }
         experience += exp;
         checkLevelUp();
     }
 
     public void remExp(long exp) {
+        if (exp <= 0) {
+            return;
+        }
         experience -= exp;
-        if (experience < 0) experience = 0;
     }
 
     public long getRequiredExp() {
-        checkLevelUp();
-        return reqExp;
+        return restrictions[1] + (long) (level - 1) * restrictions[2];
     }
 
     public void checkLevelUp() {
-        if (level < 20) {
-            reqExp = (level + 1) * 1000;
-            if (experience >= reqExp) {
-                add(1);
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        setExp(experience - reqExp);
-                    }
-                }.runTaskLaterAsynchronously(plugin, 20);
-            }
-        } else if (level >= 20 && level < 30) {
-            reqExp = (level + 1) * 2000;
-            if (experience >= reqExp) {
-                add(1);
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        setExp(experience - reqExp);
-                    }
-                }.runTaskLaterAsynchronously(plugin, 20);
-            }
-        } else if (level >= 30) {
-            reqExp = (level + 1) * 3000;
-            if (experience >= reqExp) {
-                add(1);
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        setExp(experience - reqExp);
-                    }
-                }.runTaskLaterAsynchronously(plugin, 20);
-            }
+        if (level >= restrictions[0]) {
+            this.experience = Math.min(this.experience, this.reqExp);
+            return;
         }
-
+        while (experience >= reqExp) {
+            experience -= reqExp;
+            add(1);
+        }
     }
+
 }

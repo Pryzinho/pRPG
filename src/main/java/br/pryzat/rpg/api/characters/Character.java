@@ -5,6 +5,7 @@ import br.pryzat.rpg.api.characters.classes.BaseClass;
 import br.pryzat.rpg.api.characters.skills.Skill;
 import br.pryzat.rpg.api.characters.stats.Immunities;
 import br.pryzat.rpg.api.characters.stats.Attributes;
+import br.pryzat.rpg.api.characters.stats.Level;
 import br.pryzat.rpg.main.RpgMain;
 import br.pryzat.rpg.utils.PryColor;
 import br.pryzat.rpg.utils.ActionBar;

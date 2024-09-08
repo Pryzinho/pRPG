@@ -1,6 +1,7 @@
-package br.pryzat.rpg.api.items;
+package br.pryzat.rpg.api.items.types;
 
 import br.pryzat.rpg.api.characters.Character;
+import br.pryzat.rpg.main.RpgMain;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -19,16 +20,17 @@ public class PackageItem extends ConsumableItem {
      * @param iuid        Item Unique Identifier
      * @param displayName Display Name
      * @param material    Bukkit Material
-     * @param amount      Amount of the item
      */
-    public PackageItem(JavaPlugin pl, String iuid, String displayName, Material material, int amount) {
-        super(pl, iuid, displayName, material, amount, null);
-        setIUID(iuid);
+    public PackageItem(RpgMain pl, String iuid, Material material) {
+        super(pl, iuid, material);
+        setItemNamespace("rpg.packageitem");
+        setUniqueId(iuid);
     }
 
     /**
-     * Abre o pacote, e dar os item que estão dentro, futuramente talvez dê um efeito ou condição.
-     * @param obj No caso do PackageItem o obj sempre vai ser uma instancia do character (alvo).
+     * Abre o pacote, e dá os items que estão dentro, futuramente talvez dê um efeito ou condição.
+     *
+     * @param obj No caso do PackageItem o obj sempre vai ser uma instância de Character (alvo).
      */
     @Override
     public void execute(Object obj) {

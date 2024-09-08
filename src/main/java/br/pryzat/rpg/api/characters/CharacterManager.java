@@ -5,18 +5,17 @@ import br.pryzat.rpg.api.characters.skills.Skill;
 import br.pryzat.rpg.api.characters.stats.Attributes;
 import br.pryzat.rpg.api.events.bukkit.character.CharacterChooseClassEvent;
 import br.pryzat.rpg.api.events.bukkit.character.CharacterLevelChangeEvent;
-import br.pryzat.rpg.api.items.CustomItem;
 import br.pryzat.rpg.api.items.ItemHandler;
+import br.pryzat.rpg.api.items.types.Item;
 import br.pryzat.rpg.main.RpgMain;
 import br.pryzat.rpg.utils.PryColor;
 import br.pryzat.rpg.utils.PryConfig;
 import com.nickuc.login.api.event.bukkit.auth.AuthenticateEvent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -33,8 +32,10 @@ import java.util.UUID;
 
 public class CharacterManager implements Listener {
     private RpgMain plugin;
-    private PryConfig charactersyml;
     private HashMap<UUID, Character> characters = new HashMap<>();
+
+
+    private PryConfig charactersyml; // Current data storage method
 
     public CharacterManager(RpgMain plugin) {
         this.plugin = plugin;
@@ -51,22 +52,24 @@ public class CharacterManager implements Listener {
         return characters.get(uuid);
     }
 
+
     public void selectClass(Player target) {
+        // depois talvez transformar o inventory em algo que ja ta criado e usar o metodo so pra abrir ele.
+        // como ta aqu isemrpe que rodar um novo inventory é criado.
         Inventory inv = Bukkit.createInventory(null, InventoryType.CHEST, Component.text(PryColor.color("&bSelecione sua classe...")));
         PryConfig config = plugin.getConfigManager().getYml();
         Set<String> clazzes = config.getSection("classes");
         for (int i = 0; i < clazzes.size(); i++) {
             String key = (String) clazzes.toArray()[i];
-            CustomItem ci = ItemHandler.getItemFromPath(config, "classes." + key + ".material");
-            ci.setName(config.getString("classes." + key + ".displayName"));
-            ci.setLore((List<String>) config.getList("classes." + key + ".description"));
-            ci.hideEnchants(true);
-            ci.hideAttributes(true);
-            ci.setCustomModelData(config.getInt("classes." + key + ".custom_model_data"));
+           Item CLASS_ITEM = ItemHandler.getItemFromPath(config, "classes." + key + ".material")
+                    .displayName(config.getString("classes." + key + ".displayName"))
+                    .stringLore((List<String>) config.getList("classes." + key + ".description"))
+                    .setCustomModelData(config.getInt("classes." + key + ".custom_model_data"))
+                    .hideEnchants(true)
+                    .hideAttributes(true);
+            CLASS_ITEM.getCustomPersistentData().setData(plugin.getItemHandler().REPRESENTATIVE_ITEM_NAMESPACE(), PersistentDataType.STRING, key.toLowerCase());
+            inv.setItem(10 + i, CLASS_ITEM);
 
-            String codeclass = key.toLowerCase();
-            ci.getDataManager().set(new NamespacedKey(plugin, "rpg.representative.item"), PersistentDataType.STRING, codeclass);
-            inv.setItem(10 + i, ci.toItemStack());
         }
         target.openInventory(inv);
     }
@@ -143,7 +146,7 @@ public class CharacterManager implements Listener {
         ItemStack is = e.getCurrentItem();
         Character ch = getCharacter(p.getUniqueId());
         plugin.getClassesManager().getAllClasses().forEach(c -> {
-            if (plugin.getItemHandler().matchInNamespace(plugin.REPRESENTATIVE_ITEM_NAMESPACE, is, c.getUniqueId())) {
+            if (plugin.getItemHandler().matchInNamespace(plugin.getItemHandler().REPRESENTATIVE_ITEM_NAMESPACE(), is, c.getUniqueId())) {
                 BaseClass newClass = new BaseClass(c);
                 CharacterChooseClassEvent ccce = new CharacterChooseClassEvent(ch, newClass);
                 Bukkit.getPluginManager().callEvent(ccce);
@@ -192,14 +195,10 @@ public class CharacterManager implements Listener {
         if (t == null) {
             return;
         }
-        if (e.getNewLevel() > 100) {
-            e.setCancelled(true);
-            return;
-        }
-        if (e.getNewLevel() <= 0) {
-            e.setCancelled(true);
-            t.getLevelManager().set(1);
-            return;
+        if (e.getCause() == CharacterLevelChangeEvent.Cause.SET && t.getPlayer() != null) {
+            Player player = t.getPlayer();
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 30f, 30f);
+            player.sendMessage(PryColor.color("&aSeu nivel foi definido para " + e.getNewLevel()));
         }
         if (e.getCause() == CharacterLevelChangeEvent.Cause.ADD) {
             Player p = Bukkit.getPlayer(e.getTrigger());
@@ -212,8 +211,12 @@ public class CharacterManager implements Listener {
             t.remSkillPoints(1);
             return;
         }
-        if (e.getCause() == CharacterLevelChangeEvent.Cause.ADD && e.getNewLevel() % 2 == 0) {
-            t.addSkillPoints(1);
+        if (e.getCause() == CharacterLevelChangeEvent.Cause.ADD) {
+            if (e.getNewLevel() % 2 == 0) {
+                t.addSkillPoints((e.getNewLevel() - e.getOldLevel()) / 2);
+            } else {
+                t.addSkillPoints((int) (((e.getNewLevel() - e.getOldLevel()) / 2) + 0.5));
+            }
             return;
         }
         if (e.getCause() == CharacterLevelChangeEvent.Cause.SET) {
@@ -241,6 +244,7 @@ public class CharacterManager implements Listener {
             return;
         }
     }
+
     public HashMap<UUID, Character> getCharacters() {
         return characters;
     }

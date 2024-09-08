@@ -36,7 +36,6 @@ import java.util.Objects;
 
 public class RpgMain extends JavaPlugin {
     private final String[] DEPENDENCIES = {"ProtocolLib", "Vault", "Citizens", "nLogin"};
-    public NamespacedKey REPRESENTATIVE_ITEM_NAMESPACE;
     private ConfigManager conm;
     private LocationsManager lm;
     private ClassesManager classesManager;
@@ -55,15 +54,16 @@ public class RpgMain extends JavaPlugin {
         //ArmorEquipEvent.registerListener(this);
         ConsoleCommandSender ccs = Bukkit.getConsoleSender();
         Logger.logInfo(ccs, "&aIniciando &epRPG&f.");
-        for (String dependencie : DEPENDENCIES) {
-            if (!getServer().getPluginManager().isPluginEnabled(dependencie)) {
+
+        // Carregando dependências.
+        for (String dependency : DEPENDENCIES) {
+            if (!getServer().getPluginManager().isPluginEnabled(dependency)) {
                 Logger.logError(ccs, "As dependências não foram encontradas.");
                 getServer().getPluginManager().disablePlugin(this);
             } else {
-                Logger.logInfo(ccs, "Dependência &e" + dependencie + "&a encontrada&f.");
+                Logger.logInfo(ccs, "Dependência &e" + dependency + "&a encontrada&f.");
             }
         }
-        this.REPRESENTATIVE_ITEM_NAMESPACE = new NamespacedKey(this, "rpg.representative.item");
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
         assert rsp != null;
         permissionsManager = rsp.getProvider();
