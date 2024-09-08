@@ -1,149 +1,59 @@
 package br.pryzat.rpg.api.characters;
 
 import br.pryzat.rpg.api.RPG;
-import br.pryzat.rpg.api.characters.classes.Beast;
-import br.pryzat.rpg.api.characters.classes.ClazzType;
+import br.pryzat.rpg.api.characters.classes.BaseClass;
 import br.pryzat.rpg.api.characters.skills.Skill;
 import br.pryzat.rpg.api.characters.stats.Immunities;
 import br.pryzat.rpg.api.characters.stats.Attributes;
-import br.pryzat.rpg.api.items.CustomItem;
-import br.pryzat.rpg.api.items.ItemManager;
+import br.pryzat.rpg.api.characters.stats.Level;
 import br.pryzat.rpg.main.RpgMain;
 import br.pryzat.rpg.utils.PryColor;
-import br.pryzat.rpg.utils.PryConfig;
 import br.pryzat.rpg.utils.ActionBar;
-import net.kyori.adventure.text.Component;
-import net.luckperms.api.LuckPerms;
-import net.luckperms.api.model.user.User;
-import net.luckperms.api.node.types.InheritanceNode;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.persistence.PersistentDataType;
 
 import javax.annotation.Nullable;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class Character {
     private final RpgMain plugin;
-    private final LuckPerms lp;
     private final UUID uuid;
-    private Player player;
     private String dateOfBirth; // (dd/MM/yyyy) > 01/01/2000
-    private double MAX_HP, MAX_MANA;
-    private double HEALTH, MANA;
-    private ClazzType clazz;
-    private Beast beast;
+    private BaseClass clazz;
     private Attributes attributes;
     private final Level level;
     private HashMap<String, Skill> skills;
     private int skillPoints;
     private final Immunities immunities;
 
-    public Character(UUID uuid, RpgMain plugin) {
+    public Character(UUID uniqueuid, RpgMain plugin) {
         this.plugin = plugin;
-        this.uuid = uuid;
+        this.uuid = uniqueuid;
         this.skillPoints = 0;
-        this.player = Bukkit.getPlayer(uuid);
-        this.lp = plugin.getLuckPerms();
+        this.attributes = new Attributes();
         this.immunities = new Immunities();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         sdf.setCalendar(new GregorianCalendar());
         this.dateOfBirth = sdf.format(new Date(System.currentTimeMillis()));
-        level = new Level(plugin, uuid);
-        if (level.get() <= 20) {
-            User user;
-            if (player == null) {
-                CompletableFuture<User> userFuture = lp.getUserManager().loadUser(uuid);
-                try {
-                    user = userFuture.get();
-                } catch (InterruptedException | ExecutionException e) {
-                    user = null;
-                }
-                if (user != null) {
-                    assert user != null;
-                    InheritanceNode node = InheritanceNode.builder("iniciante").value(true).build();
-                    user.data().add(node);
-                    lp.getUserManager().saveUser(user);
-                }
-            } else {
-                if (player.isOnline()) {
-                    user = lp.getUserManager().getUser(uuid);
-                } else {
-                    CompletableFuture<User> userFuture = lp.getUserManager().loadUser(uuid);
-                    try {
-                        user = userFuture.get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        user = null;
-                    }
-                }
-                if (!player.hasPermission("group.iniciante") && user != null) {
-                    assert user != null;
-                    InheritanceNode node = InheritanceNode.builder("iniciante").value(true).build();
-                    user.data().add(node);
-                    lp.getUserManager().saveUser(user);
-                }
-            }
-        } else {
-            User user;
-            if (player == null) {
-                OfflinePlayer offp = Bukkit.getOfflinePlayer(uuid);
-                CompletableFuture<User> userFuture = lp.getUserManager().loadUser(uuid);
-                try {
-                    user = userFuture.get();
-                } catch (InterruptedException | ExecutionException e) {
-                    user = null;
-                }
-                if (user != null) {
-                    assert user != null;
-                    InheritanceNode node = InheritanceNode.builder("iniciante").value(true).build();
-                    user.data().remove(node);
-                    lp.getUserManager().saveUser(user);
-                }
-            } else {
-                if (player.isOnline()) {
-                    user = lp.getUserManager().getUser(uuid);
-                } else {
-                    CompletableFuture<User> userFuture = lp.getUserManager().loadUser(uuid);
-                    try {
-                        user = userFuture.get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        user = null;
-                    }
-                }
-                if (player.hasPermission("group.iniciante") && user != null) {
-                    assert user != null;
-                    InheritanceNode node = InheritanceNode.builder("iniciante").value(true).build();
-                    user.data().remove(node);
-                    lp.getUserManager().saveUser(user);
-                }
-            }
-        }
-        level.set(21);
+        level = new Level(plugin, uniqueuid);
+        level.syncSet(21);
         this.skills = new HashMap<>();
-        this.beast = new Beast(plugin, this, Beast.Type.NONE);
     }
 
-    public ClazzType getClazz() {
+    public BaseClass getClazz() {
         return clazz;
     }
 
-    public void setClazz(ClazzType clazz) {
+    public void setClazz(BaseClass clazz) {
         this.clazz = clazz;
-        setMaxHealth(50 + clazz.getAttributes().getResistance());
-        setHealth(getMaxHealth());
-        setMaxMana(20);
-        setMana(20);
-        //skills = clazz.getSkills();
         attributes = new Attributes(clazz.getAttributes());
+        // setMaxHealth(50 + clazz.getAttributes().getResistance());
+        //  setHealth(getMaxHealth());
+        //  setMaxMana(20);
+        //  setMana(20);
+        //skills = clazz.getSkills();
         this.clazz.giveInitialItens(getPlayer());
 
     }
@@ -157,31 +67,19 @@ public class Character {
         - Lore 1
         - Lore 2
         - Lore 3
-
-
     */
-    public void selectClazz() {
-        Inventory inv = Bukkit.createInventory(null, InventoryType.CHEST, Component.text(PryColor.color("&bSelecione sua classe...")));
-        PryConfig config = plugin.getConfigManager().getYml();
-        Set<String> clazzes = config.getSection("classes");
-        for (int i = 0; i < clazzes.size(); i++) {
-            String key = (String) clazzes.toArray()[i];
-            CustomItem ci = ItemManager.getItemFromPath(config, "classes." + key + ".material");
-            ci.setName(config.getString("classes." + key + ".displayName"));
-            ci.setLore((List<String>) config.getList("classes." + key + ".description"));
-            ci.hideEnchants(true);
-            ci.hideAttributes(true);
-            String codeclass = key.toLowerCase();
-            ci.getDataManager().set(new NamespacedKey(plugin, "rpg.representative.item"), PersistentDataType.STRING, codeclass);
-            inv.setItem(10 + i, ci.toItemStack());
-        }
-        player.openInventory(inv);
-    }
 
+    /**
+     * @return Retorna o unique user identifier do jogador.
+     */
     public UUID getUUID() {
         return uuid;
     }
 
+    /**
+     *
+     * @return Retorna o jogador caso ele esteja online ou null caso não esteja.
+     */
     @Nullable
     public Player getPlayer() {
         Player temp = Bukkit.getPlayer(getUUID());
@@ -191,10 +89,9 @@ public class Character {
         return temp;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
+    /**
+     * @return Data de quando o personagem foi criado, formatado em dd/MM/yyyy.
+     */
     public String getDateOfBirth() {
         return dateOfBirth;
     }
@@ -203,75 +100,59 @@ public class Character {
         this.dateOfBirth = dateOfBirth;
     }
 
+    /* Atributos Naturais */
     public double getMaxHealth() {
-        return MAX_HP;
-    }
-
-    public void setMaxHealth(double maxhealth) {
-        this.MAX_HP = maxhealth;
-        updateGraphics();
+        return attributes.getMaxHealth();
     }
 
     public double getHealth() {
-        return HEALTH;
+        return attributes.getHealth();
+    }
+
+    public void setMaxHealth(double maxhealth) {
+        attributes.setMaxHealth(maxhealth);
+        updateGraphics();
     }
 
     public void setHealth(double health) {
-        this.HEALTH = health;
+        attributes.setHealth(health);
         checkHealth();
-        updateGraphics();
-
     }
 
     public void addHealth(double health) {
-        this.HEALTH += health;
+        attributes.addHealth(health);
         checkHealth();
-        updateGraphics();
-    }
-
-    public void remHealth(double health) {
-        this.HEALTH -= health;
-        checkHealth();
-        updateGraphics();
-    }
-
-    public void checkHealth() {
-        if (this.HEALTH <= 0) {
-            this.HEALTH = 0;
-            if (getPlayer() != null) {
-                getPlayer().damage(getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-            }
-        } else if (this.HEALTH > MAX_HP) {
-            this.HEALTH = MAX_HP;
-        }
     }
 
     public double getMaxMana() {
-        return MAX_MANA;
-    }
-
-    public void setMaxMana(double maxmana) {
-        this.MAX_MANA = maxmana;
-        updateGraphics();
+        return attributes.getMaxMana();
     }
 
     public double getMana() {
-        return MANA;
+        return attributes.getMana();
+    }
+
+    public void setMaxMana(double maxmana) {
+        attributes.setMaxMana(maxmana);
     }
 
     public void setMana(double MANA) {
-        this.MANA = MANA;
-        updateGraphics();
+        attributes.setMana(MANA);
     }
 
     public void addMana(double mana) {
-        this.MANA += mana;
-        updateGraphics();
+        attributes.addMana(mana);
     }
 
-    public void remMana(double mana) {
-        this.MANA -= mana;
-        updateGraphics();
+    public void checkHealth() {
+        if (attributes.getHealth() <= 0) {
+            attributes.setHealth(0);
+            if (getPlayer() != null) {
+                getPlayer().damage(getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+            }
+        } else if (attributes.getHealth() > attributes.getMaxHealth()) {
+            attributes.setHealth(attributes.getMaxHealth());
+        }
     }
 
     // Skill Development
@@ -369,7 +250,7 @@ public class Character {
     public void setSkillPoints(int points) {
         this.skillPoints = points;
     }
-    // Skill Development
+// Skill Development
 
 
     public Attributes getAttributes() {
@@ -395,30 +276,6 @@ public class Character {
     public void setAttributes(Attributes attributes) {
         this.attributes = attributes;
     }
-
-    public Beast getBeast() {
-        return this.beast;
-    }
-
-    public boolean hasBeast() {
-        if (beast.getType() != Beast.Type.NONE) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Verifica se o jogador tem uma besta e ela está invocada
-     *
-     * @return Retorna verdadeiro se o jogador estiver com sua besta invocada
-     */
-    public boolean isWithBeast() {
-        if (hasBeast() && getBeast().isInvoked()) {
-            return true;
-        }
-        return false;
-    }
-
 
     // Graphics area, frontend
     public void updateGraphics() {

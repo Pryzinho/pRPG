@@ -11,6 +11,8 @@ import org.bukkit.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.Objects;
+
 public class Beast {
     private final RpgMain plugin;
     private Character master;
@@ -27,11 +29,13 @@ public class Beast {
     }
 
     public void spawn() {
-        if (type == Type.NONE) {
+        if (type.equals("none")) {
             return;
         }
-        Player p = Bukkit.getPlayer(master.getUUID());
-        if (p == null || !p.isOnline()) return;
+        Player p = master.getPlayer();
+        if (p == null){
+            return;
+        }
         entity = (Wolf) p.getWorld().spawnEntity(p.getLocation(), EntityType.WOLF, CreatureSpawnEvent.SpawnReason.CUSTOM);
         entity.setCustomNameVisible(true);
         entity.customName(Component.text(type.getDisplayName() + "\n" + p.displayName()));
@@ -44,12 +48,12 @@ public class Beast {
     }
 
     public void despawn() {
-        if (type == Type.NONE) {
+        if (type.equals("none")) {
             return;
         }
         entity.remove();
         this.invoked = false;
-        this.type = Type.NONE;
+        this.type = new Type("none", "");
         this.mode = Mode.ATTACK;
     }
 
@@ -78,42 +82,43 @@ public class Beast {
         return invoked;
     }
 
-    /**
-     * @return Retorna verdadeiro se o jogador tiver um animal.
-     */
-    public boolean exists() {
-        if (master.getClazz() == ClazzType.TAMER && master.getLevel() >= 30) {
-            return true;
-        }
-        return false;
-    }
 
     public Wolf getEntity() {
         return entity;
     }
 
-    public enum Type {
-        NONE("", ""), // None
+    public class Type {
+  /*      NONE("", ""), // None
         METAL_PIG("Porco de Pele de Aço", "metalpig"), // Porco de Pele de Aço (Porco)
         WAR_WOLF("Lobo da guerra", "warwolf"), // Lobo da Guerra (Wolf)
         SHADOW_BEAMON("Beamon das Sombras", "shadowbeamon"), // Beamon das Sombras (Warden)
         SPIRIT_FOX("Raposa Espiritual", "spiritfox"), // Raposa Espiritual
         DAVID_DEER("Cervo de David", "daviddeer"); // Cervo de David
+*/
+        private final String displayName;
+        private final String BEAST_UNIQUE_IDENTIFIER; // BUID
 
-        private String displayName;
-        private String buid; // Beats Unique Identifier
-
-        Type(String displayName, String buid) {
+        Type(String BUID, String displayName) {
+            this.BEAST_UNIQUE_IDENTIFIER = BUID;
             this.displayName = displayName;
-            this.buid = buid;
         }
 
-        String getDisplayName() {
+        public String getDisplayName() {
             return displayName;
         }
 
-        String getUniqueId() {
-            return buid;
+        public String getUniqueId() {
+            return BEAST_UNIQUE_IDENTIFIER;
+        }
+
+        public boolean equals(String id) {
+            if (id == null) return false;
+            return BEAST_UNIQUE_IDENTIFIER.equals(id);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(BEAST_UNIQUE_IDENTIFIER);
         }
     }
 

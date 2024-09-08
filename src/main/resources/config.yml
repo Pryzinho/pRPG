@@ -1,3 +1,4 @@
+NEWBIE_GROUP: "newbie"
 discord_bot:
   token: "DISCORD_TOKEN"
   prefix: "&"
@@ -57,3 +58,10 @@ entity_settings:
     experience: 1
   wither:
     experience: 2000
+
+pvp:
+  # Nível minimo para entrar em combate
+  min-level: 20
+  # Diferença maxima de nível entre dois jogadores para poderem ir pvp. (Desativado por padrão, coloque -1 para desativar.)
+  # Exemplo: Se max-dif é 5, logo um jogador de nível 20 não pode ir pvp com alguém de nível 25.
+  max-dif: -1

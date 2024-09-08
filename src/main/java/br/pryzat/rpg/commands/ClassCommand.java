@@ -2,7 +2,7 @@ package br.pryzat.rpg.commands;
 
 import br.pryzat.rpg.api.characters.Character;
 import br.pryzat.rpg.api.characters.CharacterManager;
-import br.pryzat.rpg.api.characters.classes.ClazzType;
+import br.pryzat.rpg.api.characters.classes.BaseClass;
 import br.pryzat.rpg.utils.PryColor;
 import br.pryzat.rpg.main.RpgMain;
 import org.bukkit.Sound;
@@ -28,7 +28,7 @@ public class ClassCommand implements CommandExecutor {
         }
         Player p = (Player) sender;
         Character ch = cm.getCharacter(p.getUniqueId());
-        ClazzType cz = ch.getClazz();
+        BaseClass cz = ch.getClazz();
         if (args.length != 0){
             p.sendMessage(PryColor.color("&eSistema &f> &cEsse comando não existe&f."));
             return true;

@@ -1,0 +1,15 @@
+id: "swordsman"
+initialitems:
+  - "RPGITEM(thel;<grey>Capacete Inicial;LEATHER_HELMET;Attributes[strength:0,resistance:5])"
+  #  new Item(main, "&9Peitoral Inicial", Material.LEATHER_CHESTPLATE, new Attributes(0,0,0,10)).setUniqueId("tche").toItem(),
+  # new Item(main, "&9Calças Inicial", Material.LEATHER_LEGGINGS, new Attributes(0, 0, 0, 5)).setUniqueId("tleg").toItem(),
+  #  new Item(main, "&9Botas Inicial", Material.LEATHER_BOOTS, new Attributes(0, 0, 10, 5)).setUniqueId("tboo").toItem(),
+  #  new Item(main, "&9Espada Inicial", Material.WOODEN_SWORD, new Attributes(10, 0, 5, 0)).setUniqueId("tswo").toItem(),
+  #  new Item(main, "&9Escudo Inicial", Material.SHIELD, new Attributes(0, 0, 0, 30)).setUniqueId("tshi").toItem()
+attributes:
+  strength: 50
+  velocity: 10
+  resistance: 60
+      MAGE(
+      ItemManager.getInitialItems("MAGE"),
+      new Attributes(10, 60, 0, 55)), //Mago -> Hp, Mana++, Ataque Magico+, Defesa

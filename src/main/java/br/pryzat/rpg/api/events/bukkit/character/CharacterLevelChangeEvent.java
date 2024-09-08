@@ -8,15 +8,17 @@ import org.bukkit.event.HandlerList;
 import java.util.UUID;
 
 public class CharacterLevelChangeEvent extends Event implements Cancellable {
-    private UUID trigger;
-    private Cause cause;
-    private int newLevel;
+    private final UUID trigger;
+    private final Cause cause;
+    private final int newLevel;
+    private final int oldLevel;
     private static final HandlerList handlerlist = new HandlerList();
     private boolean isCancelled;
 
-    public CharacterLevelChangeEvent(UUID trigger, Cause cause, int newLevel) {
+    public CharacterLevelChangeEvent(UUID trigger, Cause cause, int oldLevel, int newLevel) {
         this.trigger = trigger;
         this.cause = cause;
+        this.oldLevel = oldLevel;
         this.newLevel = newLevel;
     }
 
@@ -50,6 +52,10 @@ public class CharacterLevelChangeEvent extends Event implements Cancellable {
 
     public int getNewLevel() {
         return newLevel;
+    }
+
+    public int getOldLevel() {
+        return oldLevel;
     }
 
     public enum Cause {

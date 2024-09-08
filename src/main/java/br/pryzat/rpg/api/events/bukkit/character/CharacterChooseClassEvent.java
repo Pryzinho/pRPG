@@ -2,12 +2,10 @@ package br.pryzat.rpg.api.events.bukkit.character;
 
 
 import br.pryzat.rpg.api.characters.Character;
-import br.pryzat.rpg.api.characters.classes.ClazzType;
+import br.pryzat.rpg.api.characters.classes.BaseClass;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import java.util.UUID;
 
 /**
  * Esse evento é chamado ANTES da classe do player ser alterado ou selecionada.
@@ -16,12 +14,12 @@ import java.util.UUID;
  */
 public class CharacterChooseClassEvent extends Event implements Cancellable {
     private Character trigger;
-    private ClazzType clazz;
+    private BaseClass clazz;
     private boolean isFirst = false;
     private static final HandlerList handlerlist = new HandlerList();
     private boolean isCancelled;
 
-    public CharacterChooseClassEvent(Character trigger, ClazzType clazz) {
+    public CharacterChooseClassEvent(Character trigger, BaseClass clazz) {
         this.trigger = trigger;
         this.clazz = clazz;
         if (trigger.getClazz() == null) {
@@ -53,7 +51,7 @@ public class CharacterChooseClassEvent extends Event implements Cancellable {
         return trigger;
     }
 
-    public ClazzType getClazz() {
+    public BaseClass getClazz() {
         return clazz;
     }
 

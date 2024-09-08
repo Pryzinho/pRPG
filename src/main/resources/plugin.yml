@@ -1,10 +1,10 @@
 name: pRPG
 version: '${project.version}'
 main: br.pryzat.rpg.main.RpgMain
-api-version: 1.18
-depend: [LuckPerms, ProtocolLib, Citizens]
-authors: [ PryzDev ]
-description: Acrescenta um RPG dentro do jogo
+api-version: 1.20
+depend: [Vault, ProtocolLib, Citizens, nLogin] #Futuramente deixar so o vault e protocol como soft
+authors: [ Pry ]
+description: Adiciona a base de um RPG dentro do jogo.
 website: github.com/Pryzinho
 commands:
   test:

@@ -2,9 +2,9 @@ package br.pryzat.rpg.main;
 
 import br.pryzat.rpg.api.RPG;
 import br.pryzat.rpg.api.characters.CharacterManager;
+import br.pryzat.rpg.api.characters.classes.ClassesManager;
 import br.pryzat.rpg.api.events.EventManager;
-import br.pryzat.rpg.api.items.CustomItem;
-import br.pryzat.rpg.api.items.ItemManager;
+import br.pryzat.rpg.api.items.ItemHandler;
 import br.pryzat.rpg.commands.ClassCommand;
 import br.pryzat.rpg.commands.RpgCommand;
 import br.pryzat.rpg.commands.SkillsCommand;
@@ -21,31 +21,29 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.google.common.collect.Lists;
-import net.kyori.adventure.text.Component;
-import net.luckperms.api.LuckPerms;
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 
 public class RpgMain extends JavaPlugin {
-    private final String[] DEPENDENCIES = {"ProtocolLib", "LuckPerms", "Citizens"};
+    private final String[] DEPENDENCIES = {"ProtocolLib", "Vault", "Citizens", "nLogin"};
     private ConfigManager conm;
     private LocationsManager lm;
+    private ClassesManager classesManager;
     private CharacterManager cm;
     private EventManager em;
-    private ItemManager im;
+    private ItemHandler im;
     // Depends
-    private LuckPerms lp;
+    private Permission permissionsManager;
     private ProtocolManager protocolmanager;
 
     //    CitizensAPI.getNPCRegistry();
@@ -56,16 +54,19 @@ public class RpgMain extends JavaPlugin {
         //ArmorEquipEvent.registerListener(this);
         ConsoleCommandSender ccs = Bukkit.getConsoleSender();
         Logger.logInfo(ccs, "&aIniciando &epRPG&f.");
-        for (String dependencie : DEPENDENCIES) {
-            if (!getServer().getPluginManager().isPluginEnabled(dependencie)) {
+
+        // Carregando dependências.
+        for (String dependency : DEPENDENCIES) {
+            if (!getServer().getPluginManager().isPluginEnabled(dependency)) {
                 Logger.logError(ccs, "As dependências não foram encontradas.");
                 getServer().getPluginManager().disablePlugin(this);
             } else {
-                Logger.logInfo(ccs, "Dependência &e" + dependencie + "&a encontrada&f.");
+                Logger.logInfo(ccs, "Dependência &e" + dependency + "&a encontrada&f.");
             }
         }
-        RegisteredServiceProvider<LuckPerms> lp_provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
-        lp = lp_provider.getProvider();
+        RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+        assert rsp != null;
+        permissionsManager = rsp.getProvider();
         protocolmanager = ProtocolLibrary.getProtocolManager();
         // CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TestTrait.class).withName("teleportador"));
 
@@ -73,21 +74,32 @@ public class RpgMain extends JavaPlugin {
         conm.getYml().saveDefaultConfig();
         lm = new LocationsManager(this);
         lm.getYml().saveDefaultConfig();
-        im = new ItemManager(this);
+        im = new ItemHandler(this);
         im.loadAllItems();
+        classesManager = new ClassesManager(this);
         cm = new CharacterManager(this);
         cm.getCharactersYml().saveDefaultConfig();
         cm.loadCharacters();
         em = new EventManager(this);
         em.loadAllEvents();
-
+        if (!permissionsManager.hasGroupSupport()) {
+            Logger.logError(ccs, "&cNenhum plugin de permissão com suporte a Grupos foi identificado&f.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        String NEWBIE_GROUP = (getConfigManager().getYml().getString("NEWBIE_GROUP") == null) ? "iniciante" : getConfigManager().getYml().getString("NEWBIE_GROUP");
+        if (!Arrays.asList(permissionsManager.getGroups()).contains(NEWBIE_GROUP)) {
+            Logger.logError(ccs, "&cNão foi possivel reconheçer o grupo '" + NEWBIE_GROUP + "'&f.&c Crie o grupo em seu plugin de permissão! (" + permissionsManager.getName() + ")");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
 
         RPG.loadStaticAcces();
         Logger.logInfo(ccs, "&aCarregando jogadores&f...");
-        getCommand("rpg").setExecutor(new RpgCommand(this));
-        getCommand("skills").setExecutor(new SkillsCommand(this));
-        getCommand("class").setExecutor(new ClassCommand(this));
-        getCommand("test").setExecutor(new TestCommand(this));
+        Objects.requireNonNull(getCommand("rpg")).setExecutor(new RpgCommand(this));
+        Objects.requireNonNull(getCommand("skills")).setExecutor(new SkillsCommand(this));
+        Objects.requireNonNull(getCommand("class")).setExecutor(new ClassCommand(this));
+        Objects.requireNonNull(getCommand("test")).setExecutor(new TestCommand(this));
         getServer().getPluginManager().registerEvents(new PlayerEvent(this), this);
         em.checkProgramedEvents();
         Logger.logInfo(ccs, "&aInicializado com sucesso!");
@@ -100,8 +112,8 @@ public class RpgMain extends JavaPlugin {
         HandlerList.unregisterAll();
     }
 
-    public LuckPerms getLuckPerms() {
-        return lp;
+    public Permission getPermissionsManager() {
+        return permissionsManager;
     }
 
     public ConfigManager getConfigManager() {
@@ -110,6 +122,13 @@ public class RpgMain extends JavaPlugin {
 
     public LocationsManager getLocationManager() {
         return lm;
+    }
+
+    public ItemHandler getItemHandler(){
+        return im;
+    }
+    public ClassesManager getClassesManager() {
+        return classesManager;
     }
 
     public CharacterManager getCharacterManager() {
